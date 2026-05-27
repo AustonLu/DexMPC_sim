@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!DOCTYPE periph [
+<!ENTITY axi_ext         SYSTEM "../../shared/busdefs/AXI_ext/AXI_ext.xml">
+<!ENTITY axi_ext_rtl     SYSTEM "../../shared/busdefs/AXI_ext/AXI_ext_rtl.xml">
+
+<!ENTITY itb             SYSTEM "../../shared/busdefs/ITB/ITB.xml">
+<!ENTITY itb_rtl         SYSTEM "../../shared/busdefs/ITB/ITB_rtl.xml">
+<!ENTITY nic400_axi4     SYSTEM "../../shared/busdefs/NIC400_AXI4/NIC400_AXI4.xml">
+<!ENTITY nic400_axi4_rtl SYSTEM "../../shared/busdefs/NIC400_AXI4/NIC400_AXI4_rtl.xml">
+<!ENTITY ib              SYSTEM "../../shared/busdefs/IB/IB.xml">
+<!ENTITY ib_rtl          SYSTEM "../../shared/busdefs/IB/IB_rtl.xml">
+<!ENTITY nic400_axi      SYSTEM "../../shared/busdefs/NIC400_AXI/NIC400_AXI.xml">
+<!ENTITY nic400_axi_rtl  SYSTEM "../../shared/busdefs/NIC400_AXI/NIC400_AXI_rtl.xml">
+<!ENTITY axi4            SYSTEM "../../shared/busdefs/AXI4/AXI4.xml">
+<!ENTITY axi4_rtl        SYSTEM "../../shared/busdefs/AXI4/AXI4_rtl.xml">
+<!ENTITY t_apb           SYSTEM "../../shared/busdefs/T_APB/T_APB.xml">
+<!ENTITY t_apb_rtl       SYSTEM "../../shared/busdefs/T_APB/T_APB_rtl.xml">
+<!ENTITY apbasync        SYSTEM "../../shared/busdefs/APBasync/APBasync.xml">
+<!ENTITY apbasync_rtl    SYSTEM "../../shared/busdefs/APBasync/APBasync_rtl.xml">
+<!ENTITY nic400_vn       SYSTEM "../../shared/busdefs/VN/VN.xml">
+<!ENTITY nic400_vn_rtl   SYSTEM "../../shared/busdefs/VN/VN_rtl.xml">
+<!ENTITY qos_accept      SYSTEM "../../shared/busdefs/QOS_ACCEPT/QOS_ACCEPT.xml">
+<!ENTITY qos_accept_rtl  SYSTEM "../../shared/busdefs/QOS_ACCEPT/QOS_ACCEPT_rtl.xml">
+<!ENTITY files           SYSTEM "ib_sSpi_ib_vlog_files.xml">
+<!ENTITY connect         SYSTEM "ib_sSpi_ib_io.xml">
+]>
+
+<periph>
+
+  <xmlcfg>1</xmlcfg>
+  <parcfg>nic400</parcfg>
+  <spirit_prefix>nic400_ib</spirit_prefix>
+  <system_name>nic400_1</system_name>
+  <name>sSpi_ib</name>
+
+  <hcg_en>false</hcg_en>
+
+  <accept_port_reqd>false</accept_port_reqd>
+  <imported_remap>false</imported_remap>
+
+  <slave_if_data_width>32</slave_if_data_width>
+  <master_if_data_width>64</master_if_data_width>
+
+  <slave_if_protocol>axi4</slave_if_protocol>
+  <master_if_protocol>axi4</master_if_protocol>
+
+  <tidemark>false</tidemark>
+  <tidevalue></tidevalue>
+
+  <default_slave>true</default_slave>
+
+
+
+
+  <vn_external>none</vn_external>
+  <vn_external_bridge>none</vn_external_bridge>
+
+  <vn_aware>false</vn_aware>
+
+
+  <upsize_addr>false</upsize_addr>
+  <downsize_addr>false</downsize_addr>
+  <bridge>false</bridge>
+  
+  <axib_protocol>axi4</axib_protocol>
+  <awuser_width>0</awuser_width>
+  <aruser_width>0</aruser_width>
+  <buser_width>0</buser_width>
+  <wuser_width>0</wuser_width>
+  <ruser_width>0</ruser_width>
+  <auser_width>0</auser_width>
+  <duser_width>0</duser_width>
+  <addr_width>32</addr_width>
+  <!-- pl_id Width (Global) is iid_width + siid_width + vid_width(max) -->
+  <pl_id_width>8</pl_id_width>
+  <regions_flag>false</regions_flag>
+
+  
+
+  <drive_id_bit>false</drive_id_bit>
+  <ib_id_width>2</ib_id_width>
+  <!-- Vid Width (local) is User-Defined ID width -->
+  <vid_width>2</vid_width>
+  <!-- iid Width   (Global) is log2 no of interconnects (with ASIBs)   -->
+  <!-- siid Width  (Global) is log2 slave interfaces on interconnect   -->
+  <!-- pl_id Width (Global) is iid_width + siid_width + vid_width(max) -->
+  <iid>0</iid>
+  <siid>0</siid>
+  <iid_width>0</iid_width>
+  <siid_width>2</siid_width>
+
+  <clock_boundary>none</clock_boundary>
+  <apb_config>false</apb_config>
+  <cfgm_apb_reqd>false</cfgm_apb_reqd>
+
+  <slave_if_port_name>axi4_s</slave_if_port_name>
+  <master_if_port_name>axi4_m</master_if_port_name>
+  <protocol>axi</protocol>
+
+  <last_in_tlx_seq></last_in_tlx_seq>
+
+  <type>ib</type>
+
+  <block_type>asib</block_type>
+  <connected_block_name>sSpi</connected_block_name>
+  <qv_out></qv_out>
+  <amib>false</amib>
+  <asib>true</asib>
+  <reg_ss>false</reg_ss>
+  <busmatrix>false</busmatrix>
+
+  <regions_width>0</regions_width>
+  <qv_width>0</qv_width>
+  
+  <aw_fmt_payld_width>58</aw_fmt_payld_width>
+  <ar_fmt_payld_width>58</ar_fmt_payld_width>
+  
+  <aw_payld_width>58</aw_payld_width>
+  <w_payld_width>73</w_payld_width>
+  <b_payld_width>4</b_payld_width>
+  <ar_payld_width>58</ar_payld_width>
+  <r_payld_width>69</r_payld_width>
+  <a_payld_width>59</a_payld_width>
+  <d_payld_width>70</d_payld_width>
+
+  
+  <qv>
+      <type>fixed</type>
+      <value>0</value>
+  </qv>
+   <qos_config>
+       <hard>disable</hard>
+       <pot>disable</pot>
+       <lqv>disable</lqv>
+   </qos_config>
+
+  <reg>
+      <name>aw</name>
+      <type>fifo</type>
+      <impl>absent</impl>
+      <location>boundary</location>
+      <depth>2</depth>
+      <payld_width>58</payld_width>
+  </reg>
+  <reg>
+      <name>ar</name>
+      <type>fifo</type>
+      <impl>absent</impl>
+      <location>boundary</location>
+      <depth>2</depth>
+      <payld_width>58</payld_width>
+  </reg>
+  <reg>
+      <name>r</name>
+      <type>fifo</type>
+      <impl>absent</impl>
+      <location>boundary</location>
+      <depth>2</depth>
+      <payld_width>69</payld_width>
+  </reg>
+  <reg>
+      <name>w</name>
+      <type>fifo</type>
+      <impl>absent</impl>
+      <location>boundary</location>
+      <depth>2</depth>
+      <payld_width>73</payld_width>
+  </reg>
+  <reg>
+      <name>b</name>
+      <type>fifo</type>
+      <impl>absent</impl>
+      <location>boundary</location>
+      <depth>2</depth>
+      <payld_width>4</payld_width>
+  </reg>
+  <reg>
+      <name>aw</name>
+      <type>full</type>
+      <impl>absent</impl>
+      <location>master_port</location>
+      <payld_width>62</payld_width>
+  </reg>
+  <reg>
+      <name>ar</name>
+      <type>full</type>
+      <impl>absent</impl>
+      <location>master_port</location>
+      <payld_width>62</payld_width>
+  </reg>
+  <reg>
+      <name>r</name>
+      <type>full</type>
+      <impl>absent</impl>
+      <location>master_port</location>
+      <payld_width>69</payld_width>
+  </reg>
+  <reg>
+      <name>w</name>
+      <type>full</type>
+      <impl>absent</impl>
+      <location>master_port</location>
+      <payld_width>73</payld_width>
+  </reg>
+  <reg>
+      <name>b</name>
+      <type>full</type>
+      <impl>absent</impl>
+      <location>master_port</location>
+      <payld_width>4</payld_width>
+  </reg>
+   <clock>
+      <name>clk0</name>
+      <domain>slave</domain>
+      <domain>master</domain>
+      
+   </clock>
+
+<master_if>
+    <name>axi4_m</name>
+    <external>false</external>
+    <read_issuing_capability>4</read_issuing_capability>
+    <write_issuing_capability>4</write_issuing_capability>
+    <combined_issuing_capability>8</combined_issuing_capability>
+    <limit_acceptance_capability>0</limit_acceptance_capability>
+    <data_width>64</data_width>
+    <addr_width>32</addr_width>
+    <valid_width>3</valid_width>
+    <!-- pl_id Width (Global) is iid_width + siid_width + vid_width(max) -->
+    <pl_id_width>8</pl_id_width>
+    <protocol>axi4</protocol>
+    <!-- pl_id Width (Global) is iid_width + siid_width + vid_width(max) -->
+    <aid_width>8</aid_width>
+    <!-- pl_id Width (Global) is iid_width + siid_width + vid_width(max) -->
+    <ID_WIDTH>8</ID_WIDTH>
+    <regions_flag>0</regions_flag>
+    <clock>clk0</clock>
+    <lock>false</lock>
+</master_if>
+
+<slave_if>
+    <name>axi4_s</name>
+    <number>0</number>
+    <external>false</external>
+    <read_acceptance_capability>4</read_acceptance_capability>
+    <write_acceptance_capability>4</write_acceptance_capability>
+    <combined_acceptance_capability>8</combined_acceptance_capability>
+    <unlimited_acceptance_capability>0</unlimited_acceptance_capability>
+    <data_width>32</data_width>
+    <addr_width>32</addr_width>
+    <valid_width>3</valid_width>
+    <!-- pl_id Width (Global) is iid_width + siid_width + vid_width(max) -->
+    <pl_id_width>8</pl_id_width>
+    <protocol>axi4</protocol>
+    <apb_config>false</apb_config>
+    <!-- pl_id Width (Global) is iid_width + siid_width + vid_width(max) -->
+    <aid_width>8</aid_width>
+    <!-- pl_id Width (Global) is iid_width + siid_width + vid_width(max) -->
+    <ID_WIDTH>8</ID_WIDTH>
+    <regions_flag>0</regions_flag>
+    <clock>clk0</clock>
+    <sim_start_point>sSpi_ib.axi4_s</sim_start_point>
+    <lock>false</lock>
+</slave_if>
+
+&t_apb;
+&axi_ext;
+
+&axi4;
+&itb;
+&nic400_axi;
+&nic400_axi4;
+&ib;
+&t_apb_rtl;
+&axi_ext_rtl;
+&axi4_rtl;
+&itb_rtl;
+&nic400_axi_rtl;
+&nic400_axi4_rtl;
+&ib_rtl;
+&apbasync;
+&apbasync_rtl;
+&nic400_vn;
+&nic400_vn_rtl;
+&qos_accept;
+&qos_accept_rtl;
+&files;
+&connect;
+
+
+
+</periph>
+
+

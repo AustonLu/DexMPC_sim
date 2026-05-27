@@ -1,0 +1,1542 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--=========================================================================-->
+<!-- The confidential and proprietary information contained in this file may -->
+<!-- only be used by a person authorised under and to the extent permitted   -->
+<!-- by a subsisting licensing agreement from ARM Limited or its affiliates. -->
+<!--                                                                         -->
+<!--            (C) COPYRIGHT 2008-2012 ARM Limited or its affiliates.       -->
+<!--                ALL RIGHTS RESERVED                                      -->
+<!--                                                                         -->
+<!-- This entire notice must be reproduced on all copies of this file        -->
+<!-- and copies of this file may only be made by a person if such person is  -->
+<!-- permitted to do so under the terms of a subsisting license agreement    -->
+<!-- from ARM Limited or its affiliates.                                     -->
+<!--=========================================================================-->
+<!-- Version and Release Control Information:                                -->
+<!--                                                                         -->
+<!-- File Revision       : 135250                                           -->
+<!-- File Date           :  2012-08-17 11:10:37 +0100 (Fri, 17 Aug 2012)       -->
+<!-- Release Information : PL401-r1p2-00rel0                                -->
+<!--=========================================================================-->
+<!-- Purpose : SPIRIT component stylesheet                                   -->
+<!--=========================================================================-->
+<spirit:component xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:arm="http://www.arm.com/SPIRIT-arm" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4      http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/component.xsd">
+
+<spirit:vendor>arm.com</spirit:vendor>
+<spirit:library>TBench</spirit:library>
+<spirit:name>Axi4VnPC</spirit:name>
+<spirit:version>r0p0</spirit:version>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- Bus interface                                                           -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<spirit:busInterfaces>
+<spirit:busInterface>
+<spirit:name>AXI4_s</spirit:name>
+<spirit:busType spirit:vendor="amba.com" spirit:library="AMBA4" spirit:name="AXI4" spirit:version="r0p0_0"/>
+<spirit:abstractionType spirit:vendor="amba.com" spirit:library="AMBA4" spirit:name="AXI4_rtl" spirit:version="r0p0_0"/>
+<spirit:monitor spirit:interfaceMode="slave"/>
+<spirit:portMaps>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ACLK</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ACLK</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARESETn</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARESETn</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWADDR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWADDR</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWLEN</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWLEN</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWSIZE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWSIZE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWBURST</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWBURST</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWLOCK</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWLOCK</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWCACHE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWCACHE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWPROT</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWPROT</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWVALID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWVALID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWREADY</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WDATA</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WSTRB</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WSTRB</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WLAST</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WLAST</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WVALID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WVALID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WREADY</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>BID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>BID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>BRESP</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>BRESP</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>BVALID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>BVALID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>BREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>BREADY</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARADDR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARADDR</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARLEN</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARLEN</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARSIZE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARSIZE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARBURST</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARBURST</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARLOCK</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARLOCK</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARCACHE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARCACHE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARPROT</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARPROT</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARVALID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARVALID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARREADY</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>RID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>RID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>RDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>RDATA</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>RRESP</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>RRESP</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>RLAST</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>RLAST</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>RVALID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>RVALID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>RREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>RREADY</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWUSER</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWUSER</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WUSER</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WUSER</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>BUSER</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>BUSER</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARUSER</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARUSER</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>RUSER</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>RUSER</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+
+
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWREGION</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWREGION</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARREGION</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARREGION</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWQOS</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWQOS</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARQOS</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARQOS</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+
+  </spirit:portMaps>
+
+</spirit:busInterface>  	
+
+<spirit:busInterface>
+  <spirit:name>axi_vn</spirit:name>
+  <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_VN" spirit:version="r0p0_0"/>
+  <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_VN_rtl" spirit:version="r0p0_0"/>
+  <spirit:monitor spirit:interfaceMode="slave"/>
+  <spirit:portMaps>
+     <spirit:portMap>
+      <spirit:logicalPort>
+        <spirit:name>AWVNET</spirit:name>
+      </spirit:logicalPort>
+      <spirit:physicalPort>
+        <spirit:name>AWVNET</spirit:name>
+      </spirit:physicalPort>
+     </spirit:portMap>
+     <spirit:portMap>
+      <spirit:logicalPort>
+        <spirit:name>WVNET</spirit:name>
+      </spirit:logicalPort>
+      <spirit:physicalPort>
+        <spirit:name>WVNET</spirit:name>
+      </spirit:physicalPort>
+     </spirit:portMap>
+     <spirit:portMap>
+      <spirit:logicalPort>
+        <spirit:name>ARVNET</spirit:name>
+      </spirit:logicalPort>
+      <spirit:physicalPort>
+        <spirit:name>ARVNET</spirit:name>
+      </spirit:physicalPort>
+     </spirit:portMap>
+     <spirit:portMap>
+      <spirit:logicalPort>
+        <spirit:name>ACLK</spirit:name>
+      </spirit:logicalPort>
+      <spirit:physicalPort>
+        <spirit:name>ACLK</spirit:name>
+      </spirit:physicalPort>
+     </spirit:portMap>
+     <spirit:portMap>
+      <spirit:logicalPort>
+        <spirit:name>ARESETn</spirit:name>
+      </spirit:logicalPort>
+      <spirit:physicalPort>
+        <spirit:name>ARESETn</spirit:name>
+      </spirit:physicalPort>
+     </spirit:portMap>
+  </spirit:portMaps>
+</spirit:busInterface>
+
+<spirit:busInterface>
+  <spirit:name>axi_vn_m</spirit:name>
+  <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_VN" spirit:version="r0p0_0"/>
+  <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_VN_rtl" spirit:version="r0p0_0"/>
+  <spirit:monitor spirit:interfaceMode="master"/>
+  <spirit:portMaps>
+     <spirit:portMap>
+      <spirit:logicalPort>
+        <spirit:name>AWVNET</spirit:name>
+      </spirit:logicalPort>
+      <spirit:physicalPort>
+        <spirit:name>AWVNET</spirit:name>
+      </spirit:physicalPort>
+     </spirit:portMap>
+     <spirit:portMap>
+      <spirit:logicalPort>
+        <spirit:name>WVNET</spirit:name>
+      </spirit:logicalPort>
+      <spirit:physicalPort>
+        <spirit:name>WVNET</spirit:name>
+      </spirit:physicalPort>
+     </spirit:portMap>
+     <spirit:portMap>
+      <spirit:logicalPort>
+        <spirit:name>ARVNET</spirit:name>
+      </spirit:logicalPort>
+      <spirit:physicalPort>
+        <spirit:name>ARVNET</spirit:name>
+      </spirit:physicalPort>
+     </spirit:portMap>
+     <spirit:portMap>
+      <spirit:logicalPort>
+        <spirit:name>ACLK</spirit:name>
+      </spirit:logicalPort>
+      <spirit:physicalPort>
+        <spirit:name>ACLK</spirit:name>
+      </spirit:physicalPort>
+     </spirit:portMap>
+     <spirit:portMap>
+      <spirit:logicalPort>
+        <spirit:name>ARESETn</spirit:name>
+      </spirit:logicalPort>
+      <spirit:physicalPort>
+        <spirit:name>ARESETn</spirit:name>
+      </spirit:physicalPort>
+     </spirit:portMap>
+  </spirit:portMaps>
+</spirit:busInterface>
+
+<spirit:busInterface>
+<spirit:name>AXI4_m</spirit:name>
+<spirit:busType spirit:vendor="amba.com" spirit:library="AMBA4" spirit:name="AXI4" spirit:version="r0p0_0"/>
+<spirit:abstractionType spirit:vendor="amba.com" spirit:library="AMBA4" spirit:name="AXI4_rtl" spirit:version="r0p0_0"/>
+<spirit:monitor spirit:interfaceMode="master"/>
+<spirit:portMaps>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ACLK</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ACLK</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARESETn</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARESETn</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWADDR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWADDR</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWLEN</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWLEN</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWSIZE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWSIZE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWBURST</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWBURST</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWLOCK</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWLOCK</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWCACHE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWCACHE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWPROT</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWPROT</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWVALID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWVALID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWREADY</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WDATA</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WSTRB</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WSTRB</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WLAST</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WLAST</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WVALID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WVALID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WREADY</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>BID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>BID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>BRESP</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>BRESP</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>BVALID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>BVALID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>BREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>BREADY</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARADDR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARADDR</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARLEN</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARLEN</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARSIZE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARSIZE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARBURST</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARBURST</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARLOCK</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARLOCK</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARCACHE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARCACHE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARPROT</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARPROT</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARVALID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARVALID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARREADY</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>RID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>RID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>RDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>RDATA</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>RRESP</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>RRESP</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>RLAST</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>RLAST</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>RVALID</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>RVALID</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>RREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>RREADY</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWUSER</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWUSER</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WUSER</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WUSER</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>BUSER</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>BUSER</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARUSER</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARUSER</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>RUSER</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>RUSER</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWREGION</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWREGION</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARREGION</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARREGION</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWQOS</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWQOS</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARQOS</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARQOS</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+
+<!--<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>AWVNET</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>AWVNET</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WVNET</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WVNET</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>ARVNET</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>ARVNET</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap> -->
+
+</spirit:portMaps>
+</spirit:busInterface>  	
+
+</spirit:busInterfaces>	
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- model                                                                   -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<spirit:model>
+<spirit:views>
+<spirit:view>
+<spirit:name>axi_slave</spirit:name>
+<spirit:envIdentifier>::modelsim.mentor.com</spirit:envIdentifier>
+<spirit:language>verilog</spirit:language>
+<spirit:fileSetRef>fs-VerilogSource</spirit:fileSetRef>
+<spirit:parameters>
+<spirit:parameter>
+<spirit:name>entityName</spirit:name>
+<spirit:value>axi_slave</spirit:value>
+</spirit:parameter>
+</spirit:parameters>
+</spirit:view>
+</spirit:views>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+<!-- Signals                                                                            -->
+<!--                                                                                    -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+
+<spirit:ports>
+<spirit:port>
+<spirit:name>ACLK</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>ARESETn</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>AWID</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('id_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>AWADDR</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('addr_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>AWLEN</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>7</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>AWSIZE</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>2</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>AWBURST</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>1</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>AWLOCK</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>AWCACHE</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>3</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>AWPROT</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>2</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>AWVALID</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>AWREADY</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>WDATA</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('data_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>WSTRB</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('strb_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>WLAST</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>WVALID</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>WREADY</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>BID</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('id_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>BRESP</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>1</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>BVALID</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>BREADY</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>ARID</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('id_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>ARADDR</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('addr_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>ARLEN</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>7</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>ARSIZE</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>2</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>ARBURST</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>1</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>ARLOCK</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>ARCACHE</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>3</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>ARPROT</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>2</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>ARVALID</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>ARREADY</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>RID</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('id_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>RDATA</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('data_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>RRESP</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>1</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>RLAST</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>RVALID</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>RREADY</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>AWUSER</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('awuser_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>WUSER</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('wuser_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>BUSER</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('buser_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>ARUSER</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('aruser_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>RUSER</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('ruser_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>CACTIVE</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>CSYSREQ</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+<spirit:port>
+<spirit:name>CSYSACK</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- REGION ports                                                              -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<spirit:port>
+<spirit:name>AWREGION</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>3</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+
+<spirit:port>
+<spirit:name>ARREGION</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>3</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- QOS ports                                                              -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<spirit:port>
+<spirit:name>AWQOS</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>3</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+
+<spirit:port>
+<spirit:name>ARQOS</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>3</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- VNET ports                                                              -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<spirit:port>
+<spirit:name>AWVNET</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>3</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+
+<spirit:port>
+<spirit:name>WVNET</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>3</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+
+<spirit:port>
+<spirit:name>ARVNET</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>3</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+
+</spirit:ports>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- parameters                                                              -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<spirit:modelParameters>
+<spirit:modelParameter>
+<spirit:name>ADDR_WIDTH</spirit:name>
+<spirit:value spirit:id="addr_width_id"
+    spirit:resolve="user">1</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>ID_WIDTH</spirit:name>
+<spirit:value spirit:id="id_width_id"
+    spirit:resolve="user">1</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>DATA_WIDTH</spirit:name>
+<spirit:value spirit:id="data_width_id"
+    spirit:resolve="user">1</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>STRB_WIDTH</spirit:name>
+<spirit:value spirit:id="strb_width_id"
+    spirit:resolve="user">1</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>AWUSER_WIDTH</spirit:name>
+<spirit:value spirit:id="awuser_width_id"
+    spirit:resolve="user">1</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>ARUSER_WIDTH</spirit:name>
+<spirit:value spirit:id="aruser_width_id"
+    spirit:resolve="user">1</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>RUSER_WIDTH</spirit:name>
+<spirit:value spirit:id="ruser_width_id"
+    spirit:resolve="user">1</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>WUSER_WIDTH</spirit:name>
+<spirit:value spirit:id="wuser_width_id"
+    spirit:resolve="user">1</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>BUSER_WIDTH</spirit:name>
+<spirit:value spirit:id="buser_width_id"
+    spirit:resolve="user">1</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>NUM_VNETS</spirit:name>
+<spirit:value spirit:id="vnets_id"
+    spirit:resolve="user">1</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>VN0_VNET</spirit:name>
+<spirit:value spirit:id="vnet_0_id"
+    spirit:resolve="user">1</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>VN1_VNET</spirit:name>
+<spirit:value spirit:id="vnet_1_id"
+    spirit:resolve="user">2</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>VN2_VNET</spirit:name>
+<spirit:value spirit:id="vnet_2_id"
+    spirit:resolve="user">4</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>VN3_VNET</spirit:name>
+<spirit:value spirit:id="vnet_3_id"
+    spirit:resolve="user">8</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>NON_VN_MASK</spirit:name>
+<spirit:value spirit:id="non_vn_mask_id"
+    spirit:resolve="user">0</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>MAXRBURSTS</spirit:name>
+<spirit:value spirit:id="maxrbursts_id"
+    spirit:resolve="user">500</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>MAXWBURSTS</spirit:name>
+<spirit:value spirit:id="maxrbursts_id"
+    spirit:resolve="user">500</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>MAXWAITS</spirit:name>
+<spirit:value spirit:id="maxrbursts_id"
+    spirit:resolve="user">5000</spirit:value>
+</spirit:modelParameter>
+</spirit:modelParameters>
+</spirit:model>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+<!-- Verilog Files                                                                      -->
+<!--                                                                                    -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+<spirit:fileSets>
+<spirit:fileSet>
+<spirit:name>fs-VerilogSource</spirit:name>
+<spirit:file>
+<spirit:name>../tb_components/Axi4VnPC.v</spirit:name>
+<spirit:fileType>verilogSource</spirit:fileType>
+</spirit:file>
+<spirit:file>
+<spirit:name>../tb_components/VnIDMonitor.v</spirit:name>
+<spirit:fileType>verilogSource</spirit:fileType>
+</spirit:file>
+<spirit:file>
+<spirit:name>../../../nic400/verilog/Axi4PC/Axi4PC.sv</spirit:name>
+<spirit:fileType>systemVerilogSource</spirit:fileType>
+</spirit:file>
+<spirit:dependency>../../../nic400/verilog/Axi4PC/</spirit:dependency>
+</spirit:fileSet>
+</spirit:fileSets>
+</spirit:component>

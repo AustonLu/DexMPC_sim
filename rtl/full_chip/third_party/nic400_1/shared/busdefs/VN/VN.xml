@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+// =============================================================================
+// This confidential and proprietary information may be used only as
+// authorised by a licensing agreement from ARM Limited
+//   (C) COPYRIGHT 2008-2011 ARM Limited
+//       ALL RIGHTS RESERVED
+// The entire notice above must be reproduced on all authorised
+// copies and copies may only be made to the extent permitted
+// by a licensing agreement from ARM Limited.
+//
+// =============================================================================
+//
+// Purpose :
+//           This defines the AMBA Advanced Peripheral Bus (APB 3.0)
+//
+// =============================================================================
+-->
+<spirit:busDefinition xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/index.xsd ">
+  <spirit:vendor>arm.com</spirit:vendor>
+  <spirit:library>CoreLink</spirit:library>
+  <spirit:name>VN</spirit:name>
+  <spirit:version>r0p0_0</spirit:version>
+  <spirit:directConnection>true</spirit:directConnection>
+  <spirit:isAddressable>false</spirit:isAddressable>
+  <spirit:maxMasters>1</spirit:maxMasters>
+  <spirit:maxSlaves>1</spirit:maxSlaves>
+  <spirit:systemGroupNames>
+    <spirit:systemGroupName>CLOCK</spirit:systemGroupName>
+    <spirit:systemGroupName>RESETn</spirit:systemGroupName>
+  </spirit:systemGroupNames>
+  <spirit:description>
+      The VN is a bus that is part of the NIC401 product. It handles VN Token requests. All signal transitions are only related to the rising edge of the clock. 
+  </spirit:description>
+</spirit:busDefinition>

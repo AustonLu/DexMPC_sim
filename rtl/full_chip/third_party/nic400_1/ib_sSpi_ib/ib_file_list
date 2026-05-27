@@ -1,0 +1,82 @@
+
+
+COVERAGE_ON xsl_cov
+
+
+INCLUDE ./xml/ib_sSpi_ib_vlog_file_list
+
+COVERAGE_OFF
+
+
+./verilog/parcfg_ib_name_defs_xmlcfg.v.xsl SCRIPT(create_undefs.pl)
+
+
+
+INCLUDE ./xml/ib_sSpi_ib_sva_file_list REGRESSION2
+
+
+./spirit/ib_name_master_spirit.xml.xsl DIRECTORY
+./spirit/ib_name_slave_spirit.xml.xsl DIRECTORY
+REGRESSION_ON
+
+./validation/shared/tb_spirit/config_if.xml.xsl
+./validation/shared/tb_components/config_if.v.xsl
+
+./validation/shared/tb_spirit/FrmEvent.xml.xsl
+./validation/shared/tb_components/FrmEventDistributor.v.xsl
+
+./validation/shared/tb_spirit/clk_reset_if.xml.xsl
+./validation/shared/tb_components/clk_reset_if.v.xsl
+
+
+
+
+
+
+./validation/shared/stitching/ib_wrapper.xml.xsl
+./validation/shared/stitching/tbench.xml.xsl
+./validation/shared/tbench 
+./validation/shared/stitching/DUT_wrapper_config.xml.xsl DIRECTORY SCRIPT(generic_stitcher_core)
+
+
+./validation/shared/stitching/tbench_config.xml.xsl DIRECTORY SCRIPT(generic_stitcher_core)
+
+
+./validation/directed
+./validation/directed/source
+
+
+./validation/directed/source/pmap_test
+
+
+
+./validation/directed/e
+
+
+./validation/random
+./validation/random/e
+../shared/validation/ib/random/source/
+../shared/validation/ib/random/source/common
+../shared/validation/ib/random/source/random_general/random_general.tsf.xsl
+../shared/validation/ib/random/source/random_general/random_general.cfg.xsl 
+../shared/validation/ib/random/source/random_general/random_general_slave.cfg.xsl 
+../shared/validation/ib/random/source/random_qos_accept/random_qos_accept.tsf.xsl
+../shared/validation/ib/random/source/random_qos_accept/random_qos_accept.cfg.xsl 
+../shared/validation/ib/random/source/random_qos_accept/random_qos_accept_slave.cfg.xsl 
+
+
+./validation/logs
+./validation/logs/vcs_coverage
+
+
+
+
+
+./lint
+
+
+./formal REGRESSION2
+
+REGRESSION_OFF
+
+

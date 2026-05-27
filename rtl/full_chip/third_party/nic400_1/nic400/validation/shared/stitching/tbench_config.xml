@@ -1,0 +1,62 @@
+
+
+<!--=========================================================================-->
+<!-- This confidential and proprietary software may be used only as          -->
+<!-- authorised by a licensing agreement from ARM Limited or its affiliates. -->
+<!--    (C) COPYRIGHT 2008-2009 ARM Limited or its affiliates.                    -->
+<!--        ALL RIGHTS RESERVED                                              -->
+<!-- The entire notice above must be reproduced on all authorised            -->
+<!-- copies and copies may only be made to the extent permitted              -->
+<!-- by a licensing agreement from ARM Limited or its affiliates.            -->
+<!--                                                                         -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!--  Version and Release Control Information:                               -->
+<!--                                                                         -->
+<!--  File Name           : tb_config.xml.xsl,v                              -->
+<!--  File Revision       : 15894                                            -->
+<!--                                                                         -->
+<!--  Release Information : PL401-r1p2-00rel0                            -->
+<!--                                                                         -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- Purpose              : Tb generation config file template               -->
+<!--                                                                         -->
+<!--                        When rendered this file gives a SPIRIT           -->
+<!--                        component description of the configured          -->
+<!--=========================================================================-->
+
+<stitcherConfig>
+ <designFileName>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/validation/shared/stitching/tbench.xml</designFileName>
+ <busDefDirs>
+  <busDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/validation/shared/../../../shared/busdefs/</busDefDir>
+ </busDefDirs>
+ <absDefDirs>
+  <absDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/validation/shared/../../../shared/busdefs/</absDefDir>
+ </absDefDirs>
+ <compDefDirs>
+  <compDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/validation/shared/../../../shared/validation/tb_spirit/</compDefDir>
+  <compDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/validation/shared/tb_spirit/</compDefDir>
+  <compDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/validation/shared/tbench/</compDefDir>
+  <compDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/validation/shared/../../spirit/</compDefDir>
+  <compDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/validation/shared/../../../spirit/</compDefDir>
+ </compDefDirs>
+ <PL301ConfigDirs>
+  <PL301ConfigDir></PL301ConfigDir>
+ </PL301ConfigDirs>
+ <outputDirs>
+  <outputDirRTL>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/validation/shared/tbench</outputDirRTL>
+  <outputDirIPXACT>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/validation/shared/tbench</outputDirIPXACT>
+  <outputDirReports>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/validation/shared/tbench</outputDirReports>
+ </outputDirs>
+ <configOptions>
+  <verbose>true</verbose>
+  <testbench>true</testbench>
+  <ignoreVLNVVersion>true</ignoreVLNVVersion>
+  <strict>false</strict>
+  <connectNonSymmetricSignals>true</connectNonSymmetricSignals>
+  <useDefaultInputValueZero>true</useDefaultInputValueZero>
+  <outputVCfile>true</outputVCfile>
+  <printInVerilogFile>`timescale 1ns/1ps</printInVerilogFile>
+  <IgnoreInputInputInterconnection>true</IgnoreInputInputInterconnection>
+ </configOptions>
+</stitcherConfig>
+

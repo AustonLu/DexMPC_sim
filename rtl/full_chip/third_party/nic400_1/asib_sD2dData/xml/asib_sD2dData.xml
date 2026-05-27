@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!DOCTYPE periph [
+<!ENTITY axi_ext         SYSTEM "../../shared/busdefs/AXI_ext/AXI_ext.xml">
+<!ENTITY axi_ext_rtl     SYSTEM "../../shared/busdefs/AXI_ext/AXI_ext_rtl.xml">
+<!ENTITY axi4            SYSTEM "../../shared/busdefs/AXI4/AXI4.xml">
+<!ENTITY axi4_rtl        SYSTEM "../../shared/busdefs/AXI4/AXI4_rtl.xml">
+<!ENTITY axi_vn          SYSTEM "../../shared/busdefs/AXI_VN/AXI_VN.xml">
+<!ENTITY axi_vn_rtl      SYSTEM "../../shared/busdefs/AXI_VN/AXI_VN_rtl.xml">
+<!ENTITY ahb             SYSTEM "../../shared/busdefs/AHBLite/AHBLite.xml">
+<!ENTITY ahb_rtl         SYSTEM "../../shared/busdefs/AHBLite/AHBLite_rtl.xml">
+<!ENTITY itb             SYSTEM "../../shared/busdefs/ITB/ITB.xml">
+<!ENTITY itb_rtl         SYSTEM "../../shared/busdefs/ITB/ITB_rtl.xml">
+<!ENTITY apb             SYSTEM "../../shared/busdefs/APB/APB.xml">
+<!ENTITY apb_rtl         SYSTEM "../../shared/busdefs/APB/APB_rtl.xml">
+<!ENTITY nic400_axi      SYSTEM "../../shared/busdefs/NIC400_AXI/NIC400_AXI.xml">
+<!ENTITY nic400_axi_rtl  SYSTEM "../../shared/busdefs/NIC400_AXI/NIC400_AXI_rtl.xml">
+<!ENTITY nic400_axi4     SYSTEM "../../shared/busdefs/NIC400_AXI4/NIC400_AXI4.xml">
+<!ENTITY nic400_axi4_rtl SYSTEM "../../shared/busdefs/NIC400_AXI4/NIC400_AXI4_rtl.xml">
+<!ENTITY t_apb           SYSTEM "../../shared/busdefs/T_APB/T_APB.xml">
+<!ENTITY t_apb_rtl       SYSTEM "../../shared/busdefs/T_APB/T_APB_rtl.xml">
+<!ENTITY files           SYSTEM "asib_sD2dData_vlog_files.xml">
+<!ENTITY connect         SYSTEM "asib_sD2dData_io.xml">]>
+
+
+<periph>
+<xmlcfg>1</xmlcfg>
+<parcfg>nic400</parcfg>
+<spirit_prefix>nic400_asib</spirit_prefix>
+
+
+	   <addr_width>32</addr_width>
+	   <apb_config>false</apb_config>
+	   <apb_slave_no>2</apb_slave_no>
+	   <aruser_width>0</aruser_width>
+	   <awuser_width>0</awuser_width>
+	   <bridge>false</bridge>
+	   <buser_width>0</buser_width>
+	   <cds>singleslave</cds>
+	   <clock_boundary>none</clock_boundary>
+	   <clock_domain_name_master_if>clk0</clock_domain_name_master_if>
+	   <clock_domain_name_slave_if>clk0</clock_domain_name_slave_if>
+	   <data_width>64</data_width>
+	   <iid>0</iid>
+	   <iid_width>0</iid_width>
+	   <infra_si_no>1</infra_si_no>
+	   <lock>false</lock>
+	   <master_if_data_width>64</master_if_data_width>
+	   <multi_ported>false</multi_ported>
+	   <multi_region>false</multi_region>
+	   <name>sD2dData</name>
+	   <pl_id_width>8</pl_id_width>
+	   <protocol>axi4</protocol>
+	   <reg_ss>false</reg_ss>
+	   <regions_flag>false</regions_flag>
+	   <remap_width>0</remap_width>
+	   <ruser_width>0</ruser_width>
+	   <siid>2</siid>
+	   <siid_width>2</siid_width>
+	   <slave_if_addr_width>32</slave_if_addr_width>
+	   <slave_if_data_width>64</slave_if_data_width>
+	   <spirit_prefix>nic400_asib</spirit_prefix>
+	   <tlx>false</tlx>
+	   <token_prerequest>false</token_prerequest>
+	   <token_prerequest_bridge>false</token_prerequest_bridge>
+	   <trustzone>nsec</trustzone>
+	   <type>asib</type>
+	   <vid_width>5</vid_width>
+	   <vn_external>none</vn_external>
+	   <vn_external_bridge>none</vn_external_bridge>
+	   <wuser_width>0</wuser_width>
+	   <master_if_port_name>sD2dData_m</master_if_port_name>
+	   <slave_if_port_name>sD2dData_s</slave_if_port_name>
+   <block_type>asib</block_type>
+   <system_name>nic400_1</system_name>
+   <hcg_en>false</hcg_en> 
+   
+   <no_remaps>true</no_remaps>
+   <downsize_addr>false</downsize_addr>
+   <upsize_addr>false</upsize_addr>
+   <auser_width>0</auser_width>
+   <duser_width>0</duser_width>
+   <asib_id_width>5</asib_id_width>
+   <dpe_user>false</dpe_user>
+   <dpe_width></dpe_width>
+   <one_hot_vn>true</one_hot_vn>
+
+
+
+   <ib_down>0</ib_down>
+
+   <cfg_m>false</cfg_m>
+   <tlx>false</tlx>
+   <ahb_tlx>false</ahb_tlx>
+   <tlx_name>NOTLX</tlx_name>
+   <ib>false</ib>
+   <ib_name>NOIB</ib_name>
+   <ib_slave_port_name></ib_slave_port_name>
+   <ib_master_port_name></ib_master_port_name>
+   <ib_master_port_protocol></ib_master_port_protocol>
+   <ib_master_port_addr_width></ib_master_port_addr_width>
+   <ib_master_port_data_width></ib_master_port_data_width>
+   <ib_clock_boundary></ib_clock_boundary>
+   <ib_sizing>false</ib_sizing>
+   <ib_vn_downstreams>0</ib_vn_downstreams>
+
+
+  
+   <aw_ib_fifo_depth>2</aw_ib_fifo_depth>
+   <ar_ib_fifo_depth>2</ar_ib_fifo_depth>
+   <a_ib_fifo_depth>2</a_ib_fifo_depth>
+   <w_ib_fifo_depth>2</w_ib_fifo_depth>
+   <b_ib_fifo_depth>2</b_ib_fifo_depth>
+   <r_ib_fifo_depth>2</r_ib_fifo_depth>
+   <d_ib_fifo_depth>2</d_ib_fifo_depth>
+
+ 
+   <qv>
+       <type>fixed</type>
+       <value>0</value>
+   </qv>
+   <qv_width>0</qv_width>
+
+   <qos_config>
+       <hard>disable</hard>
+       <pot>disable</pot>
+       <lqv>disable</lqv>
+   </qos_config>
+
+
+   <advanced_qos>false</advanced_qos>
+
+
+   <reg>
+       <name>aw</name>
+       <type>full</type>
+       <impl>absent</impl>
+       <location>master_port</location>
+       <payld_width>65</payld_width>
+   </reg>
+
+   <reg>
+       <name>ar</name>
+       <type>full</type>
+       <impl>absent</impl>
+       <location>master_port</location>
+       <payld_width>65</payld_width>
+   </reg>
+
+   <reg>
+       <name>r</name>
+       <type>full</type>
+       <impl>absent</impl>
+       <location>master_port</location>
+       <payld_width>72</payld_width>
+   </reg>
+
+   <reg>
+       <name>w</name>
+       <type>full</type>
+       <impl>absent</impl>
+       <location>master_port</location>
+       <payld_width>73</payld_width>
+   </reg>
+
+   <reg>
+       <name>b</name>
+       <type>full</type>
+       <impl>absent</impl>
+       <location>master_port</location>
+       <payld_width>7</payld_width>
+   </reg>
+
+   <reg>
+       <name>aw</name>
+       <type>rev</type>
+       <impl>present</impl>
+       <location>slave_port</location>
+       
+       
+       <payld_width>58</payld_width>
+   </reg>
+
+   <reg>
+       <name>w</name>
+       <type>rev</type>
+       <impl>present</impl>
+       <location>slave_port</location>
+       
+       
+       <payld_width>73</payld_width>
+   </reg>
+
+   <reg>
+       <name>ar</name>
+       <type>rev</type>
+       <impl>present</impl>
+       <location>slave_port</location>
+       
+       
+       <payld_width>58</payld_width>
+   </reg>
+
+   <reg>
+       <name>r</name>
+       <type>full</type>
+       <impl>absent</impl>
+       <location>slave_port</location>
+       
+       
+       <payld_width>72</payld_width>
+   </reg>
+
+   <reg>
+       <name>b</name>
+       <type>full</type>
+       <impl>absent</impl>
+       <location>slave_port</location>
+       
+       
+       <payld_width>7</payld_width>
+   </reg>
+
+
+   <decode> 
+       <range>
+           <ref>0</ref>
+           <addr_min>0x0</addr_min>
+           <addr_max>0x7FFFF</addr_max>
+       </range>
+       <range>
+           <ref>1</ref>
+           <addr_min>0x80000</addr_min>
+           <addr_max>0xFFFFF</addr_max>
+       </range>
+   </decode>
+
+   <id_decode> 
+   </id_decode>  
+   
+
+   <imported_remap>false</imported_remap>
+
+<addr_map>
+       <target>mDexmpcCore</target>
+       <mstr_if_nmbr>62</mstr_if_nmbr>
+       <protocol>axi4</protocol>
+       <multi_region>false</multi_region>
+       <valid>1</valid>
+       <addr_region>
+           <region>0</region>
+           <trustzone>nsec</trustzone>
+           <addr_range>
+                <ref>0</ref>
+                <remap>
+                     <bit>default</bit>
+                </remap>
+           </addr_range>
+       </addr_region>
+   </addr_map>
+   <addr_map>
+       <target>mGauxCore</target>
+       <mstr_if_nmbr>63</mstr_if_nmbr>
+       <protocol>axi4</protocol>
+       <multi_region>false</multi_region>
+       <valid>0</valid>
+       <addr_region>
+           <region>0</region>
+           <trustzone>nsec</trustzone>
+           <addr_range>
+                <ref>1</ref>
+                <remap>
+                     <bit>default</bit>
+                </remap>
+           </addr_range>
+       </addr_region>
+   </addr_map>
+   
+   <default_slave>true</default_slave>
+
+
+<master_if>
+    <name>sD2dData_m</name>
+    <external>false</external>
+    <tcom_name>sD2dData_m</tcom_name>
+    <read_issuing_capability>4</read_issuing_capability>
+    <write_issuing_capability>4</write_issuing_capability>
+    <combined_issuing_capability>8</combined_issuing_capability>
+    <limit_acceptance_capability>1</limit_acceptance_capability>
+    <data_width>64</data_width>
+    <valid_width>3</valid_width>
+    <addr_width>32</addr_width>
+    <aid_width>8</aid_width>
+    <lock>false</lock>
+    <protocol>axi4</protocol>
+    <block_name>sD2dData</block_name>
+    <regions_flag>0</regions_flag>
+    <clock></clock>
+
+    <id_width>8</id_width>
+</master_if>
+
+<slave_if>
+    <name>sD2dData_s</name>
+    <read_acceptance_capability>6</read_acceptance_capability>
+    <write_acceptance_capability>6</write_acceptance_capability>
+    <combined_acceptance_capability>8</combined_acceptance_capability>
+    <unlimited_acceptance_capability>1</unlimited_acceptance_capability>
+    <data_width>64</data_width>
+    <lock>false</lock>
+    <protocol>axi4</protocol>
+    <apb_config>false</apb_config>
+    <addr_width>32</addr_width>
+    <aid_width>5</aid_width>
+    <iid>0</iid>
+    <iid_width>0</iid_width>
+    <siid>2</siid>
+    <siid_width>2</siid_width>
+    <vid_width>5</vid_width>
+    <pl_id_width>8</pl_id_width>
+    <add_siid>false</add_siid>
+    <block_name>sD2dData</block_name>
+    <regions_flag>0</regions_flag>
+    <clock></clock>
+    <sim_start_point>sD2dData.sD2dData_s</sim_start_point>
+
+    <id_width>5</id_width>
+</slave_if>
+
+   <clock>
+      <name>clk0</name>
+      <domain>slave</domain>
+      <domain>master</domain>
+   </clock>
+
+&axi_ext;
+&axi_ext_rtl;
+&nic400_axi;
+&nic400_axi_rtl;
+&axi_vn;
+&axi_vn_rtl;
+&axi4;
+&axi4_rtl;
+&nic400_axi4;
+&nic400_axi4_rtl;
+
+&files;
+&connect;
+
+
+
+
+</periph>
+
+

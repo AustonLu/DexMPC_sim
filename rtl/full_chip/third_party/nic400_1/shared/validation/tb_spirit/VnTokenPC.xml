@@ -1,0 +1,2439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--=========================================================================-->
+<!-- The confidential and proprietary information contained in this file may -->
+<!-- only be used by a person authorised under and to the extent permitted   -->
+<!-- by a subsisting licensing agreement from ARM Limited or its affiliates. -->
+<!--                                                                         -->
+<!--            (C) COPYRIGHT 2008-2012 ARM Limited or its affiliates.       -->
+<!--                ALL RIGHTS RESERVED                                      -->
+<!--                                                                         -->
+<!-- This entire notice must be reproduced on all copies of this file        -->
+<!-- and copies of this file may only be made by a person if such person is  -->
+<!-- permitted to do so under the terms of a subsisting license agreement    -->
+<!-- from ARM Limited or its affiliates.                                     -->
+<!--=========================================================================-->
+<!-- Version and Release Control Information:                                -->
+<!--                                                                         -->
+<!-- File Revision       : 135250                                           -->
+<!-- File Date           :  2012-08-17 11:10:37 +0100 (Fri, 17 Aug 2012)       -->
+<!-- Release Information : PL401-r1p2-00rel0                                -->
+<!--=========================================================================-->
+<!-- Purpose : SPIRIT component stylesheet                                   -->
+<!--=========================================================================-->
+<spirit:component xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:arm="http://www.arm.com/SPIRIT-arm" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4      http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/component.xsd">
+
+<spirit:vendor>arm.com</spirit:vendor>
+<spirit:library>TBench</spirit:library>
+<spirit:name>VnTokenPC</spirit:name>
+<spirit:version>r0p0</spirit:version>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- Bus interface                                                           -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<spirit:busInterfaces>
+    <spirit:busInterface>
+      <spirit:name>NIC400_AXI_s</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="NIC400_AXI" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="NIC400_AXI_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="slave"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>AWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>AWVALID</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>AWVALID_VECT</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>AWVALID_VECT</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>AWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>AWREADY</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>AWVNET</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>AWVNET</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>AWID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>AWID</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>WVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>WVALID</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>WREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>WREADY</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>WVNET</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>WVNET</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>ARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARVALID</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>ARVALID_VECT</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARVALID_VECT</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>ARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARREADY</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>ARVNET</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARVNET</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>ARID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARID</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+
+    <spirit:busInterface>
+      <spirit:name>NIC400_AXI_m</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="NIC400_AXI" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="NIC400_AXI_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="master"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>AWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>AWVALID</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>AWVALID_VECT</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>AWVALID_VECT</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>AWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>AWREADY</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>AWVNET</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>AWVNET</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>WVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>WVALID</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>WREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>WREADY</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>WVNET</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>WVNET</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>ARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARVALID</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>ARVALID_VECT</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARVALID_VECT</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>ARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARREADY</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>ARVNET</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARVNET</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>ARID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARID</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+
+    <spirit:busInterface>
+      <spirit:name>VN_m0</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="master"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_s0</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="slave"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_0</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_m1</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="master"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_s1</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="slave"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_1</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_m2</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="master"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_s2</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="slave"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_2</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_m3</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="master"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_s3</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="slave"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_3</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_m4</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="master"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_s4</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="slave"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_4</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_m5</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="master"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_s5</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="slave"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_5</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_m6</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="master"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_s6</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="slave"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_6</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_m7</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="master"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_s7</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="slave"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_7</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_m8</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="master"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_s8</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="slave"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_8</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_m9</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="master"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_s9</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="slave"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_9</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_m10</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="master"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_s10</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="slave"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_10</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_m11</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="master"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+    <spirit:busInterface>
+      <spirit:name>VN_s11</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="slave"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_11</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+    
+        <spirit:busInterface>
+      <spirit:name>VN_s12</spirit:name>
+      <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN" spirit:version="r0p0_0"/>
+      <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="VN_rtl" spirit:version="r0p0_0"/>
+      <spirit:monitor spirit:interfaceMode="slave"/>
+      <spirit:portMaps>       
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWVALID_12</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWREADY_12</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VAWQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VAWQOS_12</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWVALID_12</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VWREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VWREADY_12</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARVALID</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARVALID_12</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARREADY</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARREADY_12</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>VARQOS</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>VARQOS_12</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>CLK</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ACLK</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort><spirit:name>RESETn</spirit:name></spirit:logicalPort>
+          <spirit:physicalPort><spirit:name>ARESETn</spirit:name></spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  
+</spirit:busInterfaces>	
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- model                                                                   -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<spirit:model>
+<spirit:views>
+<spirit:view>
+<spirit:name>axi_slave</spirit:name>
+<spirit:envIdentifier>::modelsim.mentor.com</spirit:envIdentifier>
+<spirit:language>verilog</spirit:language>
+<spirit:fileSetRef>fs-VerilogSource</spirit:fileSetRef>
+<spirit:parameters>
+<spirit:parameter>
+<spirit:name>entityName</spirit:name>
+<spirit:value>axi_slave</spirit:value>
+</spirit:parameter>
+</spirit:parameters>
+</spirit:view>
+</spirit:views>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+<!-- Signals                                                                            -->
+<!--                                                                                    -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+
+<spirit:ports>
+
+<spirit:port>
+  <spirit:name>ACLK</spirit:name>
+  <spirit:wire>
+   <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>ARESETn</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>AWVALID</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>AWVALID_VECT</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left spirit:resolve="dependent" spirit:dependency="id('valid_width_id')-1">0</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>AWREADY</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>AWVNET</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>AWID</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left spirit:resolve="dependent" spirit:dependency="id('id_width_id')-1">0</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>WVALID</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>WREADY</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>WVNET</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>ARVALID</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>ARVALID_VECT</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left spirit:resolve="dependent" spirit:dependency="id('valid_width_id')-1">0</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>ARREADY</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>ARVNET</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>ARID</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left spirit:resolve="dependent" spirit:dependency="id('id_width_id')-1">0</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<!-- Token Interface 0-->
+<spirit:port>
+  <spirit:name>VAWVALID_0</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWREADY_0</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWQOS_0</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWVALID_0</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWREADY_0</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARVALID_0</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARREADY_0</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARQOS_0</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<!-- Token Interface 1-->
+<spirit:port>
+  <spirit:name>VAWVALID_1</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWREADY_1</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWQOS_1</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWVALID_1</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWREADY_1</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARVALID_1</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARREADY_1</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARQOS_1</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<!-- Token Interface 2 -->
+<spirit:port>
+  <spirit:name>VAWVALID_2</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWREADY_2</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWQOS_2</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWVALID_2</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWREADY_2</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARVALID_2</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARREADY_2</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARQOS_2</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<!-- Token Interface 3 -->
+<spirit:port>
+  <spirit:name>VAWVALID_3</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWREADY_3</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWQOS_3</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWVALID_3</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWREADY_3</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARVALID_3</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARREADY_3</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARQOS_3</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<!-- Token Interface 4 -->
+<spirit:port>
+  <spirit:name>VAWVALID_4</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWREADY_4</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWQOS_4</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWVALID_4</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWREADY_4</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARVALID_4</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARREADY_4</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARQOS_4</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<!-- Token Interface 5 -->
+<spirit:port>
+  <spirit:name>VAWVALID_5</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWREADY_5</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWQOS_5</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWVALID_5</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWREADY_5</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARVALID_5</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARREADY_5</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARQOS_5</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<!-- Token Interface 6 -->
+<spirit:port>
+  <spirit:name>VAWVALID_6</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWREADY_6</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWQOS_6</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWVALID_6</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWREADY_6</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARVALID_6</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARREADY_6</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARQOS_6</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<!-- Token Interface 7 -->
+<spirit:port>
+  <spirit:name>VAWVALID_7</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWREADY_7</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWQOS_7</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWVALID_7</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWREADY_7</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARVALID_7</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARREADY_7</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARQOS_7</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<!-- Token Interface 8 -->
+<spirit:port>
+  <spirit:name>VAWVALID_8</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWREADY_8</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWQOS_8</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWVALID_8</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWREADY_8</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARVALID_8</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARREADY_8</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARQOS_8</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<!-- Token Interface 9 -->
+<spirit:port>
+  <spirit:name>VAWVALID_9</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWREADY_9</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWQOS_9</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWVALID_9</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWREADY_9</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARVALID_9</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARREADY_9</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARQOS_9</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<!-- Token Interface 10 -->
+<spirit:port>
+  <spirit:name>VAWVALID_10</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWREADY_10</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWQOS_10</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWVALID_10</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWREADY_10</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARVALID_10</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARREADY_10</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARQOS_10</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<!-- Token Interface 11 -->
+<spirit:port>
+  <spirit:name>VAWVALID_11</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWREADY_11</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWQOS_11</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWVALID_11</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWREADY_11</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARVALID_11</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARREADY_11</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARQOS_11</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<!-- Token Interface 12 -->
+<spirit:port>
+  <spirit:name>VAWVALID_12</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWREADY_12</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VAWQOS_12</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWVALID_12</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VWREADY_12</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARVALID_12</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARREADY_12</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+  </spirit:wire>
+</spirit:port>
+
+<spirit:port>
+  <spirit:name>VARQOS_12</spirit:name>
+  <spirit:wire>
+    <spirit:direction>in</spirit:direction>
+    <spirit:vector>
+      <spirit:left>3</spirit:left>
+      <spirit:right>0</spirit:right>
+    </spirit:vector>
+  </spirit:wire>
+</spirit:port>
+
+</spirit:ports>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- parameters                                                              -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<spirit:modelParameters>
+<spirit:modelParameter>
+<spirit:name>ID_WIDTH</spirit:name>
+<spirit:value spirit:id="id_width_id"
+    spirit:resolve="user">1</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>VALID_WIDTH</spirit:name>
+<spirit:value spirit:id="valid_width_id"
+    spirit:resolve="user">1</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>VNET</spirit:name>
+<spirit:value spirit:id="vnet_id"
+    spirit:resolve="user">4`b0</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>NON_VN_MASK</spirit:name>
+<spirit:value spirit:id="non_vn_mask_id"
+    spirit:resolve="user">0</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>PREREQUEST</spirit:name>
+<spirit:value spirit:id="prerequest_id"
+    spirit:resolve="user">0</spirit:value>
+</spirit:modelParameter>
+<spirit:modelParameter>
+<spirit:name>DIRECTION</spirit:name>
+<spirit:value spirit:id="direction_id"
+    spirit:resolve="user">0</spirit:value>
+</spirit:modelParameter>
+</spirit:modelParameters>
+</spirit:model>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+<!-- Verilog Files                                                                      -->
+<!--                                                                                    -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+<spirit:fileSets>
+<spirit:fileSet>
+<spirit:name>fs-VerilogSource</spirit:name>
+<spirit:file>
+<spirit:name>../tb_components/VnTokenPC.v</spirit:name>
+<spirit:fileType>verilogSource</spirit:fileType>
+</spirit:file>
+</spirit:fileSet>
+</spirit:fileSets>
+</spirit:component>

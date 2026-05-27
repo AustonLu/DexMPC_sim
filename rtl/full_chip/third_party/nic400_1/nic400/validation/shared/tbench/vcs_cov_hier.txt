@@ -1,0 +1,13 @@
+
+-tree *tbench
+-tree *specman*
+-tree *tbench.u_nic400*
+-tree *tbench.u_nic400.u_amib*
+-tree *tbench.u_nic400.u_asib*
+-tree *tbench.u_nic400.u_ib*
+-tree *tbench.u_nic400.u_bus*
+-tree *tbench.u_nic400.u_def*
+
+-file *ovl*
+-file *A*PC*
+

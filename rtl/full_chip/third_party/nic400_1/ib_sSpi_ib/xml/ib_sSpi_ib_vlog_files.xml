@@ -1,0 +1,50 @@
+
+#==============================================================================#
+#   The confidential and proprietary information contained in this file may
+#   only be used by a person authorised under and to the extent permitted
+#   by a subsisting licensing agreement from ARM Limited.
+#    (C) COPYRIGHT 2008-2015 ARM Limited.
+#        ALL RIGHTS RESERVED
+#   This entire notice must be reproduced on all copies of this file
+#   and copies of this file may only be made by a person if such person is
+#   permitted to do so under the terms of a subsisting license agreement
+#   from ARM Limited.
+#
+#-----------------------------------------------------------------------------
+#  Version and Release Control Information:
+#
+#  File Revision       : 189213
+#  File Date           :  2015-02-25 08:59:06 +0000 (Wed, 25 Feb 2015)
+#
+#  Release Information : PL401-r1p2-00rel0
+#
+#-----------------------------------------------------------------------------
+<source_list>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/ib_sSpi_ib/xml/ib_sSpi_ib_vlog_file_list</source_list>
+#  Purpose : Verilog files for ib called sSpi_ib
+<dependency>../../nic400/verilog/Axi</dependency>
+<dependency>../verilog</dependency>
+<file>../../reg_slice/verilog/nic400_ful_regd_slice_1.v</file>
+<file>../../reg_slice/verilog/nic400_fwd_regd_slice_1.v</file>
+<file>../../reg_slice/verilog/nic400_rev_regd_slice_1.v</file>
+<file>../../cdc_blocks/verilog/nic400_cdc_random_1.v</file>
+<file>../verilog/nic400_ib_sSpi_ib_upsize_wr_cntrl_1.v</file>
+<file>../../cdc_blocks/verilog/nic400_cdc_capt_sync_1.v</file>
+<file>../../cdc_blocks/verilog/nic400_cdc_launch_gry_1.v</file>
+<file>../../cdc_blocks/verilog/nic400_cdc_comb_mux2_1.v</file>
+<file>../../cdc_blocks/verilog/nic400_cdc_corrupt_gry_1.v</file>
+<file>../verilog/nic400_ib_sSpi_ib_upsize_rd_addr_fmt_1.v</file>
+<file>../verilog/nic400_ib_sSpi_ib_upsize_wr_addr_fmt_1.v</file>
+<file>../verilog/nic400_ib_sSpi_ib_master_domain_1.v</file>
+<file>../verilog/nic400_ib_sSpi_ib_maskcntl_1.v</file>
+<file>../verilog/nic400_ib_sSpi_ib_upsize_wr_merge_buffer_1.v</file>
+<file>../../cdc_blocks/verilog/nic400_cdc_capt_nosync_1.v</file>
+<file>../../cdc_blocks/verilog/nic400_cdc_comb_or3_1.v</file>
+<file>../verilog/nic400_ib_sSpi_ib_upsize_rd_cam_slice_1.v</file>
+<file>../verilog/nic400_ib_sSpi_ib_upsize_wr_resp_block_1.v</file>
+<file>../../cdc_blocks/verilog/nic400_cdc_bypass_sync_1.v</file>
+<file>../../cdc_blocks/verilog/nic400_cdc_comb_or2_1.v</file>
+<file>../verilog/nic400_ib_sSpi_ib_chan_slice_1.v</file>
+<file>../verilog/nic400_ib_sSpi_ib_slave_domain_1.v</file>
+<file>../verilog/nic400_ib_sSpi_ib_upsize_rd_chan_1.v</file>
+<file>../verilog/nic400_ib_sSpi_ib_upsize_resp_cam_slice_1.v</file>
+<file>../../cdc_blocks/verilog/nic400_cdc_comb_and2_1.v</file>

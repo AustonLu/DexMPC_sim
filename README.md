@@ -5,9 +5,11 @@ Cycle-Accurate C++ Model of DexMPC Chip, Generated and Verified via Verilator
 ## Directory Layout
 
 - `rtl/core/`: active synthesizable/core RTL used by the current Verilator flow.
+- `rtl/full_chip/`: full-chip digital RTL, pad-wrapper reference, and external-interconnect dependencies.
 - `rtl/sim_models/`: simulation replacements and third-party/library models, including SRAM and DW floating-point models.
 - `rtl/chisel/`: archived/reference Chisel sources and generated collateral.
 - `verification/sv_tb/`: SystemVerilog testbenches kept for reference and simulator comparison.
+- `verification/data/`: tracked input/reference data used by testbenches.
 - `verification/verilator/filelists/`: Verilator filelists.
 - `verification/verilator/cpp/`: C++ testbenches, shared simulation helpers, and templates.
 - `verification/results/`: generated CSVs and post-processing scripts.
@@ -34,6 +36,13 @@ CCACHE_DISABLE=1 verilator -Wall -sv --binary \
   --Mdir build/verilator/sram_model_tb
 
 ./build/verilator/sram_model_tb/Vtb_sram_fpga_model
+```
+
+Lint the full-chip digital top:
+
+```sh
+verilator --lint-only -sv --top-module TopChip \
+  -f verification/verilator/filelists/topchip.f
 ```
 
 Run post-processing scripts from the project root:

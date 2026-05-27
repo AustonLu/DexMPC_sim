@@ -1,0 +1,32 @@
+
+
+
+
+
+ <reg_block>
+   <name            >mask</name>
+   <offset_lsb      >8</offset_lsb>
+   <node_address    ></node_address>
+   <node_name       >sSpi_ib</node_name>
+   <instance><name></name><inst_offset>0100</inst_offset><inst_top></inst_top></instance>
+
+
+   <reg name="fn_mod">
+     <name          >fn_mod</name>
+     <offset        >008</offset>
+     <maskable      >FALSE</maskable>
+     <bit_field     ><name>fn_mod</name><bits>2</bits><start_bit>0</start_bit>
+                     <initial_value >2'h0</initial_value></bit_field>
+     <reserved      ><bits>30</bits><start_bit>2</start_bit></reserved>
+     <test_mask     >0x00000003</test_mask>
+     <access_type   >RW</access_type>
+     <through_type  >FALSE</through_type>
+   </reg>
+
+ 
+
+
+ </reg_block>   <!-- end mask -->
+
+
+

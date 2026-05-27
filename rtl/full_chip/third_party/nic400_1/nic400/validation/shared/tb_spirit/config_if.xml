@@ -1,0 +1,1031 @@
+
+<!--=========================================================================-->
+<!-- The confidential and proprietary information contained in this file may -->
+<!-- only be used by a person authorised under and to the extent permitted   -->
+<!-- by a subsisting licensing agreement from ARM Limited or its affiliates. -->
+<!--                                                                         -->
+<!--            (C) COPYRIGHT 2008-2012 ARM Limited or its affiliates.       -->
+<!--                ALL RIGHTS RESERVED                                      -->
+<!--                                                                         -->
+<!-- This entire notice must be reproduced on all copies of this file        -->
+<!-- and copies of this file may only be made by a person if such person is  -->
+<!-- permitted to do so under the terms of a subsisting license agreement    -->
+<!-- from ARM Limited or its affiliates.                                     -->
+<!--=========================================================================-->
+<!-- Version and Release Control Information:                                -->
+<!--                                                                         -->
+<!-- File Revision       : 135250                                        -->
+<!-- File Date           :  2012-08-17 11:10:37 +0100 (Fri, 17 Aug 2012)       -->
+<!-- Release Information : PL401-r1p2-00rel0                             -->
+<!--=========================================================================-->
+<!-- Purpose : SPIRIT component stylesheet                                   -->
+<!--=========================================================================-->
+
+<spirit:component xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:arm="http://www.arm.com/SPIRIT-arm"
+                  xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4
+                  http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/component.xsd">
+
+        <spirit:vendor>arm.com</spirit:vendor>
+        <spirit:library>TBench</spirit:library>
+        <spirit:name>config_if</spirit:name>
+        <spirit:version>r0p0</spirit:version>
+
+            <spirit:busInterfaces>
+               <spirit:busInterface>
+<spirit:name>apb_0</spirit:name>
+<spirit:busType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="T_APB" spirit:version="r0p0"/>
+<spirit:abstractionType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="T_APB" spirit:version="r0p0"/>
+<spirit:mirroredSlave/>
+<spirit:connectionRequired>true</spirit:connectionRequired>
+<spirit:portMaps>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PCLK</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PCLK</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PRESETn</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PRESETn</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PADDR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PADDR</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PWDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PWDATA</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PWRITE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PWRITE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PENABLE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PENABLE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PSELx</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PSEL</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PRDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PRDATA</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PSLVERR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PSLVERR</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PREADY</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+</spirit:portMaps>
+                 </spirit:busInterface>
+  
+                <spirit:busInterface>
+<spirit:name>apb_1</spirit:name>
+<spirit:busType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="T_APB" spirit:version="r0p0"/>
+<spirit:abstractionType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="T_APB" spirit:version="r0p0"/>
+<spirit:mirroredSlave/>
+<spirit:connectionRequired>true</spirit:connectionRequired>
+<spirit:portMaps>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PADDR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PADDR</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PCLK</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PCLK</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PRESETn</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PRESETn</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PWDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PWDATA</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PWRITE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PWRITE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PENABLE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PENABLE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PSELx</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PSEL_1</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PRDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PRDATA_1</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PSLVERR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PSLVERR_1</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PREADY_1</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+</spirit:portMaps>
+                </spirit:busInterface>
+                <spirit:busInterface>
+<spirit:name>apb_2</spirit:name>
+<spirit:busType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="T_APB" spirit:version="r0p0"/>
+<spirit:abstractionType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="T_APB" spirit:version="r0p0"/>
+<spirit:mirroredSlave/>
+<spirit:connectionRequired>true</spirit:connectionRequired>
+<spirit:portMaps>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PADDR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PADDR</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PCLK</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PCLK</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PRESETn</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PRESETn</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PWDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PWDATA</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PWRITE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PWRITE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PENABLE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PENABLE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PSELx</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PSEL_2</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PRDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PRDATA_2</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PSLVERR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PSLVERR_2</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PREADY_2</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+</spirit:portMaps>
+                </spirit:busInterface>
+                <spirit:busInterface>
+<spirit:name>apb_3</spirit:name>
+<spirit:busType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="T_APB" spirit:version="r0p0"/>
+<spirit:abstractionType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="T_APB" spirit:version="r0p0"/>
+<spirit:mirroredSlave/>
+<spirit:connectionRequired>true</spirit:connectionRequired>
+<spirit:portMaps>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PADDR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PADDR</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PCLK</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PCLK</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PRESETn</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PRESETn</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PWDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PWDATA</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PWRITE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PWRITE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PENABLE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PENABLE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PSELx</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PSEL_3</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PRDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PRDATA_3</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PSLVERR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PSLVERR_3</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PREADY_3</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+</spirit:portMaps>
+                </spirit:busInterface>
+                <spirit:busInterface>
+<spirit:name>apb_4</spirit:name>
+<spirit:busType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="T_APB" spirit:version="r0p0"/>
+<spirit:abstractionType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="T_APB" spirit:version="r0p0"/>
+<spirit:mirroredSlave/>
+<spirit:connectionRequired>true</spirit:connectionRequired>
+<spirit:portMaps>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PADDR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PADDR</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PCLK</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PCLK</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PRESETn</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PRESETn</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PWDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PWDATA</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PWRITE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PWRITE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PENABLE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PENABLE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PSELx</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PSEL_4</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PRDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PRDATA_4</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PSLVERR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PSLVERR_4</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PREADY_4</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+</spirit:portMaps>
+                </spirit:busInterface>
+                <spirit:busInterface>
+<spirit:name>apb_5</spirit:name>
+<spirit:busType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="T_APB" spirit:version="r0p0"/>
+<spirit:abstractionType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="T_APB" spirit:version="r0p0"/>
+<spirit:mirroredSlave/>
+<spirit:connectionRequired>true</spirit:connectionRequired>
+<spirit:portMaps>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PADDR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PADDR</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PCLK</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PCLK</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PRESETn</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PRESETn</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PWDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PWDATA</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PWRITE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PWRITE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PENABLE</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PENABLE</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PSELx</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PSEL_5</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PRDATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PRDATA_5</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PSLVERR</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PSLVERR_5</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>PREADY</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>PREADY_5</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+</spirit:portMaps>
+                </spirit:busInterface>
+                <spirit:busInterface>
+                        <spirit:name>Event</spirit:name>
+                        <spirit:busType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="Event" spirit:version="r0p0"/>
+<spirit:abstractionType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="Event_rtl" spirit:version="r0p0"/>
+                        <spirit:slave/>
+                        <spirit:portMaps>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WAIT_REQ</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WAIT_REQ</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WAIT_ACK</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WAIT_ACK</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>WAIT_DATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>WAIT_DATA</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>EMIT_REQ</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>EMIT_REQ</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>EMIT_ACK</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>EMIT_ACK</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+<spirit:portMap>
+<spirit:logicalPort>
+<spirit:name>EMIT_DATA</spirit:name>
+</spirit:logicalPort>
+<spirit:physicalPort>
+<spirit:name>EMIT_DATA</spirit:name>
+</spirit:physicalPort>
+</spirit:portMap>
+</spirit:portMaps>
+</spirit:busInterface>
+
+
+
+          </spirit:busInterfaces>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- model                                                                   -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <spirit:model>
+     <spirit:views>
+                <spirit:view>
+                        <spirit:name>config_master</spirit:name>
+                        <spirit:envIdentifier>::modelsim.mentor.com</spirit:envIdentifier>
+                        <spirit:language>verilog</spirit:language>
+                        <spirit:fileSetRef>fs-VerilogSource</spirit:fileSetRef>
+                                                <spirit:parameters>
+<spirit:parameter>
+<spirit:name>entityName</spirit:name>
+<spirit:value>config_master</spirit:value>
+</spirit:parameter>
+</spirit:parameters>
+                </spirit:view>
+     </spirit:views>
+
+<spirit:modelParameters>
+<spirit:modelParameter>
+<spirit:name>EW_WIDTH</spirit:name>
+<spirit:value spirit:id="ew_width_id"
+    spirit:resolve="user">0</spirit:value>
+</spirit:modelParameter>
+
+</spirit:modelParameters>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+<!-- Signals                                                                            -->
+<!--                                                                                    -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+
+     <spirit:ports>
+              <spirit:port>
+<spirit:name>PCLK</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PRESETn</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PENABLE</spirit:name>
+<spirit:wire>
+<spirit:direction>out</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PWRITE</spirit:name>
+<spirit:wire>
+<spirit:direction>out</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PADDR</spirit:name>
+<spirit:wire>
+<spirit:direction>out</spirit:direction>
+<spirit:vector>
+<spirit:left>31</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PWDATA</spirit:name>
+<spirit:wire>
+<spirit:direction>out</spirit:direction>
+<spirit:vector>
+<spirit:left>31</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PREADY</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PSLVERR</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PRDATA</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>31</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PSEL</spirit:name>
+<spirit:wire>
+<spirit:direction>out</spirit:direction>
+</spirit:wire>
+</spirit:port>
+
+               <spirit:port>
+<spirit:name>PREADY_1</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PSLVERR_1</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PRDATA_1</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>31</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PSEL_1</spirit:name>
+<spirit:wire>
+<spirit:direction>out</spirit:direction>
+</spirit:wire>
+</spirit:port>
+
+               <spirit:port>
+<spirit:name>PREADY_2</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PSLVERR_2</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PRDATA_2</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>31</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PSEL_2</spirit:name>
+<spirit:wire>
+<spirit:direction>out</spirit:direction>
+</spirit:wire>
+</spirit:port>
+
+               <spirit:port>
+<spirit:name>PREADY_3</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PSLVERR_3</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PRDATA_3</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>31</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PSEL_3</spirit:name>
+<spirit:wire>
+<spirit:direction>out</spirit:direction>
+</spirit:wire>
+</spirit:port>
+
+               <spirit:port>
+<spirit:name>PREADY_4</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PSLVERR_4</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PRDATA_4</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>31</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PSEL_4</spirit:name>
+<spirit:wire>
+<spirit:direction>out</spirit:direction>
+</spirit:wire>
+</spirit:port>
+
+               <spirit:port>
+<spirit:name>PREADY_5</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PSLVERR_5</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PRDATA_5</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left>31</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>PSEL_5</spirit:name>
+<spirit:wire>
+<spirit:direction>out</spirit:direction>
+</spirit:wire>
+</spirit:port>
+
+
+              <spirit:port>
+<spirit:name>WAIT_REQ</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>WAIT_ACK</spirit:name>
+<spirit:wire>
+<spirit:direction>out</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>WAIT_DATA</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('ew_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>EMIT_REQ</spirit:name>
+<spirit:wire>
+<spirit:direction>out</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>EMIT_ACK</spirit:name>
+<spirit:wire>
+<spirit:direction>in</spirit:direction>
+</spirit:wire>
+</spirit:port>
+              <spirit:port>
+<spirit:name>EMIT_DATA</spirit:name>
+<spirit:wire>
+<spirit:direction>out</spirit:direction>
+<spirit:vector>
+<spirit:left spirit:resolve="dependent" spirit:dependency="id('ew_width_id')-1">0</spirit:left>
+<spirit:right>0</spirit:right>
+</spirit:vector>
+</spirit:wire>
+</spirit:port>
+
+
+
+         </spirit:ports>
+  </spirit:model>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+  <!-- Verilog Files                                                                      -->
+  <!--                                                                                    -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+  <spirit:fileSets>
+                      <spirit:fileSet>
+                        <spirit:name>fs-VerilogSource</spirit:name>
+                        <spirit:file>
+                                <spirit:name>../tb_components/config_if.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiToApb.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiToApbAGen.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>${XVC_ROOT}/axim/verilog/AxiMasterXvc.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        </spirit:fileSet>
+                        <spirit:fileSet>
+                        <spirit:name>fs-VerilogAxiFrm</spirit:name>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiFrm/FileRdMasterAxi.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiFrm/FrmA.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiFrm/FrmB.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiFrm/FrmC.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiFrm/FrmEvent.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiFrm/FrmMsg.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiFrm/FrmR.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiFrm/FrmReporter.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiFrm/FrmSync.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiFrm/FrmTimeOut.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiFrm/FrmW.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiFrm/FrmFileReaderM.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiFrm/FrmFileReaderS.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiFrm/FrmFileReader.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        <spirit:file>
+                                <spirit:name>./../../../../shared/validation/tb_components/AxiFrm/FrmTransC.v</spirit:name>
+                                <spirit:fileType>verilogSource</spirit:fileType>
+                        </spirit:file>
+                        
+                        <spirit:dependency>../tb_components</spirit:dependency>
+                        <spirit:dependency>../../../../nic400/verilog/Axi</spirit:dependency>
+          </spirit:fileSet>
+
+  </spirit:fileSets>
+
+
+</spirit:component>
+
+  

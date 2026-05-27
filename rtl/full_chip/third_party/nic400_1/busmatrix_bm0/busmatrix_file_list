@@ -1,0 +1,66 @@
+
+
+COVERAGE_ON xsl_cov
+INCLUDE ./xml/busmatrix_bm0_vlog_file_list
+COVERAGE_OFF
+
+INCLUDE ./xml/busmatrix_bm0_sva_file_list REGRESSION2
+
+
+./spirit/busmatrix_name_spirit.xml.xsl
+
+REGRESSION_ON
+
+
+./validation/shared/tb_spirit/
+./validation/shared/tb_components/
+./validation/shared/tbench/
+./validation/shared/stitching/DUT_wrapper.xml.xsl
+./validation/shared/stitching/tbench.xml.xsl
+./validation/shared/stitching/DUT_wrapper_config.xml.xsl DIRECTORY SCRIPT(generic_stitcher_core)
+./validation/shared/stitching/tbench_config.xml.xsl DIRECTORY SCRIPT(generic_stitcher_core)
+
+
+./validation/directed/e 
+
+
+./validation/directed
+
+
+
+./lint
+
+
+./formal REGRESSION2
+
+
+./validation/random
+./validation/random/e
+../shared/validation/busmatrix/random/source/
+../shared/validation/busmatrix/random/source/common
+../shared/validation/busmatrix/random/source/random_excl
+../shared/validation/busmatrix/random/source/random_general
+../shared/validation/busmatrix/random/source/random1_general_per_sif
+../shared/validation/busmatrix/random/source/random_hard
+../shared/validation/busmatrix/random/source/random1_hard_per_sif
+../shared/validation/busmatrix/random/source/random_limit
+../shared/validation/busmatrix/random/source/random_lock
+../shared/validation/busmatrix/random/source/random_mif
+../shared/validation/busmatrix/random/source/random_mif_l
+../shared/validation/busmatrix/random/source/random_mif_lock
+../shared/validation/busmatrix/random/source/random_pause
+../shared/validation/busmatrix/random/source/random_rav
+../shared/validation/busmatrix/random/source/random_reorder
+../shared/validation/busmatrix/random/source/random_reset
+../shared/validation/busmatrix/random/source/random_sif
+../shared/validation/busmatrix/random/source/random_sif_rd
+../shared/validation/busmatrix/random/source/random_sif_wr
+../shared/validation/busmatrix/random/source/random_spi_rd
+../shared/validation/busmatrix/random/source/random_spi_wr
+
+
+./validation/logs
+./validation/logs/vcs_coverage/.empty
+
+REGRESSION_OFF
+

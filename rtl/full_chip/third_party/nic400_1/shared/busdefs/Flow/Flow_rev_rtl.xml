@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	// =============================================================================
+	// This confidential and proprietary information may be used only as
+	// authorised by a licensing agreement from ARM Limited
+	//   (C) COPYRIGHT 2008-2013 ARM Limited
+	//       ALL RIGHTS RESERVED
+	// The entire notice above must be reproduced on all authorised
+	// copies and copies may only be made to the extent permitted
+	// by a licensing agreement from ARM Limited.
+	//
+	// =============================================================================
+	//
+	// Purpose :
+	//           This defines the AMBA Advanced eXtensible Interconnect Bus (AXI)
+	//
+	// =============================================================================
+-->
+<spirit:abstractionDefinition xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/index.xsd ">
+  <spirit:vendor>arm.com</spirit:vendor>
+  <spirit:library>CoreLink</spirit:library>
+  <spirit:name>Flow_rev_rtl</spirit:name>
+  <spirit:version>r0p0_0</spirit:version>
+  <spirit:busType spirit:library="CoreLink" spirit:name="Flow_rev" spirit:vendor="arm.com" spirit:version="r0p0_0" />
+  <spirit:ports>
+    <!-- aw channel -->
+    <spirit:port>
+      <spirit:logicalName>AW_WPNTR_GRY</spirit:logicalName>
+      <spirit:description>Write Gray Pointer for AW Channel.</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AW_RPNTR_BIN</spirit:logicalName>
+      <spirit:description>Read Binary Pointer for AW Channel.</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AW_RPNTR_GRY</spirit:logicalName>
+      <spirit:description>Read Gray Pointer for AW Channel.</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <!-- ar channel -->
+    <spirit:port>
+      <spirit:logicalName>AR_WPNTR_GRY</spirit:logicalName>
+      <spirit:description>Write Gray Pointer for AR Channel.</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AR_RPNTR_BIN</spirit:logicalName>
+      <spirit:description>Read Binary Pointer for AR Channel.</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AR_RPNTR_GRY</spirit:logicalName>
+      <spirit:description>Read Gray Pointer for AR Channel.</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <!-- w channel -->
+    <spirit:port>
+      <spirit:logicalName>W_WPNTR_GRY</spirit:logicalName>
+      <spirit:description>Write Gray Pointer for W Channel.</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>W_RPNTR_BIN</spirit:logicalName>
+      <spirit:description>Read Binary Pointer for W Channel.</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>W_RPNTR_GRY</spirit:logicalName>
+      <spirit:description>Read Gray Pointer for W Channel.</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <!-- a channel -->
+    <spirit:port>
+      <spirit:logicalName>A_WPNTR_GRY</spirit:logicalName>
+      <spirit:description>Write Gray Pointer for A Channel.</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>A_RPNTR_BIN</spirit:logicalName>
+      <spirit:description>Read Binary Pointer for A Channel.</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>A_RPNTR_GRY</spirit:logicalName>
+      <spirit:description>Read Gray Pointer for A Channel.</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+
+</spirit:ports>
+</spirit:abstractionDefinition>

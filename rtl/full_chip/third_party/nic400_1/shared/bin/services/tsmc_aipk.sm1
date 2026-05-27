@@ -1,0 +1,530 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2014 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :
+#-     Revision            :
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-           Designed for TSMC SoftIP Handoff Kit version: 2.0
+#-
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+# Import the Base Class
+from os import path 
+from sm_base import sm_base
+from ipfs_std_lib import *
+from copy import copy, deepcopy
+import sys
+
+class tsmc_aipk (sm_base):
+
+   #List of valid goals
+   #TODO: Perhaps turn this in to a "tsmc.cfg" file which can be loaded and amended per TSMC IPKit version? 
+   tsmc_goals_dict = { 
+    'basic': { 
+      'lint':       ['ip_rtl','clock_reset_integrity'], 
+      'cdc':        ['cdc_setup_check','cdc_structural_check'], 
+      'dft':        ['dft_scan_ready','dft_test_points','dft_dsm_clocks','dft_best_practices','dft_dsm_best_practices'], 
+      'contraints': ['sdc_setup_check','sdc_audit','sdc_check','sdc_exception_struct','sdc_redundancy'], 
+      'power':      ['power_est_average','power_verif_instr_rtl'] 
+     },
+    'advanced': {
+     'cdc':       ['cdc_functional_check'],
+     'txv':       ['fp_verification','mcp_verification'],
+     'lint':      ['adv_lint_struct','adv_lint_verify'],
+     'physical':  ['physical_library_preparation'] 
+    } 
+   }
+   #List of valid optional goals
+   tsmc_optional_goals_dict = { 
+    'baisc': { 
+     'lint':        ['design_audit'],
+     'constraints': ['sdc_hierarchical_check'],
+     'power':       ['power_audit','power_est_cycle','power_verif_audit'] 
+    },
+    'advanced': { 
+     'cdc':         ['sdc_equiv'],
+     'physical':    ['physical_library_preparation'] 
+    }
+   }
+   #List of valid steps
+   tsmc_ipk_steps = ['read','run','pack','all']
+   #list of physical optimisations
+   physical_opt_options = ['low','medium','high']
+   #License server/file - TODO: Add to sourceme file.
+   tsmc_ipkit_license = '1708@euhpc-eval01.euhpc.arm.com'
+   #List of default sim activity values
+   sim_default_activity_values = ['0.001', '0.002', '0.005', '0.010', '0.020', '0.050', '0.100', '0.200', '0.500', '1.000']
+   #-------------------------------------------------------------------------------
+   # initialise - 
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+       
+       #Pass on init call
+       sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+       
+       #Name the module
+       self.name = 'tsmc_aipk'
+       
+       #
+       self.lsf_workflow = 'arm-engine-1.0-comp'
+       
+       #Add license requirements
+       #SpyGlass
+       #TODO Requires different license for SpyGlass 4.7.1.5
+       self.licenses.append('spyglass')
+       #TSMC SoftIP Handoff Kit license
+       #TODO Add license to flow.
+       #self.licenses.append('tsmc_ipkit')
+       
+       #Add tool requirements
+       #self.tools.append('spyglass_4_7_1_5')
+       self.tools.append('xalan')
+       self.tools.append('perl')
+       #TSMC SoftIP Handoff Kit
+       #TODO Create a module for TSMC IPKit
+       #self.tools.append('tsmc_ipkit')
+       #
+
+       #
+       self.files = ['*.v','*.vc','*.sgdc','*.swl','*.fsdb','*.rpt','*.log']
+       
+   #-------------------------------------------------------------------------------
+   
+   #-------------------------------------------------------------------------------
+   # options - This function registers all valid command line options for this SM
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+     
+       #TSMC SoftIP switches
+       #
+       group.add_option('--aipkdir',  type='string', dest='ipkit_directory', action='store', default=False, help='Specify the path to TSMC SoftIP Handoff Kit.')
+       #
+       group.add_option('--steps',    type='string', dest='steps',           action='store', default='all', help='Specify steps of TSMC to execute: read/run/pack or all.')
+       
+       #aipk_read
+       #Goals set up
+       group.add_option('--basic',    dest='basic_check',    action='store_true', default=False, help='Enable to run basic goal suite.')
+       group.add_option('--advanced', dest='advanced_check', action='store_true', default=False, help='Enable to run the advanced goal suite.')
+       
+       #Specify goals, not to be used in conjunction with --basic or --advanced
+       group.add_option('--goals',    type='string', dest='spec_goals', action='store', default='default',         help='Specify a list of TSMC goals (comma separated, no spaces).')
+       group.add_option('--outdir',   type='string', dest='outdir',     action='store', default='soft_ip_results', help='Specify the output directory.')
+       
+       #Synth directory/.lib/.lef files (optional)
+       group.add_option('--synthdir', type='string', dest='synth_dir', action='store', default='default', help='Specify a synthesis directory.')
+       group.add_option('--synthlib', type='string', dest='synth_lib', action='store', default='default', help='Specify a synthesis `.lib` library file.')
+       group.add_option('--synthlef', type='string', dest='synth_lef', action='store', default='default', help='Specify a synthesis `.lef` library file.')
+       
+       #phy_target libraries(must for physical analysis)
+       group.add_option('--phytarget', type='string', dest='phy_target', action='store', default='6U1x_2T8x_LB', help='Specify target technology libraries for spyglass physical analysis.')
+       
+       #aipk_run
+       #Physical optimisation
+       group.add_option('--physicalopt', type='string', dest='physical_opt', action='store', default='low', help='Specify physical optimisation effort level.')
+       #
+       group.add_option('--incr', dest='incr', action='store_true', default=False, help='Enable incremental reporting.')
+       #
+       #group.add_option('--gui', dest='gui', action='store_true', default=False, help='Enable SpyGlass GUI on aipk_run.')
+       
+       #aipk_pack
+       #
+       group.add_option('--reportonly', dest='report_only', action='store_true', default=False, help='Only package the report files.')
+       
+       #Non-TSMC related
+       #Configuration
+       group.add_option('--cfg',      type='string', dest='cfgname',        action='store', default=None,    help='Specify the configuration name.')
+       #Specify activity ratio
+       group.add_option('--activity', type='string', dest='activity_value', action='store', default='1.000', help='Specify the activity file (<cfg>_random_fixed_bandwidth_<activity>.fsdb) used for power estimation.')
+       
+       #
+       return 0
+   #-------------------------------------------------------------------------------
+   
+   #-------------------------------------------------------------------------------
+   # run - 
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+       #
+       if self.options.cfgname == None:
+           message( 'e1.09', "No configuration file specifed to render" )
+           return 1, {}
+       #
+       cfgname = self.options.cfgname
+       #
+       default_ipkit = '/projects/pd/pr428_cario/tsmc_ip_kit_2.0'
+       if self.options.ipkit_directory != False:
+           if path.exists(self.options.ipkit_directory):
+               ipkit_directory = self.options.ipkit_directory 
+           else:
+               message( 'w1.09', "Supplied SoftIP Kit path does not exist." )
+               if path.exists(self.options.ipkit_directory):
+                   ipkit_directory = default_ipkit
+               else:
+                   message( 'e1.09', "Default SoftIP Kit path does not exist." )
+                   return 1, {}
+       else:
+           if path.exists(default_ipkit):
+               ipkit_directory = default_ipkit
+           else:
+               message( 'e1.09', "Default SoftIP Kit path does not exist." )
+               return 1, {}
+       #
+       
+       #Check if the synth libs directory has been specified
+       default_synth = '/projects/pd/pr428_cario/libraries/arm/tsmc/cln28hpm/arm_tech/r3p0-01eac0/lef/1p10m_5x2y2r'
+       if self.options.synth_dir != 'default':
+           if path.exists(self.options.synth_dir):
+               synth_lib_directory = self.options.synth_dir
+           else:
+               message( 'w1.09', 'Reverting to default synth library directory.' )
+               if path.exists(default_synth):
+                   synth_lib_directory = default_synth
+               else:
+                   message ( 'e1.09', 'Missing default synth library directory.' )
+                   return 1, {}
+       else:
+           if path.exists(default_synth):
+               synth_lib_directory = default_synth
+           else:
+               message ( 'e1.09', 'Missing default synth library directory.' )
+               return 1, {} 
+       #
+       
+       default_lib = default_ipkit + '/training_module/design_data/tech_libs/NangateOpenCellLibrary_typical_conditional_nldm.lib'
+       #Check if a .lib file has been specified
+       if self.options.synth_lib != 'default':
+           synth_lib_file=''
+           if "," in self.options.synth_lib:
+               lib_list = self.options.synth_lib.split(',')
+               for item in lib_list:
+                   if path.exists(item):
+                       synth_lib_file = synth_lib_file+item+' '
+           else:
+               if path.exists(self.options.synth_lib):
+                   synth_lib_file = self.options.synth_lib            
+               else:
+                   message ( 'w1.09', 'Reverting to default lib file.' )
+                   if path.exists(default_lib):
+                       synth_lib_file = default_lib
+                   else:
+                       message ( 'e1.09', 'Missing default lib file.' )
+                       return 1, {}
+       else:
+           if path.exists(default_lib):
+               synth_lib_file = default_lib
+           else:
+               message ( 'e1.09', 'Missing default lib file.' )
+               return 1, {}
+       #
+       
+       default_lef = default_synth + '/sc9mc_tech.lef'
+       #Check if a .lef file has been specified
+       if self.options.synth_lef != 'default':
+           if path.exists(self.options.synth_lef):
+               synth_lef_file = self.options.synth_lef
+           else:
+               message ( 'w1.09', 'Reverting to default lef file.' )
+               if path.exists(default_lef):
+                   synth_lef_file = default_lef
+               else:
+                   message ( 'e1.09', 'Missing default lef file.' )
+                   return 1, {}
+       else:
+           if path.exists(default_lef):
+               synth_lef_file = default_lef
+           else:
+               message ( 'e1.09', 'Missing default lef file.' )
+               return 1, {}
+       #
+       
+       #
+       logical_exists = path.exists(self.launch_dir + '/logical/' + cfgname) or \
+             path.exists(self.launch_dir + '/logical/nic400_' + cfgname)
+       impl_exists = path.exists(self.launch_dir + '/implementation/' + cfgname) or \
+             path.exists(self.launch_dir + '/implementation/nic400_' + cfgname)
+      #
+       
+       #TSMC SoftIP Licence
+       #TODO: Change this to use correct licence method (integrate an entry in to sourceme?)
+       tsmc_aipk_license = self.tsmc_ipkit_license
+       split_cfgname     = cfgname.split("_",1)
+       parcfg            = split_cfgname[0]
+       xmlcfg            = split_cfgname[1]
+       #Generate run script
+       
+       #TSMC IPKit requires SpyGlass 4.7.1.5
+       #Sets environment variables for TSMC IPKit location/license
+       #Sets environment variables for synthesis steps used in TSMC IPKit
+		      
+       run_script  = ['module load novas/verdi',
+                      'module load atrenta/spyglass/4.7.1.5',
+		              'module load synopsys/synthesis/2010.12-SP5',
+		              'setenv SPYGLASS_DC_PATH ' + '"/arm/tools/synopsys/synthesis/2010.12-SP5"',
+                      'setenv NIC400_INSTALL_DIR ' + '"'+environ.get("NIC400_INSTALL_DIR")+'"',
+                      'setenv ATRENTA_IPKIT_DIR ' + '"'+ ipkit_directory + '"', 
+                      'setenv ATRENTA_LICENSE_FILE ' + '"'+tsmc_aipk_license+'"',
+                      'setenv PATH "${ATRENTA_IPKIT_DIR}/scripts:${PATH}"',
+                      'setenv SYNTH_LIBS ' + '"'+synth_lib_directory+'"',
+                      'setenv SYNTH_LEF_FILE ' + '"'+synth_lef_file+'"',
+                      'setenv SYNTH_LIB_FILE ' + '"'+synth_lib_file+'"', 
+                      'if ( `pwd` != ${NIC400_INSTALL_DIR} ) then',
+                      '  echo "Please execute from <NIC400 Checkout> (i.e. $NIC400_INSTALL_DIR)"',
+                      '  exit 1',
+                      'else',
+                      '  echo "Found $NIC400_INSTALL_DIR"',
+                      'endif',
+                      'set PERIPH_LOGICAL = ${NIC400_INSTALL_DIR}/logical/' + cfgname,
+                      'cd ${PERIPH_LOGICAL}/nic400/lint',\
+                      '${PERIPH_LOGICAL}/shared/validation/scripts/EnvSub.pl -infile=${PERIPH_LOGICAL}/nic400/verilog/' + cfgname + '.vc',
+                      #Make temporary data directory
+                      'mkdir -p PRECOMPILE_DATA',
+                      'echo $SYNTH_LEF_FILE >  libs.f',
+                      'echo $SYNTH_LIB_FILE | sed \'s/ /\\n/\' >> libs.f']
+		      
+           
+       
+       #TSMC SoftIP Handoff Kit flow
+       
+       #Generate aipk_read line
+       sdc_file = '${NIC400_INSTALL_DIR}/implementation/' + cfgname + '/synopsys/data/' +cfgname + '.synthesis.sdc'
+       aipk_read = 'aipk_read -top=' + cfgname + ' -libfile libs.f -srcfile=tbench.vc -outdir=' + self.options.outdir + ' -sdc_file=' + sdc_file
+       
+       #Check for activity file if pre-rendered/power simulations to be run
+       #aipk_run script simply appends to existing "parcfg_xmlcfg.sgdc" file which is generated in render process
+       if float(self.options.activity_value) >= 0.001 and float(self.options.activity_value) <= 1.0:
+           vcd_file = 'logical/' + cfgname + '/nic400/validation/random/run_tc_' + self.options.activity_value + '_mti_sn1_random_fixed_bandwidth/' + cfgname + '_random_fixed_bandwidth_' + self.options.activity_value + '.vcd'
+           if logical_exists and not (self.options.activity_value in self.sim_default_activity_values):
+               if path.exists(vcd_file):
+                   aipk_read = aipk_read + ' -activity_file ${PERIPH_LOGICAL}/nic400/validation/random/run_tc_' + self.options.activity_value + '_mti_sn1_random_fixed_bandwidth/' + cfgname + '_random_fixed_bandwidth_' + self.options.activity_value + '.vcd'
+               else:
+                   message ( 'e1.09', 'Activity file "' + vcd_file + '" does not exist, run rtl_power for this activity value.' )
+                   return 1, {}
+           elif logical_exists and (self.options.activity_value in self.sim_default_activity_values):
+               aipk_read = aipk_read + ' -activity_file ${PERIPH_LOGICAL}/nic400/validation/random/run_tc_' + self.options.activity_value + '_mti_sn1_random_fixed_bandwidth/' + cfgname + '_random_fixed_bandwidth_' + self.options.activity_value + '.vcd'
+           else:
+               message ( 'e1.09', 'Activity value "' + self.options.activity_value + '" is not a standard power simulation value.' )
+               return 1, {}
+       else:
+         message ( 'e1.09', 'Please specify a valid activity value.' )
+         return 1, {}
+       
+       #Add phy_target switch to aipk_read line
+       if self.options.phy_target != '6U1x_2T8x_LB':
+           aipk_read = aipk_read + ' -phy_target ' + self.options.phy_target
+       
+       #Generate aipk_run line
+       aipk_run = 'if(-e '+self.launch_dir + '/logical/' + cfgname + '/nic400/lint/aipk_read_' + cfgname + '.log) then\n'
+       aipk_run = aipk_run +'aipk_run -top=' + cfgname 
+       
+      
+       #GUI mode
+       if self.options.gui == True:
+           aipk_run = aipk_run + ' -gui'
+       else:
+       #Job mode
+           aipk_run = aipk_run + ' -goals'
+           
+           #Goal set up check, has a list been specified or a group of goals?
+           if self.options.spec_goals != 'default':
+               #Check the goals are valid
+               if "," in self.options.spec_goals:
+                   goal_list       = self.options.spec_goals.split(',')
+		   print goal_list
+                   validated_goals = ''
+                   invalid_goals   = ''
+                   invalid         = 0
+                   #Check each goal in the list provided
+                   for item in goal_list:
+                       found     = 0
+                       #Check main goals for this goal name
+                       #for group in self.tsmc_goals_dict:
+                           #for goals in group:
+                       if (item in str(self.tsmc_goals_dict)):
+                           found = 1
+                           if not item in validated_goals:
+                           	validated_goals = validated_goals + item + ','
+                       #Check optional goals for this goal name
+                       #for group in self.tsmc_optional_goals_dict:
+                           #for goals in group:
+                       if (item in str(self.tsmc_optional_goals_dict)):
+                           found = 1
+                           if not item in validated_goals:
+                           	validated_goals = validated_goals + item + ','		       	       
+                       #Have we found this goal in the lists?
+                       if found == 0:
+                           invalid = invalid + 1
+                           message ( 'w1.00', 'Specified goal "' + item + '" is not a valid goal.')
+                           invalid_goals = invalid_goals + item + ','			   
+                   #Strip trailing ','
+                   if len(validated_goals) > 0:
+                       validated_goals = validated_goals[:-1]
+                   if len(invalid_goals) > 0:
+                       invalid_goals   = invalid_goals[:-1]
+		   print "V " + validated_goals 
+		   print "I " + invalid_goals 
+               else:
+                   goal_list   = self.options.spec_goals
+                   if (goal_list in str(self.tsmc_goals_dict)) or (goal_list in str(self.tsmc_optional_goals_dict)):
+                       invalid = 0
+                       validated_goals = goal_list
+                   else:
+                       invalid = 1
+                       validated_goals = ''
+                       invalid_goals = goal_list
+               #If all valid goals
+               if invalid == 0:
+                   #Run all goals
+                   aipk_run = aipk_run + ' ' + self.options.spec_goals
+               else:
+                   #Run only validated goals
+                   aipk_run = aipk_run + ' ' + validated_goals
+                   #Produce a warning
+                   message ( 'w1.09', 'Unknown goals in goal list omitted, running goals: "' + validated_goals + '".' )
+               
+           else:
+               #Run basic goals set?
+               if self.options.basic_check and not self.options.advanced_check:
+                   aipk_run = aipk_run + 'basic_check'
+               #Run advanced goals set?
+               elif not self.options.basic_check and self.options.advanced_check:
+                   aipk_run = aipk_run + 'adv_check'
+               #Run both basic and advanced checks?
+               elif self.options.basic_check and self.options.advanced_check:
+                   goal_list = ''
+                   #Concat the goal sets in to a single CsV list
+                   for group in self.tsmc_goals_dict:
+                       for goal in group:
+                           goal_list = goal_list + str(goal) + ','
+                   #Strip trailing ',' and append to aipk_run string
+                   aipk_run = aipk_run + goal_list[:-1]
+                   #Perhaps?:
+                   #aipk_run = aipk_run + 'basic_check,adv_check'
+           #"incr" switch
+           if self.options.incr:
+               aipk_run = aipk_run + ' -incr'
+           #Physical optimisation
+           if self.options.physical_opt in self.physical_opt_options:
+               aipk_run = aipk_run + ' -phy_optimization_effort ' + self.options.physical_opt
+           else:
+               message ( 'w1.00', 'Physical optimisation effort should be set to: low, medium or high.' )
+           #
+       aipk_run = aipk_run +'\n else\n echo \"Could not find aipk_read log file\"\n exit 1\n endif\n'
+          
+       #Generate aipk_pack line
+       aipk_pack = 'aipk_pack -top=' + cfgname
+       
+       #Report only
+       if self.options.report_only:
+           aipk_pack = aipk_pack + ' -report_only'
+       else:
+           aipk_pack = aipk_pack + ' -save_all'
+       #
+       
+       step_enable_read = 0
+       step_enable_run  = 0
+       step_enable_pack = 0 
+       
+       
+       #Add the TSMC Handoff Kit executionlines
+       if self.options.steps == 'all':
+           run_script.extend([aipk_read])
+           run_script.extend([aipk_run])
+           run_script.extend([aipk_pack])
+           
+                              
+       else:
+           step_list        = self.options.steps.split(',')
+           #Cannot have run and pack without the package being read first.
+           #if (len(step_list) > 0) and not ('read' in self.options.steps) and not path.exists(self.launch_dir + '/logical/' + cfgname + '/nic400/lint/aipk_read_' + cfgname + '.log'):
+               #message ( 'e1.00','Missing `read` in steps switch.' )
+               #return 1, {}
+
+           #Enumerate list
+           for name in step_list:
+               if name == 'read':
+                   step_enable_read = 1
+               elif name == 'run':
+                   step_enable_run  = 1
+               elif name == 'pack':
+                   step_enable_pack = 1
+           #Append the lines
+           if step_enable_read == 1:
+               run_script.extend([aipk_read])
+           if step_enable_run == 1:
+               run_script.extend([aipk_run])
+           if step_enable_pack == 1:
+               run_script.extend([aipk_pack])          
+       #
+       
+       #No arguments are required
+       
+       self.write_run_script(run_script, self.launch_dir + '/logical/' + cfgname + '/nic400/lint/run_tsmc_aipk', args)
+       return self.run_command(args,'./logical/' + cfgname + '/nic400/lint/run_tsmc_aipk')
+ 
+	  
+
+		   
+       #return 0, {}
+       
+   #-------------------------------------------------------------------------------
+   
+   #-------------------------------------------------------------------------------
+   # clean - A housekeeping function for the purpose of updating the status of the
+   #          service after execution, and to perform clean-up of the workspace
+   #-------------------------------------------------------------------------------
+   def clean_sm(self, args, dir):
+     
+       #Clean up render files / TSMC SoftIP Handoff Kit files
+       cfgname = self.options.cfgname
+       outdir  = self.options.outdir
+       
+       outdir_exists  = path.exists(self.launch_dir + '/logical/' + cfgname + '/nic400/lint/' + outdir)
+       packdir_exists = path.exists(self.launch_dir + '/logical/' + cfgname + '/nic400/lint/' + cfgname + '_package')
+     
+       #Clean the files used by the TSMC package for SpyGlass
+       if outdir_exists:
+           self.delete_files.append(self.launch_dir + '/logical/' + cfgname + '/nic400/lint/' + outdir)
+           message ( 'm1.00', 'Cleaning output directory.' )
+       if packdir_exists:
+           self.delete_files.append(self.launch_dir + '/logical/' + cfgname + '/nic400/lint/' + cfgname + '_package')
+           message ( 'm1.00', 'Cleaning package directory.' )
+       #
+       if not outdir_exists and not packdir_exists:
+           message ( 'm1.00', 'No files to clean.' )
+       return 0
+   #-------------------------------------------------------------------------------
+   
+   #-------------------------------------------------------------------------------
+   # help - A housekeeping function for the purpose of updating the status of the
+   #          service after execution, and to perform clean-up of the workspace
+   #-------------------------------------------------------------------------------
+   def help_sm(self, args):
+       self.use_lsf = 0
+       self.parser.usage = "ae " + self.name + " [options] targets"
+       group = self.parser.get_group(self.name + ' SM options')
+       #Set the help epilog 
+       #TODO: Help epilog, list valid goals + example usage
+       return 0
+   #-------------------------------------------------------------------------------
+   

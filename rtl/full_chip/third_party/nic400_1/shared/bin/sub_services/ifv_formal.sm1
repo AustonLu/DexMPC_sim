@@ -1,0 +1,162 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2012 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2012-10-04 12:07:10 +0100 (Thu, 04 Oct 2012)
+#-     Revision            : 137192
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import the Base Class
+from os import path, chdir, getcwd
+from sm_base import sm_base
+from ipfs_std_lib import *
+from glob import glob
+
+class ifv_formal (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise -
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call (NB lsf turned off as it should be on in sub
+        #modules
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Set the name
+        self.name = 'ifv_formal'
+
+        #Register workflow
+        self.lsf_workflow = 'arm_engine-1.0-formal_ifv'
+
+        #Add license requirments -???
+        self.licenses.append('ifv')
+
+        #Add tool requirements
+        self.tools.append('ifv')
+
+        #Any lists etc required accross multiple blocks should be set up here
+        self.files = ['run_ifv','INCA_libs','*.key','.formalrun','.ifv*','.simvision',
+                      '.elab_checks.log','rtlchecks.log','.ncbrowse.args',
+                      'modelchecks.log','.lock','.vlog_checks.log','*.log','lsf_job_code' ]
+
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # options - This function registers all valid command line options for this SM
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+
+        if not group.parser.has_option("--disable_ovl"):
+              group.add_option("--disable_ovl", dest="ovl", action="store_false",
+                          default=True, help="Disable the built in OVLs")
+
+        #Clear options
+        return 0
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # run - Goes through every specified location.
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+        if self.options.ovl:
+              ovl_enable = ' +define+ASSERT_ON +define+OVL_ASSERT_ON '
+        else:
+              ovl_enable = ''
+
+        if self.options.gui:
+              gui_mode = ' +gui '
+        else:
+              gui_mode = ' +batchmode +exit '
+
+        #Set some useful variable names
+        file_list  = glob(directory + '/*.zpf')
+        inc_file  = '+libext+.sv +libext+.v -y ../../verilog -y ../../../nic400/verilog/Axi  -y ../../../reg_slice/verilog  -y ../../../apb_bridge/verilog  -y ../../../apb_bridge_hcg/verilog  -y ../../../cdc_blocks/verilog -y ../../../shared/validation/tb_components/formal -y ./ +incdir+../../verilog +incdir+../../../nic400/verilog/Axi +incdir+../../../nic400/verilog/Ahb +incdir+../../../nic400/verilog +incdir+../../../reg_slice/verilog +incdir+../../../apb_bridge/verilog +incdir+../../../apb_bridge_hcg/verilog +incdir+../../../cdc_blocks/verilog +incdir+../../../shared/validation/tb_components/formal'
+
+        if len(self.args) == 1 and self.args[0] != 'all':
+             (dir,target) = path.split(self.args[0])
+             vfile = directory + '/../../verilog/' + target + '.v ';
+             tbfile = directory + '/../../validation/shared/tbench/' + target + '.v ';
+             svafile = directory + '/' + target + '_sva.sv ' ;
+             #Create a run script
+
+             run_script = ['if (-e ' + vfile + ') then'];
+             run_script.extend(['##Running IFV for ' + target,
+                           'ifv +top+'  + target + ' +bind_top+' + target +'_sva \\',
+                            vfile + svafile + ' \\',
+                            inc_file + ovl_enable + ' \\',
+                            gui_mode + '+NEW_BUILTIN_FUNC +tcl+ifv_sva.tcl +64bit -l ' + target + '_ifv_report.log']);
+             run_script.extend(['else']);
+             run_script.extend(['##Running IFV for ' + target,
+                           'ifv +top+'  + target + ' +bind_top+' + target +'_sva \\',
+                            tbfile + svafile + ' \\',
+                            inc_file + ovl_enable + ' \\',
+                            gui_mode + '+NEW_BUILTIN_FUNC +tcl+ifv_sva.tcl +64bit -l ' + target + '_ifv_report.log']);
+             run_script.extend(['endif']);
+        else:
+             run_script = [];
+             for file in file_list:
+                 (dir,filename) = path.split(file)
+                 target = filename[:-4]
+                 vfile  = directory + '/../../verilog/' + target + '.v ';
+                 tbfile = directory + '/../../validation/shared/tbench/' + target + '.v ';
+                 svafile = directory + '/' + target + '_sva.sv ' ;
+                 run_script.extend(['if (-e ' + vfile + ') then']);
+                 run_script.extend(['##Running IFV for ' + target,
+                                    'ifv +top+'  + target + ' +bind_top+' + target +'_sva \\',
+                                     vfile + svafile + ' \\',
+                                     inc_file + ovl_enable + ' \\',
+                                     gui_mode + '+NEW_BUILTIN_FUNC +tcl+ifv_sva.tcl +64bit -l ' + target + '_ifv_report.log']);
+                 run_script.extend(['else']);
+                 run_script.extend(['##Running IFV for ' + target,
+                                    'ifv +top+'  + target + ' +bind_top+' + target +'_sva \\',
+                                     tbfile + svafile + ' \\',
+                                     inc_file + ovl_enable + ' \\',
+                                     gui_mode + '+NEW_BUILTIN_FUNC +tcl+ifv_sva.tcl +64bit -l ' + target + '_ifv_report.log']);
+                 run_script.extend(['endif']);
+
+
+        #Write out script and run it
+        self.write_run_script(run_script, 'run_ifv', args)
+        return self.run_command(args, './run_ifv')
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # clean - A housekeeping function for the purpose of updating the status of the
+   #          service after execution, and to perform clean-up of the workspace
+   #-------------------------------------------------------------------------------
+   def clean_sm(self, args, directory):
+
+        #disable lsf for clean operations
+        self.use_lsf = 0
+        self.delete_files = self.files
+
+        return 0;
+
+   #-------------------------------------------------------------------------------

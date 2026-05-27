@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--=========================================================================-->
+<!-- The confidential and proprietary information contained in this file may -->
+<!-- only be used by a person authorised under and to the extent permitted   -->
+<!-- by a subsisting licensing agreement from ARM Limited or its affiliates. -->
+<!--                                                                         -->
+<!--            (C) COPYRIGHT 2012 ARM Limited or its affiliates.            -->
+<!--                ALL RIGHTS RESERVED                                      -->
+<!--                                                                         -->
+<!-- This entire notice must be reproduced on all copies of this file        -->
+<!-- and copies of this file may only be made by a person if such person is  -->
+<!-- permitted to do so under the terms of a subsisting license agreement    -->
+<!-- from ARM Limited or its affiliates.                                     -->
+<!--=========================================================================-->
+<!-- Version and Release Control Information:                                -->
+<!--                                                                         -->
+<!-- File Revision       : 125197                                           -->
+<!-- File Date           :  2012-02-14 22:06:55 +0000 (Tue, 14 Feb 2012)       -->
+<!-- Release Information : PL401-r1p2-00rel0                                -->
+<!--=========================================================================-->
+<!-- Purpose : SPIRIT component stylesheet                                   -->
+<!--=========================================================================-->
+<spirit:component xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:arm="http://www.arm.com/SPIRIT-arm" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4      http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/component.xsd">
+
+<spirit:vendor>arm.com</spirit:vendor>
+<spirit:library>TBench</spirit:library>
+<spirit:name>axi_c_mux</spirit:name>
+<spirit:version>r0p0</spirit:version>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- Bus interface                                                           -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<spirit:busInterfaces>
+    <spirit:busInterface>
+        <spirit:name>m0_cactive_hcg</spirit:name>
+        <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_C" spirit:version="r0p0"/>
+        <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_C_rtl" spirit:version="r0p0"/>
+        <spirit:master/>
+        <spirit:portMaps>
+            <spirit:portMap>
+                <spirit:logicalPort>
+                    <spirit:name>CACTIVE</spirit:name>
+                </spirit:logicalPort>
+                <spirit:physicalPort>
+                    <spirit:name>m0_cactive</spirit:name>
+                </spirit:physicalPort>
+            </spirit:portMap>
+        </spirit:portMaps>
+    </spirit:busInterface>
+    <spirit:busInterface>
+        <spirit:name>m0_cactive_wakeup_hcg</spirit:name>
+        <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_C" spirit:version="r0p0"/>
+        <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_C_rtl" spirit:version="r0p0"/>
+        <spirit:master/>
+        <spirit:portMaps>
+            <spirit:portMap>
+                <spirit:logicalPort>
+                    <spirit:name>CACTIVE</spirit:name>
+                </spirit:logicalPort>
+                <spirit:physicalPort>
+                    <spirit:name>m0_cactive_wakeup</spirit:name>
+                </spirit:physicalPort>
+            </spirit:portMap>
+        </spirit:portMaps>
+    </spirit:busInterface>
+    <spirit:busInterface>
+        <spirit:name>m0_port_enable_hcg</spirit:name>
+        <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="port_enable" spirit:version="r0p0"/>
+        <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="port_enable_rtl" spirit:version="r0p0"/>
+        <spirit:master/>
+        <spirit:portMaps>
+            <spirit:portMap>
+                <spirit:logicalPort>
+                    <spirit:name>port_enable</spirit:name>
+                </spirit:logicalPort>
+                <spirit:physicalPort>
+                    <spirit:name>m0_port_enable</spirit:name>
+                </spirit:physicalPort>
+            </spirit:portMap>
+        </spirit:portMaps>
+    </spirit:busInterface>
+    <spirit:busInterface>
+        <spirit:name>m1_cactive_hcg</spirit:name>
+        <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_C" spirit:version="r0p0"/>
+        <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_C_rtl" spirit:version="r0p0"/>
+        <spirit:master/>
+        <spirit:portMaps>
+            <spirit:portMap>
+                <spirit:logicalPort>
+                    <spirit:name>CACTIVE</spirit:name>
+                </spirit:logicalPort>
+                <spirit:physicalPort>
+                    <spirit:name>m1_cactive</spirit:name>
+                </spirit:physicalPort>
+            </spirit:portMap>
+        </spirit:portMaps>
+    </spirit:busInterface>
+    <spirit:busInterface>
+        <spirit:name>m1_cactive_wakeup_hcg</spirit:name>
+        <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_C" spirit:version="r0p0"/>
+        <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_C_rtl" spirit:version="r0p0"/>
+        <spirit:master/>
+        <spirit:portMaps>
+            <spirit:portMap>
+                <spirit:logicalPort>
+                    <spirit:name>CACTIVE</spirit:name>
+                </spirit:logicalPort>
+                <spirit:physicalPort>
+                    <spirit:name>m1_cactive_wakeup</spirit:name>
+                </spirit:physicalPort>
+            </spirit:portMap>
+        </spirit:portMaps>
+    </spirit:busInterface>
+    <spirit:busInterface>
+        <spirit:name>m1_port_enable_hcg</spirit:name>
+        <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="port_enable" spirit:version="r0p0"/>
+        <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="port_enable_rtl" spirit:version="r0p0"/>
+        <spirit:master/>
+        <spirit:portMaps>
+            <spirit:portMap>
+                <spirit:logicalPort>
+                    <spirit:name>port_enable</spirit:name>
+                </spirit:logicalPort>
+                <spirit:physicalPort>
+                    <spirit:name>m1_port_enable</spirit:name>
+                </spirit:physicalPort>
+            </spirit:portMap>
+        </spirit:portMaps>
+    </spirit:busInterface>
+    <spirit:busInterface>
+        <spirit:name>s_cactive_hcg</spirit:name>
+        <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_C" spirit:version="r0p0"/>
+        <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_C_rtl" spirit:version="r0p0"/>
+        <spirit:slave/>
+        <spirit:portMaps>
+            <spirit:portMap>
+                <spirit:logicalPort>
+                    <spirit:name>CACTIVE</spirit:name>
+                </spirit:logicalPort>
+                <spirit:physicalPort>
+                    <spirit:name>s_cactive</spirit:name>
+                </spirit:physicalPort>
+            </spirit:portMap>
+        </spirit:portMaps>
+    </spirit:busInterface>
+    <spirit:busInterface>
+        <spirit:name>s_cactive_wakeup_hcg</spirit:name>
+        <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_C" spirit:version="r0p0"/>
+        <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="AXI_C_rtl" spirit:version="r0p0"/>
+        <spirit:slave/>
+        <spirit:portMaps>
+            <spirit:portMap>
+                <spirit:logicalPort>
+                    <spirit:name>CACTIVE</spirit:name>
+                </spirit:logicalPort>
+                <spirit:physicalPort>
+                    <spirit:name>s_cactive_wakeup</spirit:name>
+                </spirit:physicalPort>
+            </spirit:portMap>
+        </spirit:portMaps>
+    </spirit:busInterface>
+    <spirit:busInterface>
+        <spirit:name>s_port_enable_hcg</spirit:name>
+        <spirit:busType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="port_enable" spirit:version="r0p0"/>
+        <spirit:abstractionType spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="port_enable_rtl" spirit:version="r0p0"/>
+        <spirit:slave/>
+        <spirit:portMaps>
+            <spirit:portMap>
+                <spirit:logicalPort>
+                    <spirit:name>port_enable</spirit:name>
+                </spirit:logicalPort>
+                <spirit:physicalPort>
+                    <spirit:name>s_port_enable</spirit:name>
+                </spirit:physicalPort>
+            </spirit:portMap>
+        </spirit:portMaps>
+    </spirit:busInterface>
+</spirit:busInterfaces>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- model                                                                   -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<spirit:model>
+
+<spirit:views>
+<spirit:view>
+<spirit:name>axi_c_mux</spirit:name>
+<spirit:envIdentifier>::modelsim.mentor.com</spirit:envIdentifier>
+<spirit:language>verilog</spirit:language>
+<spirit:fileSetRef>fs-VerilogSource</spirit:fileSetRef>
+<spirit:parameters>
+<spirit:parameter>
+<spirit:name>entityName</spirit:name>
+<spirit:value>axi_c_mux</spirit:value>
+</spirit:parameter>
+</spirit:parameters>
+</spirit:view>
+</spirit:views>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+<!-- Signals                                                                            -->
+<!--                                                                                    -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+
+<spirit:ports>
+    <spirit:port>
+        <spirit:name>m0_cactive</spirit:name>
+        <spirit:wire>
+            <spirit:direction>in</spirit:direction>
+        </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+        <spirit:name>m0_cactive_wakeup</spirit:name>
+        <spirit:wire>
+            <spirit:direction>in</spirit:direction>
+        </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+        <spirit:name>m0_port_enable</spirit:name>
+        <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+        </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+        <spirit:name>m1_cactive</spirit:name>
+        <spirit:wire>
+            <spirit:direction>in</spirit:direction>
+        </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+        <spirit:name>m1_cactive_wakeup</spirit:name>
+        <spirit:wire>
+            <spirit:direction>in</spirit:direction>
+        </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+        <spirit:name>m1_port_enable</spirit:name>
+        <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+        </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+        <spirit:name>s_cactive</spirit:name>
+        <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+        </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+        <spirit:name>s_cactive_wakeup</spirit:name>
+        <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+        </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+        <spirit:name>s_port_enable</spirit:name>
+        <spirit:wire>
+            <spirit:direction>in</spirit:direction>
+        </spirit:wire>
+    </spirit:port>
+</spirit:ports>
+
+</spirit:model>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+<!-- Verilog Files                                                                      -->
+<!--                                                                                    -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+<spirit:fileSets>
+<spirit:fileSet>
+<spirit:name>fs-VerilogSource</spirit:name>
+<spirit:file>
+<spirit:name>../tb_components/axi_c_mux.v</spirit:name>
+<spirit:fileType>verilogSource</spirit:fileType>
+</spirit:file>
+</spirit:fileSet>
+</spirit:fileSets>
+</spirit:component>

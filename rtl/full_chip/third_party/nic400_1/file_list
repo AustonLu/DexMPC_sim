@@ -1,0 +1,618 @@
+
+
+
+
+./SourceMe SCRIPT(SubEnvVars.pl)
+
+
+./shared/busdefs
+./shared/busdefs/AHBLite
+./shared/busdefs/APB
+./shared/busdefs/APB4
+./shared/busdefs/APBasync
+./shared/busdefs/AXI
+./shared/busdefs/AXI4
+./shared/busdefs/AXI4Stream
+./shared/busdefs/AXI_ext
+./shared/busdefs/AXI_VN
+./shared/busdefs/QOS_ACCEPT
+./shared/busdefs/AXI_C
+./shared/busdefs/Event
+./shared/busdefs/Flow
+./shared/busdefs/IB
+./shared/busdefs/ITB
+./shared/busdefs/LPI
+./shared/busdefs/NIC400_AXI
+./shared/busdefs/NIC400_AXI4
+./shared/busdefs/RSB
+./shared/busdefs/T_APB
+./shared/busdefs/VN
+./shared/busdefs/port_enable
+./shared/busdefs/Staticcfg
+./shared/validation/tb_components
+./shared/validation/scripts
+./shared/validation/tb_spirit DIRECTORY
+./shared/validation/tb_components/AxiFrm
+./shared/validation/tb_components/AxiFrs
+./shared/validation/tb_components/Axi4Frm
+./shared/validation/tb_components/Axi4Frs
+./shared/validation/tb_components/AhbFrm
+./shared/validation/tb_components/AhbFrs
+./shared/validation/tb_components/ApbFrs
+./shared/validation/tb_components/AxiToAhb
+
+
+./shared/validation/c/include
+./shared/validation/c/misc
+./shared/validation/c/register
+./shared/validation/c/vec_gen
+./shared/validation/c/model
+
+REGRESSION_ON
+./shared/validation/c/e_wrapper
+./shared/validation/tb_components/formal
+
+
+./shared/validation/amib/coverage
+./shared/validation/asib/coverage
+./shared/validation/busmatrix/coverage
+./shared/validation/ds/coverage
+./shared/validation/ib/coverage
+./shared/validation/pl301/coverage
+./shared/validation/rsb_components/coverage
+./shared/validation/tlx/coverage
+./shared/validation/vnb/coverage
+
+REGRESSION_OFF
+
+
+./shared/bin
+./shared/bin/lib
+./shared/bin/services
+./shared/bin/setup
+./shared/bin/sub_services
+
+
+
+
+REGRESSION_ON
+
+./shared/validation/common/directed/source/all_trans_c
+./shared/validation/common/directed/source/all_trans_nc
+./shared/validation/common/directed/source/all_addr_wrap_read
+./shared/validation/common/directed/source/all_addr_wrap_write
+./shared/validation/common/directed/source/all_addr_incr_read
+./shared/validation/common/directed/source/all_addr_incr_write
+./shared/validation/common/directed/source/all_addr_fixed_read
+./shared/validation/common/directed/source/all_addr_fixed_write
+
+
+
+./shared/validation/ib/directed/source/read_reorder1
+./shared/validation/ib/directed/source/write_reorder1
+./shared/validation/ib/directed/source/read_reorder1_burst
+./shared/validation/ib/directed/source/write_reorder1_burst
+./shared/validation/ib/directed/source/freq_crossing
+./shared/validation/ib/directed/source/single_burst
+./shared/validation/ib/directed/source/fifo_tide
+./shared/validation/ib/directed/source/latency_test
+./shared/validation/ib/directed/source/buffer_test
+./shared/validation/ib/directed/source/leading_write
+./shared/validation/ib/directed/source/write_iss1
+./shared/validation/ib/directed/source/read_iss1
+./shared/validation/ib/directed/source/freq_crossing
+./shared/validation/ib/directed/source/sync_async
+./shared/validation/ib/directed/source/throughput
+./shared/validation/ib/directed/source/qv_reg
+
+./shared/validation/tlx/directed/source/leading_write
+
+REGRESSION_OFF
+
+
+
+./ib_name/xml/ib_name.xml.xsl USING name=sSpi_ib
+./ib_name/xml/ib_name_io.xml.xsl USING name=sSpi_ib
+./ib_name/xml/ib_name_slave_pmap.xml.xsl USING name=sSpi_ib
+./ib_name/xml/ib_name_master_pmap.xml.xsl USING name=sSpi_ib
+./ib_name/xml/ib_name_mask_pmap.xml.xsl USING name=sSpi_ib
+./ib_name/xml/ib_name_vlog_file_list.xsl USING name=sSpi_ib SCRIPT(filelist_sub.pl)
+REGRESSION_ON
+./ib_name/xml/ib_name_sva_file_list.xsl USING name=sSpi_ib SCRIPT(filelist_sub.pl)
+REGRESSION_OFF
+
+
+
+./ib_name/xml/tbench_address_map.xml.xsl USING name=sSpi_ib DIRECTORY REGRESSION
+
+
+./ib_name/ib_file_list.xsl USING name=sSpi_ib PROCESS ./ib_name/xml/ib_name.xml
+
+
+REGRESSION_ON
+
+./shared/validation/asib/shared/tb_spirit
+./shared/validation/asib/shared/tb_components
+
+
+./shared/validation/asib/directed/source/read_iss1
+./shared/validation/asib/directed/source/write_iss1
+./shared/validation/asib/directed/source/read_reorder1
+./shared/validation/asib/directed/source/write_reorder1
+./shared/validation/asib/directed/source/read_reorder1_burst
+./shared/validation/asib/directed/source/write_reorder1_burst
+./shared/validation/asib/directed/source/leading_write
+./shared/validation/asib/directed/source/example_reg
+./shared/validation/asib/directed/source/qv_reg1
+./shared/validation/asib/directed/source/qv_reg2
+./shared/validation/asib/directed/source/freq_crossing1
+./shared/validation/asib/directed/source/freq_crossing2
+./shared/validation/asib/directed/source/single_burst
+./shared/validation/asib/directed/source/addr_map
+./shared/validation/asib/directed/source/buffer_test
+./shared/validation/asib/directed/source/latency_test
+./shared/validation/asib/directed/source/ahb_resp
+./shared/validation/asib/directed/source/ahb_lock
+./shared/validation/asib/directed/source/ahb_broken_burst
+./shared/validation/asib/directed/source/ahb_early_resp
+./shared/validation/asib/directed/source/ahb_early_resp_hazard
+./shared/validation/asib/directed/source/ahb_early_resp_lock
+./shared/validation/asib/directed/source/apb_regupdate
+./shared/validation/asib/directed/source/apb_regupdate2
+
+REGRESSION_OFF
+
+
+
+./asib_name/xml/asib_name_io.xml.xsl USING name=sSpi
+./asib_name/xml/asib_name_vlog_file_list.xsl USING name=sSpi SCRIPT(filelist_sub.pl)
+REGRESSION_ON
+./asib_name/xml/asib_name_sva_file_list.xsl USING name=sSpi SCRIPT(filelist_sub.pl)
+REGRESSION_OFF
+./asib_name/xml/asib_name.xml.xsl USING name=sSpi
+
+
+./asib_name/xml/tbench_address_map.xml.xsl USING name=sSpi DIRECTORY REGRESSION
+
+
+./asib_name/asib_file_list.xsl USING name=sSpi PROCESS ./asib_name/xml/asib_name.xml
+./asib_name/formal/sva/address_decode_sva_property.sv.xsl USING name=sSpi REGRESSION2
+
+
+
+
+./asib_name/xml/asib_name_io.xml.xsl USING name=sD2dData
+./asib_name/xml/asib_name_vlog_file_list.xsl USING name=sD2dData SCRIPT(filelist_sub.pl)
+REGRESSION_ON
+./asib_name/xml/asib_name_sva_file_list.xsl USING name=sD2dData SCRIPT(filelist_sub.pl)
+REGRESSION_OFF
+./asib_name/xml/asib_name.xml.xsl USING name=sD2dData
+
+
+./asib_name/xml/tbench_address_map.xml.xsl USING name=sD2dData DIRECTORY REGRESSION
+
+
+./asib_name/asib_file_list.xsl USING name=sD2dData PROCESS ./asib_name/xml/asib_name.xml
+./asib_name/formal/sva/address_decode_sva_property.sv.xsl USING name=sD2dData REGRESSION2
+
+
+
+
+./asib_name/xml/asib_name_io.xml.xsl USING name=sIrisBridge
+./asib_name/xml/asib_name_vlog_file_list.xsl USING name=sIrisBridge SCRIPT(filelist_sub.pl)
+REGRESSION_ON
+./asib_name/xml/asib_name_sva_file_list.xsl USING name=sIrisBridge SCRIPT(filelist_sub.pl)
+REGRESSION_OFF
+./asib_name/xml/asib_name.xml.xsl USING name=sIrisBridge
+
+
+./asib_name/xml/tbench_address_map.xml.xsl USING name=sIrisBridge DIRECTORY REGRESSION
+
+
+./asib_name/asib_file_list.xsl USING name=sIrisBridge PROCESS ./asib_name/xml/asib_name.xml
+./asib_name/formal/sva/address_decode_sva_property.sv.xsl USING name=sIrisBridge REGRESSION2
+
+
+
+REGRESSION_ON
+
+
+./shared/validation/amib/directed/source/read_reorder1
+./shared/validation/amib/directed/source/write_reorder1
+./shared/validation/amib/directed/source/read_reorder1_burst
+./shared/validation/amib/directed/source/write_reorder1_burst
+./shared/validation/amib/directed/source/apb_basic
+./shared/validation/amib/directed/source/apb_burst
+./shared/validation/amib/directed/source/apb_delay
+./shared/validation/amib/directed/source/single_burst
+./shared/validation/amib/directed/source/long_burst
+./shared/validation/amib/directed/source/ahb_resp
+./shared/validation/amib/directed/source/ahb_resp_buffer
+./shared/validation/amib/directed/source/sideband
+./shared/validation/amib/directed/source/lock_seq
+
+REGRESSION_OFF
+
+
+
+
+./amib_name/xml/amib_name_io.xml.xsl USING name=mGauxCore
+./amib_name/xml/amib_name_vlog_file_list.xsl USING name=mGauxCore SCRIPT(filelist_sub.pl)
+REGRESSION_ON
+./amib_name/xml/amib_name_sva_file_list.xsl USING name=mGauxCore SCRIPT(filelist_sub.pl)
+REGRESSION_OFF
+./amib_name/xml/amib_name.xml.xsl USING name=mGauxCore
+
+
+./amib_name/xml/tbench_address_map.xml.xsl USING name=mGauxCore DIRECTORY REGRESSION
+
+
+./amib_name/amib_file_list.xsl USING name=mGauxCore PROCESS ./amib_name/xml/amib_name.xml
+
+
+
+./amib_name/xml/amib_name_io.xml.xsl USING name=mDexmpcCore
+./amib_name/xml/amib_name_vlog_file_list.xsl USING name=mDexmpcCore SCRIPT(filelist_sub.pl)
+REGRESSION_ON
+./amib_name/xml/amib_name_sva_file_list.xsl USING name=mDexmpcCore SCRIPT(filelist_sub.pl)
+REGRESSION_OFF
+./amib_name/xml/amib_name.xml.xsl USING name=mDexmpcCore
+
+
+./amib_name/xml/tbench_address_map.xml.xsl USING name=mDexmpcCore DIRECTORY REGRESSION
+
+
+./amib_name/amib_file_list.xsl USING name=mDexmpcCore PROCESS ./amib_name/xml/amib_name.xml
+
+
+
+REGRESSION_ON
+
+./shared/validation/busmatrix/directed/source/all_trans_c
+./shared/validation/busmatrix/directed/source/all_addr_wrap_read
+./shared/validation/busmatrix/directed/source/all_addr_wrap_write
+./shared/validation/busmatrix/directed/source/all_addr_fixed_read
+./shared/validation/busmatrix/directed/source/all_addr_fixed_write
+./shared/validation/busmatrix/directed/source/all_addr_incr_read
+./shared/validation/busmatrix/directed/source/all_addr_incr_write
+
+./shared/validation/busmatrix/directed/source/read_iss1
+./shared/validation/busmatrix/directed/source/read_iss2
+./shared/validation/busmatrix/directed/source/write_iss1
+./shared/validation/busmatrix/directed/source/write_iss2
+./shared/validation/busmatrix/directed/source/read_iss1_burst
+./shared/validation/busmatrix/directed/source/write_iss1_burst
+./shared/validation/busmatrix/directed/source/iss_overflow_read
+./shared/validation/busmatrix/directed/source/iss_overflow_write
+
+./shared/validation/busmatrix/directed/source/combined_iss1
+./shared/validation/busmatrix/directed/source/combined_iss2
+
+./shared/validation/busmatrix/directed/source/LRG1_read
+./shared/validation/busmatrix/directed/source/LRG2_read
+./shared/validation/busmatrix/directed/source/LRG1_write
+./shared/validation/busmatrix/directed/source/LRG2_write
+
+./shared/validation/busmatrix/directed/source/read_reorder1
+./shared/validation/busmatrix/directed/source/read_reorder2
+./shared/validation/busmatrix/directed/source/Bresp_reorder1
+./shared/validation/busmatrix/directed/source/Bresp_reorder2
+./shared/validation/busmatrix/directed/source/read_reorder1_burst
+./shared/validation/busmatrix/directed/source/read_reorder2_burst
+./shared/validation/busmatrix/directed/source/Bresp_reorder1_burst
+./shared/validation/busmatrix/directed/source/Bresp_reorder2_burst
+./shared/validation/busmatrix/directed/source/Bresp_early
+
+./shared/validation/busmatrix/directed/source/read_qv1
+./shared/validation/busmatrix/directed/source/read_qv2
+./shared/validation/busmatrix/directed/source/write_qv1
+./shared/validation/busmatrix/directed/source/write_qv2
+
+./shared/validation/busmatrix/directed/source/continuance1
+./shared/validation/busmatrix/directed/source/continuance2
+
+./shared/validation/busmatrix/directed/source/leading_write
+./shared/validation/busmatrix/directed/source/chicken_bits1
+./shared/validation/busmatrix/directed/source/buffer_test
+./shared/validation/busmatrix/directed/source/latency_test
+
+./shared/validation/busmatrix/directed/source/lock_read
+./shared/validation/busmatrix/directed/source/lock_write
+./shared/validation/busmatrix/directed/source/lock_swap1
+./shared/validation/busmatrix/directed/source/lock_swap2
+./shared/validation/busmatrix/directed/source/lock_swap3
+./shared/validation/busmatrix/directed/source/lock_simultaneous
+
+REGRESSION_OFF
+
+
+
+./busmatrix_name/xml/busmatrix_name_io.xml.xsl USING name=bm0
+./busmatrix_name/xml/busmatrix_name_pmap.xml.xsl USING name=bm0
+./busmatrix_name/xml/busmatrix_name_vlog_file_list.xsl USING name=bm0 SCRIPT(filelist_sub.pl)
+REGRESSION_ON
+./busmatrix_name/xml/busmatrix_name_sva_file_list.xsl USING name=bm0  SCRIPT(filelist_sub.pl)
+REGRESSION_OFF
+./busmatrix_name/xml/busmatrix_name.xml.xsl USING name=bm0
+./busmatrix_name/xml/parcfg_bm_test_internal_xmlcfg_name.xml.xsl USING name=bm0 REGRESSION
+
+
+./busmatrix_name/xml/tbench_address_map.xml.xsl USING name=bm0 DIRECTORY REGRESSION
+
+
+./busmatrix_name/busmatrix_file_list.xsl USING name=bm0 PROCESS ./busmatrix_name/xml/busmatrix_name.xml
+
+
+
+./reg_slice/verilog/
+
+
+
+
+./cdc_blocks/verilog/parcfg_cdc_comb_or2_xmlcfg.v.xsl
+./cdc_blocks/verilog/parcfg_cdc_comb_or3_xmlcfg.v.xsl
+./cdc_blocks/verilog/parcfg_cdc_comb_and2_xmlcfg.v.xsl
+./cdc_blocks/verilog/parcfg_cdc_random_xmlcfg.v.xsl
+./cdc_blocks/verilog/parcfg_cdc_launch_data_xmlcfg.v.xsl
+./cdc_blocks/verilog/parcfg_cdc_corrupt_gry_xmlcfg.v.xsl
+./cdc_blocks/verilog/parcfg_cdc_comb_mux2_xmlcfg.v.xsl
+./cdc_blocks/verilog/parcfg_cdc_bypass_sync_xmlcfg.v.xsl
+./cdc_blocks/verilog/parcfg_cdc_capt_nosync_xmlcfg.v.xsl
+./cdc_blocks/verilog/parcfg_cdc_capt_sync_xmlcfg.v.xsl
+./cdc_blocks/verilog/parcfg_cdc_launch_gry_xmlcfg.v.xsl
+./cdc_blocks/verilog/parcfg_cdc_corrupt_xmlcfg.v.xsl
+
+./cdc_blocks/verilog/parcfg_reset_sync_xmlcfg.v.xsl
+./cdc_blocks/verilog/parcfg_sync_flop_xmlcfg.v.xsl
+./cdc_blocks/verilog/parcfg_syncn_xmlcfg.v.xsl
+
+
+
+
+./default_slave_name/xml/default_slave_name_io.xml.xsl USING name=ds_1
+./default_slave_name/xml/default_slave_name_vlog_file_list.xsl USING name=ds_1 SCRIPT(filelist_sub.pl)
+REGRESSION_ON
+./default_slave_name/xml/default_slave_name_sva_file_list.xsl USING name=ds_1 SCRIPT(filelist_sub.pl)   REGRESSION2
+REGRESSION_OFF
+./default_slave_name/xml/default_slave_name.xml.xsl USING name=ds_1
+
+./default_slave_name/xml/tbench_address_map.xml.xsl USING name=ds_1 DIRECTORY REGRESSION
+
+
+./default_slave_name/default_slave_file_list.xsl USING name=ds_1 PROCESS ./default_slave_name/xml/default_slave_name.xml
+
+
+
+
+./nic400/xml DIRECTORY
+
+
+
+./nic400/verilog/Axi/Axi.v SCRIPT(create_undefs.pl)
+
+./nic400/verilog/Axi4PC/Axi4PC.sv
+./nic400/verilog/Axi4PC/Axi4PC_defs.v
+./nic400/verilog/Axi4PC/Axi4PC_undefs.v
+./nic400/verilog/Axi4PC/Axi4PC_message_defs.v
+./nic400/verilog/Axi4PC/Axi4PC_message_undefs.v
+./nic400/verilog/Axi4PC/Axi4PC_coverage_undefs.v
+./nic400/verilog/Axi4PC/Axi4PC_no_coverage_macros.v
+
+
+
+./nic400/xml/tbench_address_map.xml.xsl DIRECTORY
+./spirit
+
+./nic400/top_file_list.xsl PROCESS ./nic400/xml/nic400.xml
+
+
+
+
+
+REGRESSION_ON
+
+
+
+./verify.aes.xsl
+./power.aes.xsl
+
+
+./the_works.aes.xsl
+./the_works_beta.aes.xsl
+
+./all_smoke.aes.xsl
+./all_smoke_beta.aes.xsl
+
+./all_smoke_full_bm_ds.aes.xsl
+./all_smoke_beta_full_bm_ds.aes.xsl
+
+./compile_smoke.aes.xsl
+
+./ds_regress.aes.xsl
+./rsb_regress.aes.xsl
+./ib_regress.aes.xsl
+./amib_regress.aes.xsl
+./asib_regress.aes.xsl
+./random_regress.aes.xsl
+./bm_regress.aes.xsl
+./int_regress.aes.xsl
+./tlx_regress.aes.xsl
+./vn_regress.aes.xsl
+./top_regress.aes.xsl
+./top_addrmap.aes.xsl
+./top_beta_regress.aes.xsl
+./dmu_regress.aes.xsl
+
+./amib_smoke.aes.xsl
+./asib_smoke.aes.xsl
+./ib_smoke.aes.xsl
+./ib_directed_mini.aes.xsl
+./bm_smoke.aes.xsl
+./ds_smoke.aes.xsl
+./rsb_smoke.aes.xsl
+./tlx_smoke.aes.xsl
+./tlx_top_smoke.aes.xsl
+./vn_smoke.aes.xsl
+./top_smoke.aes.xsl
+./top_mini.aes.xsl
+
+./asib_soak.aes.xsl
+./amib_soak.aes.xsl
+./ib_soak.aes.xsl
+./rsb_soak.aes.xsl
+./bm_soak.aes.xsl
+./vn_soak.aes.xsl
+./top_soak.aes.xsl
+
+./amib_formal.aes.xsl
+./asib_formal.aes.xsl
+./bm_formal.aes.xsl
+./ds_formal.aes.xsl
+./ib_formal.aes.xsl
+./rsb_formal.aes.xsl
+./tlx_formal.aes.xsl
+./vn_formal.aes.xsl
+
+./ib_mini.aes.xsl
+
+./ib_mini_mti.aes.xsl
+
+
+./top_trial.aes.xsl
+
+./oob.aes.xsl
+
+./parcfg_xmlcfg.sumarise.xsl
+
+
+
+
+./nic400/validation/e
+./nic400/validation/random
+./nic400/validation/random/e
+./nic400/validation/random/source/common
+./nic400/validation/random/source/random_general/random_general.tsf.xsl
+./nic400/validation/random/source/random_general_check_parity/random_general_check_parity.tsf.xsl
+./nic400/validation/random/source/random_perf/random_perf.tsf.xsl
+./nic400/validation/random/source/random_general_netlist/random_general_netlist.tsf.xsl
+./nic400/validation/random/source/random_pause/random_pause.tsf.xsl
+./nic400/validation/random/source/random_qvreg/random_qvreg.tsf.xsl
+./nic400/validation/random/source/random_remap/random_remap.tsf.xsl
+./nic400/validation/random/source/random_remap_lite/random_remap_lite.tsf.xsl
+./nic400/validation/random/source/random_lite/random_lite.tsf.xsl
+./nic400/validation/random/source/random_clocking/random_clocking.tsf.xsl
+./nic400/validation/random/source/random_fixed_bandwidth/random_fixed_bandwidth.tsf.xsl
+./nic400/validation/random/source/random_acc/random_acc.tsf.xsl
+./nic400/validation/random/source/random_mp/random_mp.tsf.xsl
+./nic400/validation/random/source/random_regs/random_regs.tsf.xsl
+./nic400/validation/random/source/random_lock/random_lock.tsf.xsl
+./nic400/validation/random/source/random_clock_gating/random_clock_gating.tsf.xsl
+./nic400/validation/random/source/random_power_gating/random_power_gating.tsf.xsl
+./nic400/validation/random/source/random_diff_freq_general/random_diff_freq_general.tsf.xsl
+./nic400/validation/random/source/random_reset/random_reset.tsf.xsl
+./nic400/validation/random/source/random_hcg_knee0/random_hcg_knee0.tsf.xsl
+
+
+./nic400/validation/random/source/random_general/random_general_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_general_check_parity/random_general_check_parity_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_perf/random_general_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_general_netlist/random_general_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_lite/random_lite_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_pause/random_pause_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_qvreg/random_qvreg_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_acc/random_acc_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_mp/random_mp_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_fixed_bandwidth/random_fixed_bandwidth_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_clocking/random_clocking_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_regs/random_regs_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_lock/random_lock_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_remap/random_remap_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_remap_lite/random_remap_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_clock_gating/random_clock_gating_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_power_gating/random_power_gating_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_diff_freq_general/random_diff_freq_general_master.cfg.xsl  USING master=sSpi
+./nic400/validation/random/source/random_reset/random_reset_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_hcg_knee0/random_hcg_knee0_master.cfg.xsl USING master=sSpi
+./nic400/validation/random/source/random_general/random_general_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_general_check_parity/random_general_check_parity_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_perf/random_general_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_general_netlist/random_general_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_lite/random_lite_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_pause/random_pause_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_qvreg/random_qvreg_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_acc/random_acc_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_mp/random_mp_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_fixed_bandwidth/random_fixed_bandwidth_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_clocking/random_clocking_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_regs/random_regs_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_lock/random_lock_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_remap/random_remap_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_remap_lite/random_remap_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_clock_gating/random_clock_gating_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_power_gating/random_power_gating_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_diff_freq_general/random_diff_freq_general_master.cfg.xsl  USING master=sD2dData
+./nic400/validation/random/source/random_reset/random_reset_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_hcg_knee0/random_hcg_knee0_master.cfg.xsl USING master=sD2dData
+./nic400/validation/random/source/random_general/random_general_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_general_check_parity/random_general_check_parity_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_perf/random_general_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_general_netlist/random_general_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_lite/random_lite_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_pause/random_pause_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_qvreg/random_qvreg_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_acc/random_acc_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_mp/random_mp_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_fixed_bandwidth/random_fixed_bandwidth_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_clocking/random_clocking_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_regs/random_regs_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_lock/random_lock_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_remap/random_remap_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_remap_lite/random_remap_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_clock_gating/random_clock_gating_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_power_gating/random_power_gating_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_diff_freq_general/random_diff_freq_general_master.cfg.xsl  USING master=sIrisBridge
+./nic400/validation/random/source/random_reset/random_reset_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_hcg_knee0/random_hcg_knee0_master.cfg.xsl USING master=sIrisBridge
+./nic400/validation/random/source/random_general/random_general_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_general_check_parity/random_general_check_parity_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_perf/random_general_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_general_netlist/random_general_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_lite/random_lite_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_pause/random_pause_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_qvreg/random_qvreg_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_acc/random_acc_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_mp/random_mp_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_clocking/random_clocking_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_fixed_bandwidth/random_fixed_bandwidth_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_regs/random_regs_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_lock/random_lock_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_remap/random_remap_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_remap_lite/random_remap_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_clock_gating/random_clock_gating_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_power_gating/random_power_gating_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_diff_freq_general/random_diff_freq_general_slave.cfg.xsl  USING slave=mGauxCore
+./nic400/validation/random/source/random_reset/random_reset_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_hcg_knee0/random_hcg_knee0_slave.cfg.xsl USING slave=mGauxCore
+./nic400/validation/random/source/random_general/random_general_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_general_check_parity/random_general_check_parity_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_perf/random_general_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_general_netlist/random_general_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_lite/random_lite_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_pause/random_pause_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_qvreg/random_qvreg_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_acc/random_acc_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_mp/random_mp_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_clocking/random_clocking_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_fixed_bandwidth/random_fixed_bandwidth_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_regs/random_regs_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_lock/random_lock_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_remap/random_remap_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_remap_lite/random_remap_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_clock_gating/random_clock_gating_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_power_gating/random_power_gating_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_diff_freq_general/random_diff_freq_general_slave.cfg.xsl  USING slave=mDexmpcCore
+./nic400/validation/random/source/random_reset/random_reset_slave.cfg.xsl USING slave=mDexmpcCore
+./nic400/validation/random/source/random_hcg_knee0/random_hcg_knee0_slave.cfg.xsl USING slave=mDexmpcCore
+REGRESSION_OFF
+
+

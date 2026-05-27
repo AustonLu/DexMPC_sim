@@ -1,0 +1,382 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2013 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2013-08-22 09:53:32 +0100 (Thu, 22 Aug 2013)
+#-     Revision            : 155877
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import the Base Class
+from os import path, chdir, remove, getcwd
+from sm_base import sm_base
+from ipfs_std_lib import *
+from optparse import SUPPRESS_HELP
+from shutil import copy as filecopy
+from shutil import rmtree
+from copy import copy
+import sys
+
+
+class directed_mti (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise -
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Register workflow
+        self.lsf_workflow = 'arm_engine-1.0-sim_mti'
+
+        #Set the name
+        self.name = 'directed_mti'
+
+        #Set the search_file .. used to identify source paths
+        self.search_file = 'validation.opts'
+
+        #Add a license requirment
+        self.licenses.append('modelsim')
+
+        #Add tool requests
+        self.tools.append('modelsim')
+        self.tools.append('g++')
+        self.tools.append('perl')
+
+        #Add any dependent SMs to the dependent services array
+        self.dependent_services.append('directed_so')
+        self.dependent_services.append('mti_compile')
+
+        #Add reporting SM
+        self.report_service = 'clean_test'
+
+   #-------------------------------------------------------------------------------
+   # options - This function registers all valid command line options for this SM
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+
+        if not group.parser.has_option("--specman"):
+            group.add_option("--specman", dest="specman", action="store_true",
+                         default=False, help=SUPPRESS_HELP)
+
+        if not group.parser.has_option("--sim_length"):
+            group.add_option("--sim_length", dest="length", action="store",
+                         default="-a", help="Specify length of simulation")
+
+        if not group.parser.has_option("--netlist"): 
+            group.add_option("--netlist", dest="netlist", action="store", 
+                 default='\0', help="Replace DUT RTL with the netlist.  Specify the directory relative to the trunk/implementation/<config>/synopsys directory.  E.g. '--nelist=run_top_533MHz'")
+                 
+        if not group.parser.has_option("--disableclockgating"):
+            group.add_option("--disableclockgating", dest="disable_clock_gating", action="store_true", default=False, help = SUPPRESS_HELP)
+        #Complete
+        return 0
+
+   #-------------------------------------------------------------------------------
+   # run_pre_dep - Called before dependencies are processed in the base class
+   #-------------------------------------------------------------------------------
+   def run_pre_dep(self, args, directory):
+
+        if self.options.recompile and path.exists(self.gen_compile_dir()) and not self.options.report:
+             rmtree(self.gen_compile_dir(), 1)
+
+        if self.options.specman == True:
+             self.licenses.append('mti_specman')
+             self.tools.append('specman')
+
+        #add directed option
+        args.append("--directed")
+
+        return 0
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # run - Run the sub_module
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+
+        #determine PERIPH_LOGICAL and PERIPH_CONFIG
+        dirs = directory.split('/')
+        periph_config = dirs[len(dirs) - 4]
+        periph_logical = '/'.join(dirs[:len(dirs) - 4])
+        tb = dirs[len(dirs) - 1]
+
+        #Check that test is defined
+        if len(self.options.test) != 1:
+             message( 'e1.01', 'Only one test name should be supplied to the %s SM!' % self.name )
+             return 0, {}
+        else:
+             test = self.options.test[0]
+
+        #Scan the serach file to get source directories
+        terms = {}
+        terms['test_src_dirs'] = []
+        execfile(directory + '/' + self.search_file, terms)
+        #set default
+        terms['test_src_dirs'].append('./source')
+        src_dir = ''
+
+        #Find best match
+        for try_src_dir in terms['test_src_dirs']:
+            if path.exists(directory + '/' + try_src_dir + '/' + test + '.tsf'):
+                 src_dir = path.normpath(directory + '/' + try_src_dir)
+                 break
+            elif path.exists(directory + '/' + try_src_dir + '/' + test + '/' + test + '.tsf'):
+                 src_dir = path.normpath(directory + '/' + try_src_dir + '/' + test)
+                 break
+
+        #Fail if not found
+        if src_dir == '':
+             return 1, {}
+        
+        #Move to the run directory (create if necessary)
+        self.cchdir(self.gen_run_dir())
+
+        #Copy files to the new directory
+        filecopy(src_dir + '/' + test + '.tsf', test + '.tsf')
+
+        #Determine the system xml file
+        if path.exists(directory + '/../../xml/system.xml'):
+             system_xml = '../../../xml/system.xml'
+        else:
+             system_xml = '../../../../xml/' + periph_config + '.xml'
+
+        #Create path to compile directory
+        cmp_dir = '../' + self.gen_compile_dir() + '/work'
+
+        #Create a run script
+        #First cat the compile logs
+        run_script = ['echo Verilog compile ' + self.gen_compile_dir() + ':',
+                      'cat ../' + self.gen_compile_dir() + '/bsub.log',
+                      'echo Environment compile directed_so:',
+                      'cat ../directed_so/bsub.log',
+                      #Compile in the test code
+                      'g++ -o ' + test + '.exe ../directed_so/pl301_model.so ' +
+                      src_dir + '/' + test + '.cpp',
+                      #Run the generated program
+                      './' + test + '.exe ../../../xml/tbench_address_map.xml ' + system_xml,
+                      #Run only if test compiled sucessfully - there are *.m3i vector files
+                      'if ((${status} == 0) && (-d ' + cmp_dir + ')) then',
+                      #Set periph logical
+                      'setenv PERIPH_LOGICAL ' + periph_logical + '/' + periph_config,
+                      #Run the the vector generation script
+                      '../../../../shared/validation/scripts/VecGen.pl',
+                      #Set periph logical
+                      'setenv PERIPH_LOGICAL ' + periph_logical
+                      ]
+
+        # If the two environment variables are set then try a number of times
+        # to get the work directory before failing. If the env vars are not set
+        # then just try once.
+        if 'DEP_SLEEP_TIME' in environ and 'DEP_SLEEP_COUNT' in environ:
+            run_script.extend([
+                          # Check to see if the compile directory exists.
+                          'set CMP_DIR_EXISTS = 0',
+                          'set CMP_DIR_COUNT = 0',
+                          'set CMP_DIR_TEST = 0',
+                          'while (($CMP_DIR_TEST == 0) && ($CMP_DIR_COUNT < ' + environ['DEP_SLEEP_COUNT'] + '))',
+                          '  sleep ' + environ['DEP_SLEEP_TIME'],
+                          '  @ CMP_DIR_COUNT++',
+                          # Do check for dir at the end of the loop to ensure
+                          # that there is always at least a DEP_SLEEP_TIME
+                          # delay.
+                          '  if (-d ' + cmp_dir + ') then',
+                          '    set CMP_DIR_TEST = 1',
+                          '  endif',
+                          'end',
+                          'if ($CMP_DIR_COUNT < ' + environ['DEP_SLEEP_COUNT'] + ') then',
+                          '  echo "Tried $CMP_DIR_COUNT times before finding compile directory."',
+                          '  set CMP_DIR_EXISTS = 1',
+                          'else',
+                          '  echo "Tried $CMP_DIR_COUNT times and did not find compile directory."',
+                          'endif'])
+        else:
+            run_script.extend([
+                          # Check to see if the compile directory exists.
+                          'set CMP_DIR_EXISTS = 0',
+                          'if (-d ' + cmp_dir + ') then',
+                          '  set CMP_DIR_EXISTS = 1',
+                          'endif'])
+
+
+        if self.options.specman == True:
+             #Setup specman env
+             run_script.extend(['cat ' + test + '.tsf | grep -v "execute vector file" > ' + test + '_xvc.tsf',
+                                'cp ../e/REMOVE.specman .specman',
+                                'setenv XVC_ROOT ' + str(environ.get('XVC_ROOT')),
+                                'setenv XVC_MANAGER_TESTBENCH_FILE ../e/tbench.tb',
+                                'setenv XVC_MANAGER_SCENARIO_FILES ' + test + '_xvc.tsf',
+                                'setenv LD_LIBRARY_PATH ' + environ.get('LD_LIBRARY_PATH') + ':../e'])
+
+        # if selecting to run a netlist compile
+        net_sim_opts = ''
+        
+        if hasattr(self.options, 'netlist') and self.options.netlist != '\0': 
+             net_sim_opts = ' +notimingchecks'
+        
+        # end netlist option varables
+        
+        #Disable clock gating option
+        if self.options.disable_clock_gating:
+            #Check if force statements need to be written
+            run_script.extend(['if ( -e ../init.do ) then',
+            '  rm ../init.do',
+            'endif'
+            '',
+            'echo "Creating init.do"',
+            #Find end of signal declarations, get a list of the the clock gate active signals in the test bench
+            'set num_lines=`grep -n "//Global TB clocks" ../../shared/tb_components/clk_reset_if.v | awk \'BEGIN{FS=":";}{print $1}\'`',
+            'set cact_list=`head -n $num_lines ../../shared/tb_components/clk_reset_if.v | grep cactive | awk \'{sub(",",""); print $1}\'`',
+            #Write the force lines: HIGH after 5 ps
+            'echo "" > ../init.do',
+            'foreach cact ($cact_list)',
+            '  echo "force -freeze sim:/tbench/clk_reset_if/${cact} 1 5ps" >> ../init.do',
+            '  echo "   Forcing clock gate signal: "$cact',
+            'end',
+            'echo "Finished writing init.do"',
+            ''])
+        
+        #Run simulation with specman in gui mode
+        if self.options.specman == True and self.options.gui == True:
+            run_script.extend(['specview -p "load ../e/top; test" vsim -keepstdout' + net_sim_opts +' +nowarnTSCALE -novopt -pli "${SPECMAN_DIR}/libmti_sn_boot.so" \\',
+                               '-lib ' + cmp_dir + ' +define+SPECMAN_COMPLETE  specman specman_wave \\'])
+        #Run simulation with specman in batch mode
+        elif self.options.specman == True:
+            run_script.extend(['specrun -p "load ../e/top; test"  vsim -keepstdout' + net_sim_opts +' +nowarnTSCALE -novopt -pli "${SPECMAN_DIR}/libmti_sn_boot.so" \\',
+                               '-lib ' + cmp_dir + ' +define+SPECMAN_COMPLETE  specman \\'])
+        #Run simulation without specman
+        else:
+            run_script.append('vsim -keepstdout' + net_sim_opts +' +nowarnTSCALE -novopt -lib ' + cmp_dir + ' \\')
+            
+        #Add .do file for gui and batch mode
+        if self.options.disable_clock_gating:
+            if self.options.gui:
+                if path.exists("../../shared/tb_components/dut_reg_check.v"):
+                      run_script.append('-do "log -r /*; radix hex; view signals -undock; do ../init.do" tbench dut_reg_check')
+                else:     
+                      run_script.append('-do "log -r /*; radix hex; view signals -undock; do ../init.do" tbench')
+            else:
+                run_script.append('-do "do ../init.do; run '+self.options.length+'; quit -f" -c tbench')
+        else:
+            if self.options.gui:
+                if path.exists("../../shared/tb_components/dut_reg_check.v"):
+                      run_script.append('-do "log -r /*; radix hex; view signals -undock" tbench dut_reg_check')
+                else:     
+                      run_script.append('-do "log -r /*; radix hex; view signals -undock" tbench')
+            else:
+                run_script.append('-do "run '+self.options.length+'; quit -f" -c tbench')
+
+        #Include tc ovls
+
+
+        #End of compilation check
+        run_script.append('else')
+        run_script.append('echo ERROR: Compilation failed!')
+        run_script.append('exit 1')
+        run_script.append('endif')
+
+        #Write compile run script and complete
+        self.write_run_script(run_script, 'compile_run', args)
+        return self.run_command(args, './compile_run', 0, {'run_dir':self.gen_run_dir()})
+
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # report_sm - Run reporting functions
+   #-------------------------------------------------------------------------------
+   def report_sm(self, args, directory):
+
+         report_args = copy(args)
+         report_args.extend(["--target_dir", self.gen_run_dir()])
+
+         #If not using lsf clean up
+         if self.use_lsf == 0 or not hasattr(self.options, "wait") or \
+                 self.options.wait == None or len(self.options.wait) == 0:
+              self.report_mod.run(report_args)
+         else:
+              res = sys.argv[0] + " simulate --report " + " ".join(report_args)
+              #Schedule the call to reprot
+              return self.run_command(args, res)
+         #return
+         return 0, {}
+
+
+   #-------------------------------------------------------------------------------
+   # gen_run_dir - Builds up the run directory name
+   #-------------------------------------------------------------------------------
+   def gen_run_dir(self):
+
+        #build_directory name
+        run_dir = 'run_'
+
+        if hasattr(self.options, "tc_check") and self.options.tc_check == True:
+             run_dir += 'tc_'
+             
+        if hasattr(self.options, 'netlist') and self.options.netlist != '\0':
+             run_dir = run_dir + 'netlist_'     
+
+        if self.options.specman == True:
+             run_dir = run_dir + 'sn_'
+             
+        if self.options.gui == True:
+             run_dir = run_dir + 'gui_'
+        #add tool, test name
+        return run_dir + 'mti_' + self.options.test[0]
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # clean_sm - Run the sub_module
+   #-------------------------------------------------------------------------------
+   def clean_sm(self, args, directory):
+
+        #Add the run_directory to the delete list
+        self.delete_files.append(self.gen_run_dir())
+
+
+   #-------------------------------------------------------------------------------
+   # gen_compile_dir - the directory which contains RTL compilation result
+   #-------------------------------------------------------------------------------
+   def gen_compile_dir(self):
+
+        #build_directory name
+        compile_dir = 'mti_compile'
+        
+        if hasattr(self.options, 'netlist') and self.options.netlist != '\0':
+            compile_dir += '_netlist'
+            
+        if self.options.specman == True:
+             compile_dir = compile_dir + '_sn'
+ 
+        if hasattr(self.options, "cdc") and self.options.cdc == False:
+             compile_dir = compile_dir + '_ncdc'
+
+        if hasattr(self.options, "tc_check") and self.options.tc_check == True:
+             compile_dir = compile_dir + '_tc'
+        return compile_dir

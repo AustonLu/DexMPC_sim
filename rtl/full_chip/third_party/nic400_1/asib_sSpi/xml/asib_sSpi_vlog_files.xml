@@ -1,0 +1,36 @@
+
+
+#==============================================================================#
+#   The confidential and proprietary information contained in this file may
+#   only be used by a person authorised under and to the extent permitted
+#   by a subsisting licensing agreement from ARM Limited.
+#    (C) COPYRIGHT 2007-2013 ARM Limited.
+#        ALL RIGHTS RESERVED
+#   This entire notice must be reproduced on all copies of this file
+#   and copies of this file may only be made by a person if such person is
+#   permitted to do so under the terms of a subsisting license agreement
+#   from ARM Limited.
+#
+#-----------------------------------------------------------------------------
+#  Version and Release Control Information:
+#
+#  File Revision       : 152731
+#  File Date           :  2013-06-26 16:04:07 +0100 (Wed, 26 Jun 2013)
+#
+#  Release Information : PL401-r1p2-00rel0
+#
+#-----------------------------------------------------------------------------
+<source_list>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/asib_sSpi/xml/asib_sSpi_vlog_file_list</source_list>
+#  Purpose : Verilog files for asib called sSpi
+<dependency>../../nic400/verilog/Axi</dependency>
+<dependency>../../nic400/verilog/Axi4PC</dependency>
+<dependency>../verilog</dependency>
+<dependency>../../reg_slice/verilog</dependency>
+<file>../../reg_slice/verilog/nic400_ful_regd_slice_1.v</file>
+<file>../../reg_slice/verilog/nic400_fwd_regd_slice_1.v</file>
+<file>../../reg_slice/verilog/nic400_rev_regd_slice_1.v</file>
+<file>../verilog/nic400_asib_sSpi_chan_slice_1.v</file>
+<file>../verilog/nic400_asib_sSpi_rd_ss_cdas_1.v</file>
+<file>../verilog/nic400_asib_sSpi_wr_ss_cdas_1.v</file>
+<file>../verilog/nic400_asib_sSpi_decode_1.v</file>
+<file>../verilog/nic400_asib_sSpi_1.v</file>

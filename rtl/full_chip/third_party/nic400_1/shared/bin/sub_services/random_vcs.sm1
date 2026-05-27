@@ -1,0 +1,376 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2013 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2013-06-02 07:19:43 +0100 (Sun, 02 Jun 2013)
+#-     Revision            : 151332
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import the Base Class
+from os import path, chdir, mkdir
+from sm_base import sm_base
+from ipfs_std_lib import *
+from optparse import SUPPRESS_HELP
+from shutil import copy as filecopy
+from copy import copy
+from shutil import rmtree
+from random import randint
+
+class random_vcs (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise -
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Set the name
+        self.name = 'random_vcs'
+
+        #Register workflow
+        self.lsf_workflow = 'arm_engine-1.0-sim_vcs'
+
+        #Add a license requirment
+        self.licenses.append('vcs_specman');
+        self.licenses.append('vcs');
+
+        #Add tool requirment
+        self.tools.append('specman');
+        self.tools.append('vcs');
+        self.tools.append('perl');
+
+        #Add any dependent SMs
+        self.dependent_services.append('random_env')
+        self.dependent_services.append('vcs_compile')
+        self.dependent_services.append('random_test_gen')
+
+        #Add reporting SM
+        self.report_service = 'clean_test'
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # options - This function registers all valid command line options for this SM
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+
+        if not group.parser.has_option("--seedstart"):
+            group.add_option("--seedstart", dest="seedstart", action="store",
+                            default=1, type='int', help="The first seed to run")
+        if not group.parser.has_option("--seednum"):
+            group.add_option("--seednum", dest="seednum", action="store",
+                            default=1, type='int', help="The number of seeds to run")
+        if not group.parser.has_option("--nogen"):
+            group.add_option("--nogen", dest="nogen", action="store_false",
+                            default=True, help=SUPPRESS_HELP)
+        if not group.parser.has_option("--cov"):
+            group.add_option("--cov", dest="cov", action="store_true",
+                            default=False, help="Enable code coverage")
+        if not group.parser.has_option("--tc_off"):
+            group.add_option("--tc_off", dest="tc", action="store_false",
+                            default=True, help="Disable randomisation of timing closure regs")
+        if not group.parser.has_option("--no_sva_limit"):
+            group.add_option("--no_sva_limit", dest="no_sva_limit", action="store_false",
+                            default=True, help="Disable limiting of SVA to 100")
+        if not group.parser.has_option("--tlx_pl_delay"): 
+            group.add_option("--tlx_pl_delay", dest="tlx_pl_delay", action="store_true", 
+                            default=False, help=SUPPRESS_HELP)
+        if not group.parser.has_option("--trace"):
+            group.add_option("--trace", dest="trace", action="store_true",
+                             default=False, help=SUPPRESS_HELP)
+        if not group.parser.has_option("--bandwidth"):
+            group.add_option("--bandwidth", dest="bandwidth", action="store_true",
+                             default=False, help=SUPPRESS_HELP)
+        if not group.parser.has_option("--data_bandwidth"):
+            group.add_option("--data_bandwidth", dest="data_bandwidth", action="store",
+                             default=1, help=SUPPRESS_HELP)
+        #Complete
+        return 0
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # run_pre_dep - Called before dependencies are processed in the base class
+   #-------------------------------------------------------------------------------
+   def run_pre_dep(self, args, directory):
+
+        if self.options.recompile and path.exists(self.gen_compile_dir()):
+             rmtree(self.gen_compile_dir(), 1)
+
+        if self.options.nogen == False and self.dependent_services.count('random_test_gen') != 0:
+             del self.depend_sm['random_test_gen'];
+             self.dependent_services.remove('random_test_gen')
+
+        #Add a "--specman flag" to the arguments to compile for specman
+        args.append("--specman")
+
+        if self.options.tlx_pl_delay == True:
+             args.append("--tlx_pl_delay")
+
+        if self.options.trace == True:
+            args.append("--trace")
+
+        #Delete the Verilog compile directory
+        return 0
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # report_sm - Run reporting functions
+   #-------------------------------------------------------------------------------
+   def report_sm(self, args, directory):
+
+         report_args = copy(args)
+
+         #Determine the run directory
+         report_args.append("--target_dir=" + self.gen_run_dir(self.options.seedstart, self.options.seednum))
+
+         #If not using lsf clean up
+         if self.use_lsf == 0 or not hasattr(self.options, "wait") or \
+              self.options.wait == None or len(self.options.wait) == 0:
+              self.report_mod.run(report_args)
+         else:
+              res = sys.argv[0] + " simulate --report " + " ".join(report_args)
+              #Schedule the call to reprot
+              return self.run_command(args, res)
+
+         #return
+         return 0, {}
+
+   #-------------------------------------------------------------------------------
+   # run - Run the sub_module
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+       #determine PERIPH_LOGICAL and PERIPH_CONFIG
+       dirs = directory.split('/')
+       periph_logical = '/'.join(dirs[:len(dirs) - 4])
+
+       #Check that test is defined
+       if len(self.options.test) != 1:
+            message( 'e1.01', 'Only one test name should be supplied to the %s SM!' % self.name )
+            return 0, {}
+       else:
+            test = self.options.test[0]
+
+       #Create a copy of the arguments
+       cargs = copy(args)
+
+       #Go into run directory
+       self.cchdir(self.gen_run_dir(self.options.seedstart, self.options.seednum))
+
+       #Create path to compiled Verilog
+       cmp_vcs = '../' + self.gen_compile_dir() + '/vcs_specman'
+
+       #Create a run script
+       #First cat the compile logs
+       run_script = ['echo Verilog compile ' + self.gen_compile_dir() + ':',
+                     'cat ../' + self.gen_compile_dir() + '/bsub.log',
+                     'echo Environment compile random_env:',
+                     'cat ../random_env/bsub.log',
+                     #Run only if compiled sucessfully
+                     'if ((-f ' + cmp_vcs + ') && (-f ../random_env/PL301_mon.so)) then'
+                     ]
+
+       # If the two environment variables are set then try a number of times
+       # to get the work directory before failing. If the env vars are not set
+       # then just try once.
+       if 'DEP_SLEEP_TIME' in environ and 'DEP_SLEEP_COUNT' in environ:
+           run_script.extend([
+                         # Check to see if the compile directory exists.
+                         'set CMP_DIR_EXISTS = 0',
+                         'set CMP_DIR_COUNT = 0',
+                         'set CMP_DIR_TEST = 0',
+                         'while (($CMP_DIR_TEST == 0) && ($CMP_DIR_COUNT < ' + environ['DEP_SLEEP_COUNT'] + '))',
+                         '  sleep ' + environ['DEP_SLEEP_TIME'],
+                         '  @ CMP_DIR_COUNT++',
+                         # Do check for dir at the end of the loop to ensure
+                         # that there is always at least a DEP_SLEEP_TIME
+                         # delay.
+                         '  if (-e ' + cmp_vcs + ') then',
+                         '    set CMP_DIR_TEST = 1',
+                         '  endif',
+                         'end',
+                         'if ($CMP_DIR_COUNT < ' + environ['DEP_SLEEP_COUNT'] + ') then',
+                         '  echo "Tried $CMP_DIR_COUNT times before finding compile directory."',
+                         '  set CMP_DIR_EXISTS = 1',
+                         'else',
+                         '  echo "Tried $CMP_DIR_COUNT times and did not find compile directory."',
+                         'endif'])
+       else:
+           run_script.extend([
+                         # Check to see if the compile directory exists.
+                         'set CMP_DIR_EXISTS = 0',
+                         'if (-e ' + cmp_vcs + ') then',
+                         '  set CMP_DIR_EXISTS = 1',
+                         'endif'])
+
+       run_script.extend([
+                     #Run only if compiled sucessfully
+                     'if (($CMP_DIR_EXISTS == 1) && (-f ../random_env/PL301_mon.so)) then'
+                     ])
+
+
+       #Add tc register randomisation
+       if self.options.tc:
+             run_script.extend(["setenv RAND_TC \"#include '../source/common/tc_update.tsf'\""])
+       else:
+             run_script.extend(["setenv RAND_TC \"\""])
+
+       #Create tsf file
+       if self.options.bandwidth:
+             self.tools.append('xalan');
+             #regenerate .tsf file using data_bandwidth if present
+             run_script.extend(['if !(-e ' + test + '.tsf) then',
+                                '  Xalan -p bandwidth_fraction '+ str(self.options.data_bandwidth) + ' -o raw_' + test + '.tsf ../../../../xml/' + self.options.cfg + '.xml ../../../../../../shared/logical/nic400/nic400/validation/random/source/' + test + '/' + test + '.tsf.xsl',
+                                '  parse_tsf.pl raw_' + test + '.tsf ' + test + '.tsf',
+                                'endif',
+                                'cp ../e/REMOVE.specman .specman',
+                                'setenv PERIPH_LOGICAL ' + periph_logical,
+                                'setenv XVC_ROOT ' + str(environ.get('XVC_ROOT'))])
+       else:
+             run_script.extend(['if !(-e ' + test + '.tsf) then',
+                                '  parse_tsf.pl ../source/' + test + '/' + test + '.tsf ' + test + '.tsf',
+                                'endif',
+                                'cp ../e/REMOVE.specman .specman',
+                                'setenv PERIPH_LOGICAL ' + periph_logical,
+                                'setenv XVC_ROOT ' + str(environ.get('XVC_ROOT'))])
+
+       #If more than one seed
+       if self.options.seednum > 1:
+            run_script.extend(['setenv seed $<',
+                               'setenv run_no $<',
+                               'setenv offsetpath ..',
+                               'mkdir seed_${run_no}',
+                               'cd seed_${run_no}'])
+       else:
+            run_script.extend(['setenv seed ' + str(self.options.seedstart),
+                               'setenv offsetpath .'])
+
+       #Add further command line options
+       run_script.extend(['setenv XVC_MANAGER_TESTBENCH_FILE ${offsetpath}/../e/tbench.tb',
+                          'setenv XVC_MANAGER_SCENARIO_FILES ${offsetpath}/' + test + '.tsf',
+                          'setenv SOURCE_DIR ${offsetpath}/../source/' + test,
+                          'setenv LD_LIBRARY_PATH ' + environ.get('LD_LIBRARY_PATH') + ':' + path.normpath(directory + '/random_env')])
+
+       #Run simulation with specman in gui mode
+       if self.options.gui == True:
+            run_script.append('echo "finish" | specview -p "load ${offsetpath}/../e/top.e; test -seed=${seed}" -sio ${offsetpath}/' + cmp_vcs + ' -gui \\')
+       #Run simulation with specman in batch mode
+       else:
+            run_script.append('echo "finish" | specrun -p "load ${offsetpath}/../e/top.e; test -seed=${seed}" ${offsetpath}/' + cmp_vcs + ' \\')
+
+       if self.options.no_sva_limit:
+            run_script.append('-assert maxfail=100 \\')
+
+       #Generate vcs coverage database along with simulate
+       if self.options.cov == True:
+            if self.options.seednum > 1:
+                run_script.append('-cm_name ' + test + '_${run_no} -cm_dir ${offsetpath}/../../logs/vcs_coverage -cm line+cond+tgl+fsm -ova_cov\\')
+            else:
+                run_script.append('-cm_name ' + test + ' -cm_dir ${offsetpath}/../../logs/vcs_coverage -cm line+cond+tgl+fsm -ova_cov\\')
+
+       #wait for license
+       run_script.append('+vcs+lic+wait')
+
+       #Set up lsf setting
+       if self.options.seednum > 1:
+           cargs.append("--input=input.%I")
+           cargs.append("--log=" + self.options.output_file + ".%I");
+           cargs.append("--job_name=" + self.options.test[0] + "[" + str(self.options.seedstart) + "-"
+                  + str(self.options.seedstart + self.options.seednum - 1) + "]");
+
+           #Output the necessary input files
+           for seed in range(self.options.seednum):
+               FILE = open("input." + str(seed + self.options.seedstart), "w")
+               FILE.write(str(randint(0, 100000)) + '\n')
+               FILE.write(str(seed + self.options.seedstart) + '\n')
+               FILE.close()
+
+       #End of compilation check
+       run_script.append('else')
+       run_script.append('  echo ERROR: Compilation failed?')
+       run_script.append('  exit 1')
+       run_script.append('endif')
+
+       #Write run script
+       self.write_run_script(run_script, 'compile_run', cargs)
+       return self.run_command(cargs, './compile_run')
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # gen_run_dir - Builds up the run directory name
+   #-------------------------------------------------------------------------------
+   def gen_run_dir(self, seedstart, seednum):
+
+        #build_directory name
+        run_dir = 'run_'
+        if self.options.tc == True:
+             run_dir = run_dir + 'tc_'
+        if self.options.cov == True:
+             run_dir = run_dir + 'cov_'
+        if self.options.gui == True:
+             run_dir = run_dir + 'gui_'
+        if self.options.pdc_sim == True:
+             run_dir = run_dir + 'pdc_' 
+        if self.options.bandwidth == True:
+             run_dir = run_dir + str(self.options.data_bandwidth) + '_'
+        #add tool
+        run_dir = run_dir + 'vcs_sn'
+        #add seed
+        if seednum == 1:
+           run_dir += str(seedstart)
+        #add testname
+        return run_dir + '_' + self.options.test[0]
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # clean_sm - Run the sub_module
+   #-------------------------------------------------------------------------------
+   def clean_sm(self, args, directory):
+
+      #register the run directory for deletion
+      self.delete_files.append(self.gen_run_dir(self.options.seedstart, self.options.seednum))
+
+   #-------------------------------------------------------------------------------
+   # gen_compile_dir - the directory which contains RTL compilation result
+   #-------------------------------------------------------------------------------
+   def gen_compile_dir(self):
+
+        #build_directory name
+        compile_dir = 'vcs_compile_sn'
+        if hasattr(self.options, 'cdc') and self.options.cdc == False:
+             compile_dir = compile_dir + '_ncdc'
+        if self.options.cov == True:
+             compile_dir = compile_dir + '_cov'
+        if self.options.gui == True:
+             compile_dir = compile_dir + '_gui'
+        if self.options.pdc_sim == True:
+             compile_dir = compile_dir + '_pdc'
+
+        return compile_dir

@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+
+
+<!DOCTYPE periph [
+<!ENTITY axi_ext         SYSTEM "../../shared/busdefs/AXI_ext/AXI_ext.xml">
+<!ENTITY axi_ext_rtl     SYSTEM "../../shared/busdefs/AXI_ext/AXI_ext_rtl.xml">
+<!ENTITY axi4            SYSTEM "../../shared/busdefs/AXI4/AXI4.xml">
+<!ENTITY axi4_rtl        SYSTEM "../../shared/busdefs/AXI4/AXI4_rtl.xml">
+<!ENTITY axi_vn          SYSTEM "../../shared/busdefs/AXI_VN/AXI_VN.xml">
+<!ENTITY axi_vn_rtl      SYSTEM "../../shared/busdefs/AXI_VN/AXI_VN_rtl.xml">
+<!ENTITY nic400_axi      SYSTEM "../../shared/busdefs/NIC400_AXI/NIC400_AXI.xml">
+<!ENTITY nic400_axi_rtl  SYSTEM "../../shared/busdefs/NIC400_AXI/NIC400_AXI_rtl.xml">
+<!ENTITY nic400_axi4     SYSTEM "../../shared/busdefs/NIC400_AXI4/NIC400_AXI4.xml">
+<!ENTITY nic400_axi4_rtl SYSTEM "../../shared/busdefs/NIC400_AXI4/NIC400_AXI4_rtl.xml">
+<!ENTITY itb             SYSTEM "../../shared/busdefs/ITB/ITB.xml">
+<!ENTITY itb_rtl         SYSTEM "../../shared/busdefs/ITB/ITB_rtl.xml">
+<!ENTITY ahb             SYSTEM "../../shared/busdefs/AHBLite/AHBLite.xml">
+<!ENTITY ahb_rtl         SYSTEM "../../shared/busdefs/AHBLite/AHBLite_rtl.xml">
+<!ENTITY apb             SYSTEM "../../shared/busdefs/APB/APB.xml">
+<!ENTITY apb_rtl         SYSTEM "../../shared/busdefs/APB/APB_rtl.xml">
+<!ENTITY apb4            SYSTEM "../../shared/busdefs/APB4/APB4.xml">
+<!ENTITY apb4_rtl        SYSTEM "../../shared/busdefs/APB4/APB4_rtl.xml">
+<!ENTITY t_apb           SYSTEM "../../shared/busdefs/T_APB/T_APB.xml">
+<!ENTITY t_apb_rtl       SYSTEM "../../shared/busdefs/T_APB/T_APB_rtl.xml">
+<!ENTITY nic400_vn       SYSTEM "../../shared/busdefs/VN/VN.xml">
+<!ENTITY nic400_vn_rtl   SYSTEM "../../shared/busdefs/VN/VN_rtl.xml">
+<!ENTITY files           SYSTEM "amib_mGauxCore_vlog_files.xml">
+<!ENTITY connect         SYSTEM "amib_mGauxCore_io.xml">]>
+
+<periph>
+<xmlcfg>1</xmlcfg>
+<parcfg>nic400</parcfg>
+<hcg_en>false</hcg_en>
+<spirit_prefix>nic400_amib</spirit_prefix>
+
+
+   <addr_width>32</addr_width>
+   <apb_config>false</apb_config>
+   <apb_slave_no>65</apb_slave_no>
+   <aruser_width>0</aruser_width>
+   <awuser_width>0</awuser_width>
+   <bridge>false</bridge>
+   <buser_width>0</buser_width>
+   <clock_boundary>none</clock_boundary>
+   <clock_domain_name_master_if>clk0</clock_domain_name_master_if>
+   <clock_domain_name_slave_if>clk0</clock_domain_name_slave_if>
+   <compress_id>true</compress_id>
+   <data_width>64</data_width>
+   <dest_type>peripheral</dest_type>
+   <id_compress_info>0,1,2,3,4,5,6,b0</id_compress_info>
+   <iid_width>0</iid_width>
+   <in_id_list>00,10,01</in_id_list>
+   <infra_mi_no>63</infra_mi_no>
+   <lock>false</lock>
+   <master_if_addr_width>32</master_if_addr_width>
+   <master_if_data_width>64</master_if_data_width>
+   <max_vid_width>5</max_vid_width>
+   <multi_ported>false</multi_ported>
+   <multi_region>false</multi_region>
+   <name>mGauxCore</name>
+   <out_id_list>00,10,01</out_id_list>
+   <out_id_width>7</out_id_width>
+   <pl_id_width>8</pl_id_width>
+   <protocol>axi4</protocol>
+   <qv_out>false</qv_out>
+   <regions_flag>false</regions_flag>
+   <ruser_width>0</ruser_width>
+   <siid_width>2</siid_width>
+   <slave_if_data_width>64</slave_if_data_width>
+   <spirit_prefix>nic400_amib</spirit_prefix>
+   <token_prerequest>false</token_prerequest>
+   <token_prerequest_bridge>false</token_prerequest_bridge>
+   <trustzone>nsec</trustzone>
+   <type>amib</type>
+   <vn_external>none</vn_external>
+   <vn_external_bridge>none</vn_external_bridge>
+   <wuser_width>0</wuser_width>
+   <master_if_port_name>mGauxCore_m</master_if_port_name>
+   <slave_if_port_name>mGauxCore_s</slave_if_port_name>
+
+   <one_hot_vn>true</one_hot_vn>
+
+   <block_type>amib</block_type>
+   <qv_width>0</qv_width>
+   <amib_id_width>8</amib_id_width>
+   <downsize_addr>false</downsize_addr>
+   <upsize_addr>false</upsize_addr>
+   <auser_width>0</auser_width>
+   <duser_width>0</duser_width>
+   <ahb_fwd_reg>true</ahb_fwd_reg>
+
+   <system_name>nic400_1</system_name>
+
+   <tlx>false</tlx>
+   <tlx_name>bm0</tlx_name>
+   <ib>false</ib>
+   <ib_name>NOIB</ib_name>
+   <ib_cfgm_apb_reqd></ib_cfgm_apb_reqd>
+   <ib_slave_port_name></ib_slave_port_name>
+   <ib_master_port_name></ib_master_port_name>
+   <ib_master_port_protocol></ib_master_port_protocol>
+   <ib_clock_boundary></ib_clock_boundary>
+   <ib_sizing>false</ib_sizing>
+   <ib_slave_port_protocol></ib_slave_port_protocol>
+   <ib_clock_boundary></ib_clock_boundary>
+   <ib_slave_port_width></ib_slave_port_width>
+   <ib_slave_port_addr_width></ib_slave_port_addr_width>
+   <ib_vn_upstreams>0</ib_vn_upstreams>
+   <ib_vn_downstreams>false</ib_vn_downstreams>
+
+   
+
+   <!-- TLX Block -->
+   <tlx_slave_if_protocol>axi4</tlx_slave_if_protocol>
+
+
+   
+   <reg>
+       <name>w</name>
+       <type>rev</type>
+       <impl>present</impl>
+       <location>master_port</location>
+       <payld_width>73</payld_width>
+   </reg>
+   <reg>
+       <name>b</name>
+       <type>rev</type>
+       <impl>present</impl>
+       <location>master_port</location>
+       <payld_width>9</payld_width>
+   </reg>
+   <reg>
+       <name>r</name>
+       <type>rev</type>
+       <impl>present</impl>
+       <location>master_port</location>
+       <payld_width>74</payld_width>
+   </reg>
+   <reg>
+       <name>aw</name>
+       <type>full</type>
+       <impl>absent</impl>
+       <location>master_port</location>
+       <payld_width>60</payld_width>
+   </reg>
+   <reg>
+       <name>ar</name>
+       <type>full</type>
+       <impl>absent</impl>
+       <location>master_port</location>
+       <payld_width>60</payld_width>
+   </reg>
+   <reg>
+       <name>aw</name>
+       <type>full</type>
+       <impl>absent</impl>
+       <location>slave_port</location>
+       <payld_width>60</payld_width>
+   </reg>
+   <reg>
+       <name>ar</name>
+       <type>full</type>
+       <impl>absent</impl>
+       <location>slave_port</location>
+       <payld_width>60</payld_width>
+   </reg>
+   <reg>
+       <name>r</name>
+       <type>full</type>
+       <impl>absent</impl>
+       <location>slave_port</location>
+       <payld_width>74</payld_width>
+   </reg>
+   <reg>
+       <name>w</name>
+       <type>full</type>
+       <impl>absent</impl>
+       <location>slave_port</location>
+       <payld_width>73</payld_width>
+   </reg>
+   <reg>
+       <name>b</name>
+       <type>full</type>
+       <impl>absent</impl>
+       <location>slave_port</location>
+       <payld_width>9</payld_width>
+   </reg>
+
+<master_if_count>1</master_if_count>
+
+<master_if>
+    <name>mGauxCore_m</name>
+    <read_issuing_capability>1</read_issuing_capability>
+    <write_issuing_capability>1</write_issuing_capability>
+    <combined_issuing_capability>1</combined_issuing_capability>
+    <limit_acceptance_capability>1</limit_acceptance_capability>
+    <data_width>64</data_width>
+    <addr_width>32</addr_width>
+    <pl_id_width>8</pl_id_width>
+    <protocol>axi4</protocol>
+    <aid_width>8</aid_width>
+    <ID_WIDTH>8</ID_WIDTH>
+    <lock>false</lock>
+    <regions_flag>1</regions_flag>
+    <clock></clock>
+</master_if>
+
+<slave_if>
+    <name>mGauxCore_s</name>
+    <tcom_name>mGauxCore_s</tcom_name>
+    <number>0</number>
+    <read_acceptance_capability>3</read_acceptance_capability>
+    <write_acceptance_capability>3</write_acceptance_capability>
+    <combined_acceptance_capability>1</combined_acceptance_capability>
+    <unlimited_acceptance_capability>1</unlimited_acceptance_capability>
+    <data_width>64</data_width>
+    <addr_width>32</addr_width>
+    <valid_width>1</valid_width>
+    <pl_id_width>8</pl_id_width>
+    <protocol>axi4</protocol>
+    <aid_width>8</aid_width>
+    <ID_WIDTH>8</ID_WIDTH>
+    <lock>false</lock>
+    <regions_flag>1</regions_flag>
+    <src>bm0</src>
+    <clock></clock>
+    <sim_start_point>mGauxCore.mGauxCore_s</sim_start_point>
+    <external>false</external>
+</slave_if>
+
+   <clock>
+      <name>clk0</name>
+      <domain>slave</domain>
+      <domain>master</domain>
+   </clock>
+
+
+&axi_ext;
+&axi_ext_rtl;
+&axi4;
+&axi4_rtl;
+&axi_vn;
+&axi_vn_rtl;
+&nic400_axi;
+&nic400_axi_rtl;
+&nic400_axi4;
+&nic400_axi4_rtl;
+&nic400_vn;
+&nic400_vn_rtl;
+&itb;
+&itb_rtl;
+&ahb;
+&ahb_rtl;
+&apb;
+&apb_rtl;
+&apb4;
+&apb4_rtl;
+&t_apb;
+&t_apb_rtl;
+&files;
+&connect;
+
+
+<id>
+<bit>
+   <no>0</no>
+   <type>bit</type>
+   <value>0</value>
+</bit>
+<bit>
+   <no>1</no>
+   <type>bit</type>
+   <value>1</value>
+</bit>
+<bit>
+   <no>2</no>
+   <type>bit</type>
+   <value>2</value>
+</bit>
+<bit>
+   <no>3</no>
+   <type>bit</type>
+   <value>3</value>
+</bit>
+<bit>
+   <no>4</no>
+   <type>bit</type>
+   <value>4</value>
+</bit>
+<bit>
+   <no>5</no>
+   <type>bit</type>
+   <value>5</value>
+</bit>
+<bit>
+   <no>6</no>
+   <type>bit</type>
+   <value>6</value>
+</bit>
+<bit>
+   <no>7</no>
+   <type>tie</type>
+   <value>1'b0</value>
+</bit>
+
+</id>
+
+
+</periph>
+
+

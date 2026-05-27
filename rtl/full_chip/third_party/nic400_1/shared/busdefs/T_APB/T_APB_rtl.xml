@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+// =============================================================================
+// This confidential and proprietary information may be used only as
+// authorised by a licensing agreement from ARM Limited
+//   (C) COPYRIGHT 2008-2012 ARM Limited
+//       ALL RIGHTS RESERVED
+// The entire notice above must be reproduced on all authorised
+// copies and copies may only be made to the extent permitted
+// by a licensing agreement from ARM Limited.
+//
+// =============================================================================
+//
+// Purpose :
+//           This defines the Testbench AMBA Advanced Peripheral Bus (T_APB 3.0)
+//
+// =============================================================================
+-->
+<spirit:abstractionDefinition xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/index.xsd ">
+  <spirit:vendor>amba.com</spirit:vendor>
+  <spirit:library>TBench</spirit:library>
+  <spirit:name>T_APB_rtl</spirit:name>
+  <spirit:version>r0p0</spirit:version>
+  <spirit:busType spirit:library="TBench" spirit:name="T_APB" spirit:vendor="amba.com" spirit:version="r0p0" />
+  <spirit:ports>
+    <spirit:port>
+      <spirit:logicalName>PCLK</spirit:logicalName>
+      <spirit:description>Clock - The rising edge of PCLK times all transfers on the APB</spirit:description>
+      <spirit:wire>
+        <spirit:qualifier>
+          <spirit:isClock>true</spirit:isClock>
+        </spirit:qualifier>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:requiresDriver spirit:driverType="clock">true</spirit:requiresDriver>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>PCLKEN_config</spirit:logicalName>
+      <spirit:description>
+        APB Clock enable config port.
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>PRESETn</spirit:logicalName>
+      <spirit:description>
+	Reset - The APB reset signal is active LOW. This signal is normally connected
+	directly to the system bus reset signal
+</spirit:description>
+      <spirit:wire>
+        <spirit:qualifier>
+          <spirit:isReset>true</spirit:isReset>
+        </spirit:qualifier>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:requiresDriver spirit:driverType="singleShot">true</spirit:requiresDriver>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>PADDR</spirit:logicalName>
+      <spirit:description>
+	Address - This is the APB address bus. It can be up to 32 bits wide and is driven
+	by the peripheral bus bridge unit
+</spirit:description>
+      <spirit:wire>
+        <spirit:qualifier>
+          <spirit:isAddress>true</spirit:isAddress>
+        </spirit:qualifier>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>PSELx</spirit:logicalName>
+      <spirit:description>
+	Select - The APB bridge unit generates this signal to each peripheral bus slave.
+	It indicates that the slave device is selected and that a data transfer is required.
+	There is a PSELx signal for each slave
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>PENABLE</spirit:logicalName>
+      <spirit:description>
+	Enable - This signal indicates the second and subsequent cycles of an APB
+	transfer
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>PWRITE</spirit:logicalName>
+      <spirit:description>
+	Direction - This signal indicates an APB write access when HIGH and an APB
+	read access when LOW
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>PRDATA</spirit:logicalName>
+      <spirit:description>
+	Read Data - The selected slave drives this bus during read cycles when
+	PWRITE is LOW. This bus can be up to 32-bits wide
+</spirit:description>
+      <spirit:wire>
+        <spirit:qualifier>
+          <spirit:isData>true</spirit:isData>
+        </spirit:qualifier>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>PWDATA</spirit:logicalName>
+      <spirit:description>
+	Write data - This bus is driven by the peripheral bus bridge unit during write
+	cycles when PWRITE is HIGH. This bus can be up to 32 bits wide
+</spirit:description>
+      <spirit:wire>
+        <spirit:qualifier>
+          <spirit:isData>true</spirit:isData>
+        </spirit:qualifier>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>PREADY</spirit:logicalName>
+      <spirit:description>Ready - The slave uses this signal to extend an APB transfer</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>1</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>PSLVERR</spirit:logicalName>
+      <spirit:description>
+	This signal indicates a transfer failure. APB peripherals are not required to
+	support the PSLVERR pin. This is true for both existing and new APB
+	peripheral designs. Where a peripheral does not include this pin then the
+	appropriate input to the APB bridge is tied LOW
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <!-- Optional user signals -->
+    <spirit:port>
+      <spirit:logicalName>PCLKEN</spirit:logicalName>
+      <spirit:description>
+	This is an optional enable signal for PCLK domain
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>1</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+  </spirit:ports>
+  <spirit:description>The current file describes the RTL view of an APB interface</spirit:description>
+</spirit:abstractionDefinition>

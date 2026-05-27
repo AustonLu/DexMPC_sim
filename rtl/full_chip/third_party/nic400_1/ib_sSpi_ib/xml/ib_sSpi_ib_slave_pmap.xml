@@ -1,0 +1,22 @@
+
+ <reg_block>
+   <name            >ib_slv</name>
+   <offset_lsb      >9</offset_lsb>
+   <node_address    ></node_address>
+   <node_name       >sSpi_ib</node_name>
+   <instance><name></name><inst_offset>000</inst_offset><inst_top></inst_top></instance>
+
+
+   <reg name="fn_mod2">
+     <name          >fn_mod2</name>
+     <offset        >024</offset>
+     <maskable      >FALSE</maskable>
+     <bit_field     ><name>bypass_merge</name><bits>1</bits><start_bit>0</start_bit>
+                     <initial_value >1'b0</initial_value></bit_field>
+     <reserved      ><bits>31</bits><start_bit>1</start_bit></reserved>
+     <test_mask     >0x00000001</test_mask>
+     <access_type   >RW</access_type>
+     <through_type  >FALSE</through_type>
+   </reg>
+
+ </reg_block>   <!-- end ib_slv -->

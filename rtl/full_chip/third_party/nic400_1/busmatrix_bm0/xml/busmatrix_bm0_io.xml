@@ -1,0 +1,1427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+#-------------------------------------------------------------------------------
+# The confidential and proprietary information contained in this file may
+# only be used by a person authorised under and to the extent permitted
+# by a subsisting licensing agreement from ARM Limited.
+#
+#            (C) COPYRIGHT 2008-2013 ARM Limited.
+#                ALL RIGHTS RESERVED
+#
+# This entire notice must be reproduced on all copies of this file
+# and copies of this file may only be made by a person if such person is
+# permitted to do so under the terms of a subsisting license agreement
+# from ARM Limited.
+#-------------------------------------------------------------------------------
+# Version and Release Control Information:
+#
+# File Revision       : 149998
+# File Date           :  2013-05-09 16:04:36 +0100 (Thu, 09 May 2013)
+# Release Information : PL401-r1p2-00rel0
+#-------------------------------------------------------------------------------
+# Purpose : Verilog IO defines for busmatrix_bm0
+#-------------------------------------------------------------------------------
+
+<bus xmlns:xalan="http://xml.apache.org/xalan">
+  <type>NIC400_AXI4</type>
+  <description>//slave Interface Port axi_s_1</description>
+  <name>axi_s_1</name>
+  <direction>slave</direction>
+  <channel>false</channel>
+  <group>
+    <description>AW Channel</description>
+    <signal>
+      <busname>AWID</busname>
+      <name>awid_axi_s_1</name>
+      <width>8</width>
+      <description>write id of axi_s_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWADDR</busname>
+      <name>awaddr_axi_s_1</name>
+      <width>32</width>
+      <description>write address of axi_s_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWLEN</busname>
+      <name>awlen_axi_s_1</name>
+      <description>write length field of axi_s_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWSIZE</busname>
+      <name>awsize_axi_s_1</name>
+      <description>write size of axi_s_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWBURST</busname>
+      <name>awburst_axi_s_1</name>
+      <description>write burst length of axi_s_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWLOCK</busname>
+      <name>awlock_axi_s_1</name>
+      <description>write lock of axi_s_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWCACHE</busname>
+      <name>awcache_axi_s_1</name>
+      <description>write cache field of axi_s_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWPROT</busname>
+      <name>awprot_axi_s_1</name>
+      <description>write prot field of axi_s_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWVALID</busname>
+      <name>awvalid_axi_s_1</name>
+      <description>write valid of axi_s_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWVALID_VECT</busname>
+      <name>awvalid_vect_axi_s_1</name>
+      <width>3</width>
+      <description>write valid vector of axi_s_1 AXI bus AW Channel</description>
+    </signal>
+    <signal>
+      <busname>AWREADY</busname>
+      <name>awready_axi_s_1</name>
+      <description>write ready of axi_s_1 AXI bus AW channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>W Channel</description>
+    <signal>
+      <busname>WDATA</busname>
+      <name>wdata_axi_s_1</name>
+      <width>64</width>
+      <description>write data of axi_s_1 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WSTRB</busname>
+      <name>wstrb_axi_s_1</name>
+      <width>8</width>
+      <description>write strobes of axi_s_1 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WLAST</busname>
+      <name>wlast_axi_s_1</name>
+      <description>write last of axi_s_1 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WVALID</busname>
+      <name>wvalid_axi_s_1</name>
+      <description>write valid of axi_s_1 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WREADY</busname>
+      <name>wready_axi_s_1</name>
+      <description>write ready of axi_s_1 AXI bus W Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>B Channel</description>
+    <signal>
+      <busname>BID</busname>
+      <name>bid_axi_s_1</name>
+      <width>8</width>
+      <description>b response id of axi_s_1 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BRESP</busname>
+      <name>bresp_axi_s_1</name>
+      <description>b response status of axi_s_1 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BVALID</busname>
+      <name>bvalid_axi_s_1</name>
+      <description>b response valid of axi_s_1 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BREADY</busname>
+      <name>bready_axi_s_1</name>
+      <description>b response ready of axi_s_1 AXI bus B Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>AR Channel</description>
+    <signal>
+      <busname>ARID</busname>
+      <name>arid_axi_s_1</name>
+      <width>8</width>
+      <description>read id of axi_s_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARADDR</busname>
+      <name>araddr_axi_s_1</name>
+      <width>32</width>
+      <description>read address of axi_s_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARLEN</busname>
+      <name>arlen_axi_s_1</name>
+      <description>read length of axi_s_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARSIZE</busname>
+      <name>arsize_axi_s_1</name>
+      <description>read size of axi_s_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARBURST</busname>
+      <name>arburst_axi_s_1</name>
+      <description>read burst length of axi_s_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARLOCK</busname>
+      <name>arlock_axi_s_1</name>
+      <description>read lock of axi_s_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARCACHE</busname>
+      <name>arcache_axi_s_1</name>
+      <description>read cache field of axi_s_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARPROT</busname>
+      <name>arprot_axi_s_1</name>
+      <description>read prot field of axi_s_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARVALID</busname>
+      <name>arvalid_axi_s_1</name>
+      <description>read valid of axi_s_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARVALID_VECT</busname>
+      <name>arvalid_vect_axi_s_1</name>
+      <width>3</width>
+      <description>read valid vector of axi_s_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARREADY</busname>
+      <name>arready_axi_s_1</name>
+      <description>read ready of axi_s_1 AXI bus AR Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>R Channel</description>
+    <signal>
+      <busname>RID</busname>
+      <name>rid_axi_s_1</name>
+      <width>8</width>
+      <description>read id of axi_s_1 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RDATA</busname>
+      <name>rdata_axi_s_1</name>
+      <width>64</width>
+      <description>read data of axi_s_1 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RRESP</busname>
+      <name>rresp_axi_s_1</name>
+      <description>read response status of axi_s_1 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RLAST</busname>
+      <name>rlast_axi_s_1</name>
+      <description>read last of axi_s_1 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RVALID</busname>
+      <name>rvalid_axi_s_1</name>
+      <description>read valid of axi_s_1 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RREADY</busname>
+      <name>rready_axi_s_1</name>
+      <description>read ready of axi_s_1 AXI bus R Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>QV signals</description>
+    <signal>
+      <busname>AWQV</busname>
+      <name>aw_qv_axi_s_1</name>
+      <description>Quality Value axi_s_1 AXI bus AW Channel</description>
+    </signal>
+    <signal>
+      <busname>ARQV</busname>
+      <name>ar_qv_axi_s_1</name>
+      <description>Quality value axi_s_1 AXI bus AR Channel</description>
+    </signal>
+  </group>
+</bus>
+<bus xmlns:xalan="http://xml.apache.org/xalan">
+  <type>NIC400_AXI4</type>
+  <description>//slave Interface Port axi_s_2</description>
+  <name>axi_s_2</name>
+  <direction>slave</direction>
+  <channel>false</channel>
+  <group>
+    <description>AW Channel</description>
+    <signal>
+      <busname>AWID</busname>
+      <name>awid_axi_s_2</name>
+      <width>8</width>
+      <description>write id of axi_s_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWADDR</busname>
+      <name>awaddr_axi_s_2</name>
+      <width>32</width>
+      <description>write address of axi_s_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWLEN</busname>
+      <name>awlen_axi_s_2</name>
+      <description>write length field of axi_s_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWSIZE</busname>
+      <name>awsize_axi_s_2</name>
+      <description>write size of axi_s_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWBURST</busname>
+      <name>awburst_axi_s_2</name>
+      <description>write burst length of axi_s_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWLOCK</busname>
+      <name>awlock_axi_s_2</name>
+      <description>write lock of axi_s_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWCACHE</busname>
+      <name>awcache_axi_s_2</name>
+      <description>write cache field of axi_s_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWPROT</busname>
+      <name>awprot_axi_s_2</name>
+      <description>write prot field of axi_s_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWVALID</busname>
+      <name>awvalid_axi_s_2</name>
+      <description>write valid of axi_s_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWVALID_VECT</busname>
+      <name>awvalid_vect_axi_s_2</name>
+      <width>3</width>
+      <description>write valid vector of axi_s_2 AXI bus AW Channel</description>
+    </signal>
+    <signal>
+      <busname>AWREADY</busname>
+      <name>awready_axi_s_2</name>
+      <description>write ready of axi_s_2 AXI bus AW channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>W Channel</description>
+    <signal>
+      <busname>WDATA</busname>
+      <name>wdata_axi_s_2</name>
+      <width>64</width>
+      <description>write data of axi_s_2 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WSTRB</busname>
+      <name>wstrb_axi_s_2</name>
+      <width>8</width>
+      <description>write strobes of axi_s_2 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WLAST</busname>
+      <name>wlast_axi_s_2</name>
+      <description>write last of axi_s_2 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WVALID</busname>
+      <name>wvalid_axi_s_2</name>
+      <description>write valid of axi_s_2 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WREADY</busname>
+      <name>wready_axi_s_2</name>
+      <description>write ready of axi_s_2 AXI bus W Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>B Channel</description>
+    <signal>
+      <busname>BID</busname>
+      <name>bid_axi_s_2</name>
+      <width>8</width>
+      <description>b response id of axi_s_2 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BRESP</busname>
+      <name>bresp_axi_s_2</name>
+      <description>b response status of axi_s_2 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BVALID</busname>
+      <name>bvalid_axi_s_2</name>
+      <description>b response valid of axi_s_2 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BREADY</busname>
+      <name>bready_axi_s_2</name>
+      <description>b response ready of axi_s_2 AXI bus B Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>AR Channel</description>
+    <signal>
+      <busname>ARID</busname>
+      <name>arid_axi_s_2</name>
+      <width>8</width>
+      <description>read id of axi_s_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARADDR</busname>
+      <name>araddr_axi_s_2</name>
+      <width>32</width>
+      <description>read address of axi_s_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARLEN</busname>
+      <name>arlen_axi_s_2</name>
+      <description>read length of axi_s_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARSIZE</busname>
+      <name>arsize_axi_s_2</name>
+      <description>read size of axi_s_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARBURST</busname>
+      <name>arburst_axi_s_2</name>
+      <description>read burst length of axi_s_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARLOCK</busname>
+      <name>arlock_axi_s_2</name>
+      <description>read lock of axi_s_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARCACHE</busname>
+      <name>arcache_axi_s_2</name>
+      <description>read cache field of axi_s_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARPROT</busname>
+      <name>arprot_axi_s_2</name>
+      <description>read prot field of axi_s_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARVALID</busname>
+      <name>arvalid_axi_s_2</name>
+      <description>read valid of axi_s_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARVALID_VECT</busname>
+      <name>arvalid_vect_axi_s_2</name>
+      <width>3</width>
+      <description>read valid vector of axi_s_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARREADY</busname>
+      <name>arready_axi_s_2</name>
+      <description>read ready of axi_s_2 AXI bus AR Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>R Channel</description>
+    <signal>
+      <busname>RID</busname>
+      <name>rid_axi_s_2</name>
+      <width>8</width>
+      <description>read id of axi_s_2 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RDATA</busname>
+      <name>rdata_axi_s_2</name>
+      <width>64</width>
+      <description>read data of axi_s_2 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RRESP</busname>
+      <name>rresp_axi_s_2</name>
+      <description>read response status of axi_s_2 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RLAST</busname>
+      <name>rlast_axi_s_2</name>
+      <description>read last of axi_s_2 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RVALID</busname>
+      <name>rvalid_axi_s_2</name>
+      <description>read valid of axi_s_2 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RREADY</busname>
+      <name>rready_axi_s_2</name>
+      <description>read ready of axi_s_2 AXI bus R Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>QV signals</description>
+    <signal>
+      <busname>AWQV</busname>
+      <name>aw_qv_axi_s_2</name>
+      <description>Quality Value axi_s_2 AXI bus AW Channel</description>
+    </signal>
+    <signal>
+      <busname>ARQV</busname>
+      <name>ar_qv_axi_s_2</name>
+      <description>Quality value axi_s_2 AXI bus AR Channel</description>
+    </signal>
+  </group>
+</bus>
+<bus xmlns:xalan="http://xml.apache.org/xalan">
+  <type>NIC400_AXI4</type>
+  <description>//master Interface Port axi_m_0</description>
+  <name>axi_m_0</name>
+  <direction>master</direction>
+  <channel>false</channel>
+  <group>
+    <description>AW Channel</description>
+    <signal>
+      <busname>AWID</busname>
+      <name>awid_axi_m_0</name>
+      <width>8</width>
+      <description>write id of axi_m_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWADDR</busname>
+      <name>awaddr_axi_m_0</name>
+      <width>32</width>
+      <description>write address of axi_m_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWLEN</busname>
+      <name>awlen_axi_m_0</name>
+      <description>write length field of axi_m_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWSIZE</busname>
+      <name>awsize_axi_m_0</name>
+      <description>write size of axi_m_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWBURST</busname>
+      <name>awburst_axi_m_0</name>
+      <description>write burst length of axi_m_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWLOCK</busname>
+      <name>awlock_axi_m_0</name>
+      <description>write lock of axi_m_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWCACHE</busname>
+      <name>awcache_axi_m_0</name>
+      <description>write cache field of axi_m_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWPROT</busname>
+      <name>awprot_axi_m_0</name>
+      <description>write prot field of axi_m_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWVALID</busname>
+      <name>awvalid_axi_m_0</name>
+      <description>write valid of axi_m_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWVALID_VECT</busname>
+      <name>awvalid_vect_axi_m_0</name>
+      <width>1</width>
+      <description>write valid vector of axi_m_0 AXI bus AW Channel</description>
+    </signal>
+    <signal>
+      <busname>AWREADY</busname>
+      <name>awready_axi_m_0</name>
+      <description>write ready of axi_m_0 AXI bus AW channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>W Channel</description>
+    <signal>
+      <busname>WDATA</busname>
+      <name>wdata_axi_m_0</name>
+      <width>64</width>
+      <description>write data of axi_m_0 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WSTRB</busname>
+      <name>wstrb_axi_m_0</name>
+      <width>8</width>
+      <description>write strobes of axi_m_0 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WLAST</busname>
+      <name>wlast_axi_m_0</name>
+      <description>write last of axi_m_0 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WVALID</busname>
+      <name>wvalid_axi_m_0</name>
+      <description>write valid of axi_m_0 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WREADY</busname>
+      <name>wready_axi_m_0</name>
+      <description>write ready of axi_m_0 AXI bus W Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>B Channel</description>
+    <signal>
+      <busname>BID</busname>
+      <name>bid_axi_m_0</name>
+      <width>8</width>
+      <description>b response id of axi_m_0 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BRESP</busname>
+      <name>bresp_axi_m_0</name>
+      <description>b response status of axi_m_0 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BVALID</busname>
+      <name>bvalid_axi_m_0</name>
+      <description>b response valid of axi_m_0 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BREADY</busname>
+      <name>bready_axi_m_0</name>
+      <description>b response ready of axi_m_0 AXI bus B Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>AR Channel</description>
+    <signal>
+      <busname>ARID</busname>
+      <name>arid_axi_m_0</name>
+      <width>8</width>
+      <description>read id of axi_m_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARADDR</busname>
+      <name>araddr_axi_m_0</name>
+      <width>32</width>
+      <description>read address of axi_m_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARLEN</busname>
+      <name>arlen_axi_m_0</name>
+      <description>read length of axi_m_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARSIZE</busname>
+      <name>arsize_axi_m_0</name>
+      <description>read size of axi_m_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARBURST</busname>
+      <name>arburst_axi_m_0</name>
+      <description>read burst length of axi_m_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARLOCK</busname>
+      <name>arlock_axi_m_0</name>
+      <description>read lock of axi_m_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARCACHE</busname>
+      <name>arcache_axi_m_0</name>
+      <description>read cache field of axi_m_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARPROT</busname>
+      <name>arprot_axi_m_0</name>
+      <description>read prot field of axi_m_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARVALID</busname>
+      <name>arvalid_axi_m_0</name>
+      <description>read valid of axi_m_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARVALID_VECT</busname>
+      <name>arvalid_vect_axi_m_0</name>
+      <width>1</width>
+      <description>read valid vector of axi_m_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARREADY</busname>
+      <name>arready_axi_m_0</name>
+      <description>read ready of axi_m_0 AXI bus AR Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>R Channel</description>
+    <signal>
+      <busname>RID</busname>
+      <name>rid_axi_m_0</name>
+      <width>8</width>
+      <description>read id of axi_m_0 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RDATA</busname>
+      <name>rdata_axi_m_0</name>
+      <width>64</width>
+      <description>read data of axi_m_0 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RRESP</busname>
+      <name>rresp_axi_m_0</name>
+      <description>read response status of axi_m_0 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RLAST</busname>
+      <name>rlast_axi_m_0</name>
+      <description>read last of axi_m_0 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RVALID</busname>
+      <name>rvalid_axi_m_0</name>
+      <description>read valid of axi_m_0 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RREADY</busname>
+      <name>rready_axi_m_0</name>
+      <description>read ready of axi_m_0 AXI bus R Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>QV signals</description>
+    <signal>
+      <busname>AWQV</busname>
+      <name>aw_qv_axi_m_0</name>
+      <description>Quality Value axi_m_0 AXI bus AW Channel</description>
+    </signal>
+    <signal>
+      <busname>ARQV</busname>
+      <name>ar_qv_axi_m_0</name>
+      <description>Quality value axi_m_0 AXI bus AR Channel</description>
+    </signal>
+  </group>
+</bus>
+<bus xmlns:xalan="http://xml.apache.org/xalan">
+  <type>NIC400_AXI4</type>
+  <description>//master Interface Port axi_m_1</description>
+  <name>axi_m_1</name>
+  <direction>master</direction>
+  <channel>false</channel>
+  <group>
+    <description>AW Channel</description>
+    <signal>
+      <busname>AWID</busname>
+      <name>awid_axi_m_1</name>
+      <width>8</width>
+      <description>write id of axi_m_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWADDR</busname>
+      <name>awaddr_axi_m_1</name>
+      <width>32</width>
+      <description>write address of axi_m_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWLEN</busname>
+      <name>awlen_axi_m_1</name>
+      <description>write length field of axi_m_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWSIZE</busname>
+      <name>awsize_axi_m_1</name>
+      <description>write size of axi_m_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWBURST</busname>
+      <name>awburst_axi_m_1</name>
+      <description>write burst length of axi_m_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWLOCK</busname>
+      <name>awlock_axi_m_1</name>
+      <description>write lock of axi_m_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWCACHE</busname>
+      <name>awcache_axi_m_1</name>
+      <description>write cache field of axi_m_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWPROT</busname>
+      <name>awprot_axi_m_1</name>
+      <description>write prot field of axi_m_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWVALID</busname>
+      <name>awvalid_axi_m_1</name>
+      <description>write valid of axi_m_1 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWVALID_VECT</busname>
+      <name>awvalid_vect_axi_m_1</name>
+      <width>1</width>
+      <description>write valid vector of axi_m_1 AXI bus AW Channel</description>
+    </signal>
+    <signal>
+      <busname>AWREADY</busname>
+      <name>awready_axi_m_1</name>
+      <description>write ready of axi_m_1 AXI bus AW channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>W Channel</description>
+    <signal>
+      <busname>WDATA</busname>
+      <name>wdata_axi_m_1</name>
+      <width>64</width>
+      <description>write data of axi_m_1 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WSTRB</busname>
+      <name>wstrb_axi_m_1</name>
+      <width>8</width>
+      <description>write strobes of axi_m_1 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WLAST</busname>
+      <name>wlast_axi_m_1</name>
+      <description>write last of axi_m_1 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WVALID</busname>
+      <name>wvalid_axi_m_1</name>
+      <description>write valid of axi_m_1 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WREADY</busname>
+      <name>wready_axi_m_1</name>
+      <description>write ready of axi_m_1 AXI bus W Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>B Channel</description>
+    <signal>
+      <busname>BID</busname>
+      <name>bid_axi_m_1</name>
+      <width>8</width>
+      <description>b response id of axi_m_1 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BRESP</busname>
+      <name>bresp_axi_m_1</name>
+      <description>b response status of axi_m_1 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BVALID</busname>
+      <name>bvalid_axi_m_1</name>
+      <description>b response valid of axi_m_1 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BREADY</busname>
+      <name>bready_axi_m_1</name>
+      <description>b response ready of axi_m_1 AXI bus B Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>AR Channel</description>
+    <signal>
+      <busname>ARID</busname>
+      <name>arid_axi_m_1</name>
+      <width>8</width>
+      <description>read id of axi_m_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARADDR</busname>
+      <name>araddr_axi_m_1</name>
+      <width>32</width>
+      <description>read address of axi_m_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARLEN</busname>
+      <name>arlen_axi_m_1</name>
+      <description>read length of axi_m_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARSIZE</busname>
+      <name>arsize_axi_m_1</name>
+      <description>read size of axi_m_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARBURST</busname>
+      <name>arburst_axi_m_1</name>
+      <description>read burst length of axi_m_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARLOCK</busname>
+      <name>arlock_axi_m_1</name>
+      <description>read lock of axi_m_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARCACHE</busname>
+      <name>arcache_axi_m_1</name>
+      <description>read cache field of axi_m_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARPROT</busname>
+      <name>arprot_axi_m_1</name>
+      <description>read prot field of axi_m_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARVALID</busname>
+      <name>arvalid_axi_m_1</name>
+      <description>read valid of axi_m_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARVALID_VECT</busname>
+      <name>arvalid_vect_axi_m_1</name>
+      <width>1</width>
+      <description>read valid vector of axi_m_1 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARREADY</busname>
+      <name>arready_axi_m_1</name>
+      <description>read ready of axi_m_1 AXI bus AR Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>R Channel</description>
+    <signal>
+      <busname>RID</busname>
+      <name>rid_axi_m_1</name>
+      <width>8</width>
+      <description>read id of axi_m_1 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RDATA</busname>
+      <name>rdata_axi_m_1</name>
+      <width>64</width>
+      <description>read data of axi_m_1 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RRESP</busname>
+      <name>rresp_axi_m_1</name>
+      <description>read response status of axi_m_1 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RLAST</busname>
+      <name>rlast_axi_m_1</name>
+      <description>read last of axi_m_1 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RVALID</busname>
+      <name>rvalid_axi_m_1</name>
+      <description>read valid of axi_m_1 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RREADY</busname>
+      <name>rready_axi_m_1</name>
+      <description>read ready of axi_m_1 AXI bus R Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>QV signals</description>
+    <signal>
+      <busname>AWQV</busname>
+      <name>aw_qv_axi_m_1</name>
+      <description>Quality Value axi_m_1 AXI bus AW Channel</description>
+    </signal>
+    <signal>
+      <busname>ARQV</busname>
+      <name>ar_qv_axi_m_1</name>
+      <description>Quality value axi_m_1 AXI bus AR Channel</description>
+    </signal>
+  </group>
+</bus>
+<bus xmlns:xalan="http://xml.apache.org/xalan">
+  <type>NIC400_AXI4</type>
+  <description>//slave Interface Port axi_s_0</description>
+  <name>axi_s_0</name>
+  <direction>slave</direction>
+  <channel>false</channel>
+  <group>
+    <description>AW Channel</description>
+    <signal>
+      <busname>AWID</busname>
+      <name>awid_axi_s_0</name>
+      <width>8</width>
+      <description>write id of axi_s_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWADDR</busname>
+      <name>awaddr_axi_s_0</name>
+      <width>32</width>
+      <description>write address of axi_s_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWLEN</busname>
+      <name>awlen_axi_s_0</name>
+      <description>write length field of axi_s_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWSIZE</busname>
+      <name>awsize_axi_s_0</name>
+      <description>write size of axi_s_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWBURST</busname>
+      <name>awburst_axi_s_0</name>
+      <description>write burst length of axi_s_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWLOCK</busname>
+      <name>awlock_axi_s_0</name>
+      <description>write lock of axi_s_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWCACHE</busname>
+      <name>awcache_axi_s_0</name>
+      <description>write cache field of axi_s_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWPROT</busname>
+      <name>awprot_axi_s_0</name>
+      <description>write prot field of axi_s_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWVALID</busname>
+      <name>awvalid_axi_s_0</name>
+      <description>write valid of axi_s_0 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWVALID_VECT</busname>
+      <name>awvalid_vect_axi_s_0</name>
+      <width>3</width>
+      <description>write valid vector of axi_s_0 AXI bus AW Channel</description>
+    </signal>
+    <signal>
+      <busname>AWREADY</busname>
+      <name>awready_axi_s_0</name>
+      <description>write ready of axi_s_0 AXI bus AW channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>W Channel</description>
+    <signal>
+      <busname>WDATA</busname>
+      <name>wdata_axi_s_0</name>
+      <width>64</width>
+      <description>write data of axi_s_0 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WSTRB</busname>
+      <name>wstrb_axi_s_0</name>
+      <width>8</width>
+      <description>write strobes of axi_s_0 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WLAST</busname>
+      <name>wlast_axi_s_0</name>
+      <description>write last of axi_s_0 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WVALID</busname>
+      <name>wvalid_axi_s_0</name>
+      <description>write valid of axi_s_0 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WREADY</busname>
+      <name>wready_axi_s_0</name>
+      <description>write ready of axi_s_0 AXI bus W Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>B Channel</description>
+    <signal>
+      <busname>BID</busname>
+      <name>bid_axi_s_0</name>
+      <width>8</width>
+      <description>b response id of axi_s_0 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BRESP</busname>
+      <name>bresp_axi_s_0</name>
+      <description>b response status of axi_s_0 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BVALID</busname>
+      <name>bvalid_axi_s_0</name>
+      <description>b response valid of axi_s_0 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BREADY</busname>
+      <name>bready_axi_s_0</name>
+      <description>b response ready of axi_s_0 AXI bus B Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>AR Channel</description>
+    <signal>
+      <busname>ARID</busname>
+      <name>arid_axi_s_0</name>
+      <width>8</width>
+      <description>read id of axi_s_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARADDR</busname>
+      <name>araddr_axi_s_0</name>
+      <width>32</width>
+      <description>read address of axi_s_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARLEN</busname>
+      <name>arlen_axi_s_0</name>
+      <description>read length of axi_s_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARSIZE</busname>
+      <name>arsize_axi_s_0</name>
+      <description>read size of axi_s_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARBURST</busname>
+      <name>arburst_axi_s_0</name>
+      <description>read burst length of axi_s_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARLOCK</busname>
+      <name>arlock_axi_s_0</name>
+      <description>read lock of axi_s_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARCACHE</busname>
+      <name>arcache_axi_s_0</name>
+      <description>read cache field of axi_s_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARPROT</busname>
+      <name>arprot_axi_s_0</name>
+      <description>read prot field of axi_s_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARVALID</busname>
+      <name>arvalid_axi_s_0</name>
+      <description>read valid of axi_s_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARVALID_VECT</busname>
+      <name>arvalid_vect_axi_s_0</name>
+      <width>3</width>
+      <description>read valid vector of axi_s_0 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARREADY</busname>
+      <name>arready_axi_s_0</name>
+      <description>read ready of axi_s_0 AXI bus AR Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>R Channel</description>
+    <signal>
+      <busname>RID</busname>
+      <name>rid_axi_s_0</name>
+      <width>8</width>
+      <description>read id of axi_s_0 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RDATA</busname>
+      <name>rdata_axi_s_0</name>
+      <width>64</width>
+      <description>read data of axi_s_0 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RRESP</busname>
+      <name>rresp_axi_s_0</name>
+      <description>read response status of axi_s_0 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RLAST</busname>
+      <name>rlast_axi_s_0</name>
+      <description>read last of axi_s_0 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RVALID</busname>
+      <name>rvalid_axi_s_0</name>
+      <description>read valid of axi_s_0 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RREADY</busname>
+      <name>rready_axi_s_0</name>
+      <description>read ready of axi_s_0 AXI bus R Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>QV signals</description>
+    <signal>
+      <busname>AWQV</busname>
+      <name>aw_qv_axi_s_0</name>
+      <description>Quality Value axi_s_0 AXI bus AW Channel</description>
+    </signal>
+    <signal>
+      <busname>ARQV</busname>
+      <name>ar_qv_axi_s_0</name>
+      <description>Quality value axi_s_0 AXI bus AR Channel</description>
+    </signal>
+  </group>
+</bus>
+<bus xmlns:xalan="http://xml.apache.org/xalan">
+  <type>NIC400_AXI4</type>
+  <description>//master Interface Port axi_m_2</description>
+  <name>axi_m_2</name>
+  <direction>master</direction>
+  <channel>false</channel>
+  <group>
+    <description>AW Channel</description>
+    <signal>
+      <busname>AWID</busname>
+      <name>awid_axi_m_2</name>
+      <width>8</width>
+      <description>write id of axi_m_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWADDR</busname>
+      <name>awaddr_axi_m_2</name>
+      <width>32</width>
+      <description>write address of axi_m_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWLEN</busname>
+      <name>awlen_axi_m_2</name>
+      <description>write length field of axi_m_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWSIZE</busname>
+      <name>awsize_axi_m_2</name>
+      <description>write size of axi_m_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWBURST</busname>
+      <name>awburst_axi_m_2</name>
+      <description>write burst length of axi_m_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWLOCK</busname>
+      <name>awlock_axi_m_2</name>
+      <description>write lock of axi_m_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWCACHE</busname>
+      <name>awcache_axi_m_2</name>
+      <description>write cache field of axi_m_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWPROT</busname>
+      <name>awprot_axi_m_2</name>
+      <description>write prot field of axi_m_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWVALID</busname>
+      <name>awvalid_axi_m_2</name>
+      <description>write valid of axi_m_2 AXI bus AW channel</description>
+    </signal>
+    <signal>
+      <busname>AWVALID_VECT</busname>
+      <name>awvalid_vect_axi_m_2</name>
+      <width>1</width>
+      <description>write valid vector of axi_m_2 AXI bus AW Channel</description>
+    </signal>
+    <signal>
+      <busname>AWREADY</busname>
+      <name>awready_axi_m_2</name>
+      <description>write ready of axi_m_2 AXI bus AW channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>W Channel</description>
+    <signal>
+      <busname>WDATA</busname>
+      <name>wdata_axi_m_2</name>
+      <width>64</width>
+      <description>write data of axi_m_2 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WSTRB</busname>
+      <name>wstrb_axi_m_2</name>
+      <width>8</width>
+      <description>write strobes of axi_m_2 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WLAST</busname>
+      <name>wlast_axi_m_2</name>
+      <description>write last of axi_m_2 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WVALID</busname>
+      <name>wvalid_axi_m_2</name>
+      <description>write valid of axi_m_2 AXI bus W Channel</description>
+    </signal>
+    <signal>
+      <busname>WREADY</busname>
+      <name>wready_axi_m_2</name>
+      <description>write ready of axi_m_2 AXI bus W Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>B Channel</description>
+    <signal>
+      <busname>BID</busname>
+      <name>bid_axi_m_2</name>
+      <width>8</width>
+      <description>b response id of axi_m_2 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BRESP</busname>
+      <name>bresp_axi_m_2</name>
+      <description>b response status of axi_m_2 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BVALID</busname>
+      <name>bvalid_axi_m_2</name>
+      <description>b response valid of axi_m_2 AXI bus B Channel</description>
+    </signal>
+    <signal>
+      <busname>BREADY</busname>
+      <name>bready_axi_m_2</name>
+      <description>b response ready of axi_m_2 AXI bus B Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>AR Channel</description>
+    <signal>
+      <busname>ARID</busname>
+      <name>arid_axi_m_2</name>
+      <width>8</width>
+      <description>read id of axi_m_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARADDR</busname>
+      <name>araddr_axi_m_2</name>
+      <width>32</width>
+      <description>read address of axi_m_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARLEN</busname>
+      <name>arlen_axi_m_2</name>
+      <description>read length of axi_m_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARSIZE</busname>
+      <name>arsize_axi_m_2</name>
+      <description>read size of axi_m_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARBURST</busname>
+      <name>arburst_axi_m_2</name>
+      <description>read burst length of axi_m_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARLOCK</busname>
+      <name>arlock_axi_m_2</name>
+      <description>read lock of axi_m_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARCACHE</busname>
+      <name>arcache_axi_m_2</name>
+      <description>read cache field of axi_m_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARPROT</busname>
+      <name>arprot_axi_m_2</name>
+      <description>read prot field of axi_m_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARVALID</busname>
+      <name>arvalid_axi_m_2</name>
+      <description>read valid of axi_m_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARVALID_VECT</busname>
+      <name>arvalid_vect_axi_m_2</name>
+      <width>1</width>
+      <description>read valid vector of axi_m_2 AXI bus AR Channel</description>
+    </signal>
+    <signal>
+      <busname>ARREADY</busname>
+      <name>arready_axi_m_2</name>
+      <description>read ready of axi_m_2 AXI bus AR Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>R Channel</description>
+    <signal>
+      <busname>RID</busname>
+      <name>rid_axi_m_2</name>
+      <width>8</width>
+      <description>read id of axi_m_2 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RDATA</busname>
+      <name>rdata_axi_m_2</name>
+      <width>64</width>
+      <description>read data of axi_m_2 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RRESP</busname>
+      <name>rresp_axi_m_2</name>
+      <description>read response status of axi_m_2 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RLAST</busname>
+      <name>rlast_axi_m_2</name>
+      <description>read last of axi_m_2 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RVALID</busname>
+      <name>rvalid_axi_m_2</name>
+      <description>read valid of axi_m_2 AXI bus R Channel</description>
+    </signal>
+    <signal>
+      <busname>RREADY</busname>
+      <name>rready_axi_m_2</name>
+      <description>read ready of axi_m_2 AXI bus R Channel</description>
+    </signal>
+  </group>
+  <group>
+    <description>QV signals</description>
+    <signal>
+      <busname>AWQV</busname>
+      <name>aw_qv_axi_m_2</name>
+      <description>Quality Value axi_m_2 AXI bus AW Channel</description>
+    </signal>
+    <signal>
+      <busname>ARQV</busname>
+      <name>ar_qv_axi_m_2</name>
+      <description>Quality value axi_m_2 AXI bus AR Channel</description>
+    </signal>
+  </group>
+</bus>
+<group xmlns:xalan="http://xml.apache.org/xalan">
+  <description>Clock and reset signals</description>
+  <wire>
+    <clock/>
+    <name>aclk</name>
+    <direction>in</direction>
+    <description>main clock</description>
+    <width>1</width>
+  </wire>
+  <wire>
+    <reset/>
+    <name>aresetn</name>
+    <direction>in</direction>
+    <width>1</width>
+    <description>main reset</description>
+  </wire>
+</group>

@@ -1,0 +1,113 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2009-2014 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2014-01-20 17:39:39 +0000 (Mon, 20 Jan 2014)
+#-     Revision            : 165454
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import the Base Class
+from os import path
+from sm_base import sm_base
+from ipfs_std_lib import *
+from glob import glob
+
+class lec (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise -
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Set the name
+        self.name = 'lec'
+
+        #Add Lincense Requirement
+        self.licenses.append('formality')
+        
+        # Tools Needed
+        self.tools.append('formality')
+
+   #-------------------------------------------------------------------------------
+   # options - This function registers all valid command line options for this SM
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+        group.add_option("--netlist", dest="netlist", default="synthesis",
+                         help = "Set the netlist to LEC against RTL (synthesis|dft) (default:synthesis)")
+        #Clear options
+        return 0
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # run - Executes n-iterations of tool call, with options to call pre-processing
+   #        and post-processing scriptlets that perform specific housekeeping
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+        print "runnning logical equivalance check now"
+
+        #Determine PERIPH_LOGICAL
+        periph_logical = sub(r'/implementation/(\S+)/synopsys$', r'/logical/\1', directory)
+
+        #Create a run script
+        run_script = [ 'setenv PERIPH_LOGICAL ' + periph_logical,
+                       'set SCRIPTS = ' + directory + '/scripts',
+                       'set LOGS = ' + directory + '/logs',
+                       'set REPORTS = ' + directory + '/reports',
+                       'cd ' + directory,
+                       'cd work',
+                       'time fm_shell -x "' + self.options.netlist + '" -f ${SCRIPTS}/rm_fm.tcl | tee ${LOGS}/fm.log'
+                     ];
+        #Write out script and run it
+        self.write_run_script(run_script, 'run_lec', args)
+        return self.run_command(args, './run_lec')
+
+        return 0
+
+   #-------------------------------------------------------------------------------
+
+   def clean_sm(self, args,directory):
+
+        #disable lsf for clean
+        self.use_lsf = 0
+        self.delete_files.append('run*')
+        self.delete_files.append('busb.log')
+
+        return 0;
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # help -
+   #-------------------------------------------------------------------------------
+   def help_sm(self, args):
+
+     #set the usage term
+     self.parser.usage = "ae lec "
+     return 0;

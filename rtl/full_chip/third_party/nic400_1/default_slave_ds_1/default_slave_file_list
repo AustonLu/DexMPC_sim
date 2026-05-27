@@ -1,0 +1,52 @@
+
+
+
+
+COVERAGE_ON xsl_cov
+INCLUDE ./xml/default_slave_ds_1_vlog_file_list
+COVERAGE_OFF
+
+./verilog/parcfg_default_slave_name_defs_xmlcfg.v.xsl SCRIPT(create_undefs.pl)
+
+INCLUDE ./xml/default_slave_ds_1_sva_file_list REGRESSION2
+
+
+./spirit/default_slave_name_spirit.xml.xsl DIRECTORY
+
+
+
+REGRESSION_ON
+
+
+ ./validation/shared/tbench/ 
+ ./validation/shared/tb_spirit 
+ ./validation/shared/tb_components 
+ ./validation/shared/stitching/default_slave_wrapper.xml.xsl 
+ ./validation/shared/stitching/tbench.xml.xsl
+ ./validation/shared/stitching/default_slave_wrapper_config.xml.xsl DIRECTORY SCRIPT(generic_stitcher_core)  
+ ./validation/shared/stitching/tb_config.xml.xsl DIRECTORY SCRIPT(generic_stitcher_core)  
+
+ ./validation/directed
+
+ 
+ ./validation/conformal_lec/
+
+
+ 
+ ./validation/logs
+ ./validation/logs/vcs_coverage
+
+ 
+ ./validation/random
+ ./validation/random/e
+
+
+ 
+ ./lint
+
+ 
+ ./formal
+ ./formal/sva/formal.opts
+
+REGRESSION_OFF
+

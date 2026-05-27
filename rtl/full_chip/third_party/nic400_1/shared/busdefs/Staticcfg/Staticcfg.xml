@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!--
+		//
+		=============================================================================
+		// This confidential and proprietary information may be used only as
+		// authorised by a licensing agreement from ARM Limited 
+		// (C) COPYRIGHT 2010-2015 ARM Limited 
+		// ALL RIGHTS RESERVED 
+		// The entire notice above must be reproduced on all authorised 
+		// copies and copies may only be made to the extent permitted 
+		// by a licensing agreement from ARM Limited. 
+		// 
+        // SVN Information:                                                 
+        //
+        // Checked In          :  2010-04-27 19:57:33 +0530 (Tue, 27 Apr 2010) 
+        // Revision            :  7366 
+		//
+		=============================================================================
+		// 
+		// Purpose : 
+		// This defines the Static configuration interface 
+		// 
+		//
+		=============================================================================
+	-->
+<spirit:busDefinition
+	xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/index.xsd ">
+	<spirit:vendor>arm.com</spirit:vendor>
+	<spirit:library>generic</spirit:library>
+	<spirit:name>Staticcfg</spirit:name>
+	<spirit:version>r0p0_0</spirit:version>
+	<spirit:directConnection>true</spirit:directConnection>
+	<spirit:isAddressable>false</spirit:isAddressable>
+	<spirit:maxMasters>1</spirit:maxMasters>
+	<spirit:maxSlaves>1</spirit:maxSlaves>
+	<spirit:description>The Staticcfg interface provides static configuration to blocks i.e. information that doesn't change when blocks are in functional mode.</spirit:description>
+</spirit:busDefinition>

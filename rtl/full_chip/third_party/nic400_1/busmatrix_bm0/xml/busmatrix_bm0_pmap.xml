@@ -1,0 +1,114 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <reg_block>
+   <name            >fixed</name>
+   <offset_lsb      >8</offset_lsb>
+   <instance><name></name><inst_offset>000</inst_offset><inst_top></inst_top></instance>
+
+   <reg name="direct_cmd">
+     <name          >direct_cmd</name>
+     <offset        >010</offset>
+     <maskable      >TRUE</maskable>
+     <bit_field     ><name>addr_19_to_0</name><bits>20</bits><start_bit>0</start_bit>
+                       <initial_value >{20{1'b0}}</initial_value></bit_field>
+     <bit_field     ><name>set_cre</name><bits>1</bits><start_bit>20</start_bit>
+                       <initial_value >1'b0</initial_value>
+                       <command >yes</command >
+                       </bit_field>
+     <bit_field     ><name>cmd_type</name><bits>2</bits><start_bit>21</start_bit>
+                       <initial_value >2'b00</initial_value>
+                       <command >yes</command>
+                       <value_pair><name>UPDATE_AND_AXI,MODEREG</name><value>1</value></value_pair>
+                       <value_pair><name>UPDATE</name><value>2</value></value_pair>
+                       <value_pair><name>UDATE_AND_MODEREG</name><value>3</value></value_pair>
+                       </bit_field>
+     <bit_field     ><name>chip_nmbr</name><bits>3</bits><start_bit>23</start_bit>
+                       <initial_value >3'b000</initial_value></bit_field>
+     <reserved      ><bits>6</bits><start_bit>26</start_bit></reserved>
+     <test_mask     >0x001FFFFF</test_mask>
+     <access_type   >WO</access_type>
+     <through_type  >TRUE</through_type>
+   </reg>  
+
+ </reg_block>   <!-- end fixed -->
+
+
+
+
+ <reg_block>
+   <name            >user</name>
+   <offset_lsb      >8</offset_lsb>
+   <instance><name></name><inst_offset>200</inst_offset><inst_top></inst_top></instance>
+
+   <reg name="user_status">
+     <name          >user_status</name>
+     <offset        >000</offset>
+     <maskable      >FALSE</maskable>
+     <bit_field     ><name>user_status</name><bits>8</bits><start_bit>0</start_bit>
+                     <initial_value >8'h00</initial_value></bit_field>
+     <reserved      ><bits>24</bits><start_bit>8</start_bit></reserved>
+     <test_mask     >0x00000000</test_mask>
+     <access_type   >RO</access_type>
+     <through_type  >FALSE</through_type>
+   </reg> 
+
+   <reg name="user_config">
+     <name          >user_config</name>
+     <offset        >004</offset>
+     <maskable      >FALSE</maskable>
+     <bit_field     ><name>user_config</name><bits>8</bits><start_bit>0</start_bit>
+                     <initial_value >8'h00</initial_value></bit_field>
+     <reserved      ><bits>24</bits><start_bit>8</start_bit></reserved>
+     <test_mask     >0x00000000</test_mask>
+     <access_type   >WO</access_type>
+     <through_type  >FALSE</through_type>
+   </reg> 
+
+ </reg_block>   <!-- end user -->
+

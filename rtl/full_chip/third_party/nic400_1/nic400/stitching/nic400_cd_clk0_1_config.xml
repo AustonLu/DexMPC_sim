@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stitcherConfig xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4" xmlns:xalan="http://xml.apache.org/xalan">
+        <designFileName>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/stitching/nic400_cd_clk0_1.xml</designFileName>
+        <busDefDirs>
+                <busDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/../shared/busdefs/</busDefDir>
+        </busDefDirs>
+        <absDefDirs>
+                <absDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/../shared/busdefs/</absDefDir>
+        </absDefDirs>
+        <compDefDirs>
+                <compDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/../amib_mGauxCore/spirit/</compDefDir>
+                <compDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/../amib_mDexmpcCore/spirit/</compDefDir>
+                <compDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/../asib_sSpi/spirit/</compDefDir>
+                <compDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/../asib_sD2dData/spirit/</compDefDir>
+                <compDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/../asib_sIrisBridge/spirit/</compDefDir>
+                <compDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/../busmatrix_bm0/spirit/</compDefDir>
+                <compDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/../default_slave_ds_1/spirit/</compDefDir>
+                <compDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/../ib_sSpi_ib/spirit/</compDefDir>
+                <compDefDir>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/../ib_sSpi_ib/spirit/</compDefDir>
+        </compDefDirs>
+        <PL301ConfigDirs>
+                <PL301ConfigDir/>
+        </PL301ConfigDirs>
+        <outputDirs>
+                <outputDirRTL>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/verilog</outputDirRTL>
+                <outputDirIPXACT>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/../spirit</outputDirIPXACT>
+                <outputDirReports>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/verilog</outputDirReports>
+        </outputDirs>
+        <configOptions>
+                <verbose>3</verbose>
+                <ignoreVLNVVersion>false</ignoreVLNVVersion>
+                <useInstanceNameInNets>true</useInstanceNameInNets>
+                <useInstanceNameInParams>false</useInstanceNameInParams>
+                <exportAllUnconnected>false</exportAllUnconnected>
+                <useDefaultInputValueZero>true</useDefaultInputValueZero>
+                <connectNonSymmetricSignals>true</connectNonSymmetricSignals>
+                <exportPartialOutputs>false</exportPartialOutputs>
+                <exportPartialInputs>false</exportPartialInputs>
+                <exportPartialInouts>false</exportPartialInouts>
+                <verboseRTLComments>false</verboseRTLComments>
+                <outputVCfile>true</outputVCfile>
+                <strict>true</strict>
+                <IgnoreARMCodingStandards>true</IgnoreARMCodingStandards>
+                <printInVerilogFile>// Generated with Validator version0.3</printInVerilogFile>
+        </configOptions>
+</stitcherConfig>

@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+//=============================================================================
+// This confidential and proprietary information may be used only as
+// authorised by a licensing agreement from ARM Limited 
+// (C) COPYRIGHT 2012 ARM Limited 
+//     ALL RIGHTS RESERVED 
+// The entire notice above must be reproduced on all authorised 
+// copies and copies may only be made to the extent permitted 
+// by a licensing agreement from ARM Limited. 
+//
+//      91636
+//
+//=============================================================================
+// Purpose : 
+// This defines the AMBA AXI4 Stream Bus (version 1.0)
+//=============================================================================
+-->
+
+<spirit:abstractionDefinition
+	xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/index.xsd ">
+	<spirit:vendor>amba.com</spirit:vendor>
+	<spirit:library>AMBA4</spirit:library>
+	<spirit:name>AXI4Stream_rtl</spirit:name>
+	<spirit:version>r0p0_0</spirit:version>
+	<spirit:busType spirit:library="AMBA4" spirit:name="AXI4Stream" spirit:vendor="amba.com" spirit:version="r0p0_0" />
+	<spirit:ports>
+
+		<!-- Global signals -->
+		<spirit:port>
+			<spirit:logicalName>TCLK</spirit:logicalName>
+			<spirit:description>Global clock signal. All signals are sampled on the rising edge of the global clock</spirit:description>
+			<spirit:wire>
+				<spirit:qualifier>
+					<spirit:isClock>true</spirit:isClock>
+				</spirit:qualifier>
+				<spirit:onSystem>
+					<spirit:group>CLOCK</spirit:group>
+					<spirit:presence>required</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>out</spirit:direction>
+				</spirit:onSystem>
+				<spirit:onSystem>
+					<spirit:group>RESETn</spirit:group>
+					<spirit:presence>optional</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>out</spirit:direction>
+				</spirit:onSystem>
+				<spirit:onMaster>
+					<spirit:presence>required</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>in</spirit:direction>
+				</spirit:onMaster>
+				<spirit:onSlave>
+					<spirit:presence>required</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>in</spirit:direction>
+				</spirit:onSlave>
+				<spirit:requiresDriver spirit:driverType="clock">true</spirit:requiresDriver>
+			</spirit:wire>
+		</spirit:port>
+
+		<spirit:port>
+			<spirit:logicalName>TRESETn</spirit:logicalName>
+			<spirit:description>Global reset signal. This signal is active LOW</spirit:description>
+			<spirit:wire>
+				<spirit:qualifier>
+					<spirit:isReset>true</spirit:isReset>
+				</spirit:qualifier>
+				<spirit:onSystem>
+					<spirit:group>CLOCK</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onSystem>
+					<spirit:group>RESETn</spirit:group>
+					<spirit:presence>required</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>out</spirit:direction>
+				</spirit:onSystem>
+				<spirit:onMaster>
+					<spirit:presence>required</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>in</spirit:direction>
+				</spirit:onMaster>
+				<spirit:onSlave>
+					<spirit:presence>required</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>in</spirit:direction>
+				</spirit:onSlave>
+				<spirit:requiresDriver spirit:driverType="singleShot">true</spirit:requiresDriver>
+			</spirit:wire>
+		</spirit:port>
+
+		<spirit:port>
+			<spirit:logicalName>TID</spirit:logicalName>
+			<spirit:description>This is used as data stream identifier that indicates different streams of data.</spirit:description>
+			<spirit:wire>
+				<spirit:onSystem>
+					<spirit:group>CLOCK</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onSystem>
+					<spirit:group>RESETn</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onMaster>
+					<spirit:presence>optional</spirit:presence>
+					<spirit:direction>out</spirit:direction>
+				</spirit:onMaster>
+				<spirit:onSlave>
+					<spirit:presence>optional</spirit:presence>
+					<spirit:direction>in</spirit:direction>
+				</spirit:onSlave>
+				<spirit:defaultValue>0</spirit:defaultValue>
+			</spirit:wire>
+		</spirit:port>
+
+		<spirit:port>
+			<spirit:logicalName>TDEST</spirit:logicalName>
+			<spirit:description>The TDEST bus provides routing information for the data stream.</spirit:description>
+			<spirit:wire>
+				<spirit:onSystem>
+					<spirit:group>CLOCK</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onSystem>
+					<spirit:group>RESETn</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onMaster>
+					<spirit:presence>optional</spirit:presence>
+					<spirit:direction>out</spirit:direction>
+				</spirit:onMaster>
+				<spirit:onSlave>
+					<spirit:presence>optional</spirit:presence>
+					<spirit:direction>in</spirit:direction>
+				</spirit:onSlave>
+			</spirit:wire>
+		</spirit:port>
+
+		<spirit:port>
+			<spirit:logicalName>TVALID</spirit:logicalName>
+			<spirit:description>This signal indicates that the master is driving a valid transfer. A transfer takes place when both TVALID and TREADY are asserted.</spirit:description>
+			<spirit:wire>
+				<spirit:onSystem>
+					<spirit:group>CLOCK</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onSystem>
+					<spirit:group>RESETn</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onMaster>
+					<spirit:presence>required</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>out</spirit:direction>
+				</spirit:onMaster>
+				<spirit:onSlave>
+					<spirit:presence>required</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>in</spirit:direction>
+				</spirit:onSlave>
+			</spirit:wire>
+		</spirit:port>
+
+		<spirit:port>
+			<spirit:logicalName>TREADY</spirit:logicalName>
+			<spirit:description>This signal indicates that the slave can accept  a transfer in the current cycle.</spirit:description>
+			<spirit:wire>
+				<spirit:onSystem>
+					<spirit:group>CLOCK</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onSystem>
+					<spirit:group>RESETn</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onMaster>
+					<spirit:presence>required</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>in</spirit:direction>
+				</spirit:onMaster>
+				<spirit:onSlave>
+					<spirit:presence>required</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>out</spirit:direction>
+				</spirit:onSlave>
+			</spirit:wire>
+		</spirit:port>
+
+		<spirit:port>
+			<spirit:logicalName>TDATA</spirit:logicalName>
+			<spirit:description>This bus is the primary payload that is used to provide the data that is passing across the interface. The width of the data payload is an integer number of bytes.</spirit:description>
+			<spirit:wire>
+				<spirit:qualifier>
+					<spirit:isData>true</spirit:isData>
+				</spirit:qualifier>
+				<spirit:onSystem>
+					<spirit:group>CLOCK</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onSystem>
+					<spirit:group>RESETn</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onMaster>
+					<spirit:presence>required</spirit:presence>
+					<spirit:direction>out</spirit:direction>
+				</spirit:onMaster>
+				<spirit:onSlave>
+					<spirit:presence>required</spirit:presence>
+					<spirit:direction>in</spirit:direction>
+				</spirit:onSlave>
+			</spirit:wire>
+		</spirit:port>
+
+		<spirit:port>
+			<spirit:logicalName>TSTRB</spirit:logicalName>
+			<spirit:description>TSTRB is the byte qualifier that indicates whether the content of the associated byte of TDATA is processed as a data byte of position byte. </spirit:description>
+			<spirit:wire>
+				<spirit:onSystem>
+					<spirit:group>CLOCK</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onSystem>
+					<spirit:group>RESETn</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onMaster>
+					<spirit:presence>optional</spirit:presence>
+					<spirit:direction>out</spirit:direction>
+				</spirit:onMaster>
+				<spirit:onSlave>
+					<spirit:presence>optional</spirit:presence>
+					<spirit:direction>in</spirit:direction>
+				</spirit:onSlave>
+			</spirit:wire>
+		</spirit:port>
+
+		<spirit:port>
+			<spirit:logicalName>TKEEP</spirit:logicalName>
+			<spirit:description>TKEEP is the byte qualifier that indicates whether the content of the associated byte of TDATA is processed as a data stream. Associated bytes that have the TKEEP byte qualifier deasserted are null bytes and can be removed from the data stream. </spirit:description>
+			<spirit:wire>
+				<spirit:onSystem>
+					<spirit:group>CLOCK</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onSystem>
+					<spirit:group>RESETn</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onMaster>
+					<spirit:presence>optional</spirit:presence>
+					<spirit:direction>out</spirit:direction>
+				</spirit:onMaster>
+				<spirit:onSlave>
+					<spirit:presence>optional</spirit:presence>
+					<spirit:direction>in</spirit:direction>
+				</spirit:onSlave>
+			</spirit:wire>
+		</spirit:port>
+
+		<spirit:port>
+			<spirit:logicalName>TLAST</spirit:logicalName>
+			<spirit:description>This signal indicates the boundary of a packet.</spirit:description>
+			<spirit:wire>
+				<spirit:onSystem>
+					<spirit:group>CLOCK</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onSystem>
+					<spirit:group>RESETn</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onMaster>
+					<spirit:presence>optional</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>out</spirit:direction>
+				</spirit:onMaster>
+				<spirit:onSlave>
+					<spirit:presence>optional</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>in</spirit:direction>
+				</spirit:onSlave>
+			</spirit:wire>
+		</spirit:port>
+
+		<spirit:port>
+			<spirit:logicalName>TDEST</spirit:logicalName>
+			<spirit:description>This signal provides routing information for the data stream.</spirit:description>
+			<spirit:wire>
+				<spirit:onSystem>
+					<spirit:group>CLOCK</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onSystem>
+					<spirit:group>RESETn</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onMaster>
+					<spirit:presence>optional</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>out</spirit:direction>
+				</spirit:onMaster>
+				<spirit:onSlave>
+					<spirit:presence>optional</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>in</spirit:direction>
+				</spirit:onSlave>
+			</spirit:wire>
+		</spirit:port>
+
+		<spirit:port>
+			<spirit:logicalName>TUSER</spirit:logicalName>
+			<spirit:description>TUSER is user defined sideband information that can be transmitted alongside the data stream.</spirit:description>
+			<spirit:wire>
+				<spirit:onSystem>
+					<spirit:group>CLOCK</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onSystem>
+					<spirit:group>RESETn</spirit:group>
+					<spirit:presence>illegal</spirit:presence>
+				</spirit:onSystem>
+				<spirit:onMaster>
+					<spirit:presence>optional</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>out</spirit:direction>
+				</spirit:onMaster>
+				<spirit:onSlave>
+					<spirit:presence>optional</spirit:presence>
+					<spirit:width>1</spirit:width>
+					<spirit:direction>in</spirit:direction>
+				</spirit:onSlave>
+			</spirit:wire>
+		</spirit:port>
+        </spirit:ports>
+
+	<spirit:description>This defines the signals when implementing an AXI4Stream interface on RTL views. For more information about AXI4Stream interfaces refer to the AMBA AXI4Stream Protocol Specification V1.0 (ARM IHI 0051A).</spirit:description>
+	
+	
+</spirit:abstractionDefinition>

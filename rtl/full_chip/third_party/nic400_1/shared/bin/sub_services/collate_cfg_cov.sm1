@@ -1,0 +1,174 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2013 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2013-05-09 15:18:04 +0100 (Thu, 09 May 2013)
+#-     Revision            : 149977
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-           It's purpose is bo build the random environment shared object
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import standard modules
+from sm_base import sm_base
+from os import path, mkdir, environ
+from ipfs_std_lib import *
+from glob import glob
+from shutil import copy as filecopy
+from string import replace
+
+class collate_cfg_cov (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise - 
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Set the name
+        self.name = 'collate_cfg_cov'
+        
+        #Register workflow
+        self.lsf_workflow = 'arm_engine-1.0-covmrg_spec'
+
+        #Set the search_file .. used to identify coveage targets
+        self.search_file = 'report.opts'
+
+        #Register license requirements
+        self.licenses.append('specman')
+
+        #Register license requirements
+        self.tools.append('specman')
+        self.tools.append('xalan')
+        self.tools.append('perl')
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # run - Run the sub_module 
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+        #Scan the search file to get coverage targets
+        terms = {}
+        terms['cfg_block'] = ''
+        terms['cfg_block_name'] = ''
+        terms['cfg_structs'] = {}
+        execfile(directory + '/' + self.search_file, terms)
+
+        #Read in configs 
+        assess_home = environ['ASSESSMENT_HOME'];
+        configs = {}
+        configs['configs'] = []
+        execfile(assess_home + '/' +  terms['cfg_block'] + "/assess.opts", configs)
+
+        self.cchdir("collate_cfg_cov");
+
+        #Build up run script
+        files = []
+        
+        for cfg in configs['configs']:
+            files.extend(glob(directory + "/../../../../" + cfg + "/" + terms['cfg_block_name'] + "*/validation/random/e/ext_pl301_cov*"))
+
+        print configs['configs']
+
+        #Determine the local file
+        local_cfg = glob(directory + "/../random/e/ext_pl301_cov*");
+        run_script = []
+
+        if len(files) > 1:
+            run_script = ['echo "<\'" > cfg_file.e']
+            for file in files:
+                  lfile = path.normpath(file);
+                  if lfile !=  path.normpath(local_cfg[0]):
+                      run_script.append('echo "import ' + lfile + ';" >> cfg_file.e');
+            run_script.append('echo "\'>" >> cfg_file.e')
+
+        run_script.append('echo \'XVC : PL301_COV      "PL301_COV"\' > tbench.tb')
+        run_script.append("touch scenario.tsf")
+
+        if not self.options.gui:
+
+           run_script.append('specman -c "#define ARM_COVERAGE_IGNORES; #define CONFIGCOV; set_config(memory, max_size, 2000M, absolute_max_size, 3000M); load ../../random/e/top;" \\')
+
+           if len(files) > 1:
+                 run_script.append('-c "load cfg_file;" \\')      
+                
+           run_script.append('-c "test; quit;"')
+
+           run_script.append('specman -c "#define ARM_COVERAGE_IGNORES; #define CONFIGCOV; set_config(memory, max_size, 2000M, absolute_max_size, 3000M); load ../../random/e/top;" \\')
+           run_script.append('-c "read coverage ./cfg_file_1.ecov;" \\')
+
+           #Output all the necessary coverage reports.
+           for struct in terms['cfg_structs'].keys():
+                run_script.append('-c "show cover -kind=full -f=' + struct + ' ' + terms['cfg_structs'][struct] + ';" \\')
+                run_script.append('-c "write coverage -merge ' + struct + ';" \\')
+
+           if (self.options.gui):
+                run_script.append('-c "echo;"')
+           else:
+                run_script.append('-c "quit;"')
+
+
+
+           #Process all the structs
+           for struct in terms['cfg_structs'].keys():
+                 run_script.append('$ASSESSMENT_HOME/scripts/specman_fcov_results.pl ' + struct + '.erep ' + struct + '_results.xml collate_cfg_cov/' + struct + '_results.html')
+                 run_script.append('fn_cov_filter.pl ' + struct + '_results.xml ../fn_coverage_filter.xml ' + struct + '_f_results.xml collate_cfg_cov')
+                 run_script.append('Xalan -o ' + struct + '_results.html ' + struct + '_f_results.xml $ASSESSMENT_HOME/scripts/results.xsl')
+   
+           #Produce the top level Report
+           run_script.append('cd ../')
+           run_script.append("echo '<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>' > collate_cfg_cov/top_results.xml")
+           run_script.append('echo "<Results>" >> collate_cfg_cov/top_results.xml')
+           run_script.append('cat collate_cfg_cov/*results_top.xml | grep -v "<?" | grep -v "<Results>" | grep -v "</Results>" >> collate_cfg_cov/top_results.xml')
+           run_script.append('echo "</Results>" >> collate_cfg_cov/top_results.xml')
+           run_script.append('Xalan -o cfg_cov_results.html collate_cfg_cov/top_results.xml $ASSESSMENT_HOME/scripts/results.xsl')
+           run_script.append('find collate_cfg_cov -name "*_f_results.xml" | grep -v "top_results.xml" | xargs cat | grep -v "<?" | grep -v "<Results>" | grep -v "</Results>" > collate_cfg_cov/cfg_cov_merged.xml')
+
+
+
+        else:
+
+           run_script.append('specview -p "#define ARM_COVERAGE_IGNORES; #define CONFIGCOV; set_config(memory, max_size, 2000M, absolute_max_size, 3000M); load ../../random/e/top;" \\')
+
+           if len(files) > 1:
+                 run_script.append('-p "load cfg_file;" \\')    
+ 
+           run_script.append('-p "test;"')
+
+        #Write and execute run_script
+        self.write_run_script(run_script, 'collate_cfg', args)
+        return self.run_command(args, './collate_cfg')
+
+   #-------------------------------------------------------------------------------
+   # clean - clean the output of the sub_module 
+   #-------------------------------------------------------------------------------
+   def clean_sm(self, args, directory):
+
+         self.delete_files.append('collate_cfg_cov')
+         self.delete_files.append('cfg_cov_report.html')
+   #-------------------------------------------------------------------------------

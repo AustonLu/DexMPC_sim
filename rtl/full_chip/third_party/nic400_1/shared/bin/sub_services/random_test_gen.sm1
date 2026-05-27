@@ -1,0 +1,155 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2013 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2013-05-09 16:08:52 +0100 (Thu, 09 May 2013)
+#-     Revision            : 150001
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-           It's purpose is to render a random test
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import standard modules
+from os import path, chdir, mkdir
+from sm_base import sm_base
+from ipfs_std_lib import *
+from types import ListType
+
+class random_test_gen (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise -
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, 0, use_tool)
+
+        #Set the name
+        self.name = 'random_test_gen'
+
+        #Register workflow
+        self.lsf_workflow = 'arm_engine-1.0-testgen'
+
+        #set the search file
+        self.search_file = 'validation.opts'
+
+        #Register tool requirements
+        self.tools.append('xalan')
+        self.tools.append('perl')
+
+        #Turn on dependency checking
+        self.enable_dep_check = True;
+
+
+   #-------------------------------------------------------------------------------
+   # options - This function registers all valid command line options for this SM
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+
+        #Add test option if not previously added
+        if not group.parser.has_option("--test"):
+             group.add_option("--test",  dest="test", action="append",
+                   help="Test to run or compile")
+        if not group.parser.has_option("--parcfg"):
+            group.add_option("--parcfg", dest="parcfg", default='nic400', type='string',
+                         help="Name of the product to render")
+
+        #Clear options
+        return 0
+
+   #-------------------------------------------------------------------------------
+   # run_pre_dep - Setup the temporal dependency checks
+   #-------------------------------------------------------------------------------
+   def run_pre_dep(self, args, directory):
+
+        #Check that test is defined
+        if type(self.options.test) != ListType or len(self.options.test) != 1:
+            message( 'e1.01', 'A single test name must be supplied to the %s SM!' % self.name )
+            return 1
+
+        #Set the output_dir
+        self.output_dir = 'source/' + self.options.test[0]
+        self.output_files = ['./source/' + self.options.test[0] + '/*']
+
+        #Set the input files
+        self.input_files = [self.get_src_dir(directory) + "/*"]
+
+        #Return
+        return int(self.input_files == "/*")
+
+
+   #------------------------------------------------------------------------------
+   # run - Run the sub_module
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+        #This function renders a random test
+        src_dir = self.get_src_dir(directory)
+
+        #Fail if not found
+        if src_dir == '':
+             return 1, {}
+
+        #determine PERIPH_LOGICAL and PERIPH_CONFIG
+        dirs = directory.split('/')
+        periph_config = dirs[len(dirs) - 4]
+        block = dirs[len(dirs) - 3]
+
+        #Open the test file
+        run_script = ['render.pl -parcfg ' + self.options.parcfg + ' -xmlcfg ' + periph_config + \
+                          ' -design ' + self.options.test[0] + ' -xmldir ' + \
+                          path.normpath(directory + '/../../xml ') + \
+                          ' -xmlfile ' + block + ' -xsldir ' +        \
+                          path.normpath(src_dir) + \
+                          ' -outdir ' + path.normpath(directory + '/source') + \
+                          ' -filelist test_files.xsl -allow_exists 1']
+
+        #Create a source directory if it doesn;t exist
+        self.cchdir('source')
+        self.cchdir(self.options.test[0])
+
+        #Write compile run script and complete
+        self.write_run_script(run_script, 'render_test', args)
+        return self.run_command(args, './render_test', 0, {})
+
+   #------------------------------------------------------------------------------
+   # get_src_dir - determine the directory containing the test files
+   #-------------------------------------------------------------------------------
+   def get_src_dir(self, directory):
+
+        terms = {}
+        terms['test_src_dirs'] = ['./source']
+        execfile(directory + '/' + self.search_file, terms)
+        src_dir = ''
+
+        #Find the file
+        for try_src_dir in terms['test_src_dirs']:
+            tpath = environ.get("NIC400_INSTALL_DIR") + '/' + try_src_dir + '/' + self.options.test[0]
+            if path.exists(tpath + '/test_files.xsl'):
+                 return path.normpath(tpath)
+
+        #Failed to find path
+        return ""
+

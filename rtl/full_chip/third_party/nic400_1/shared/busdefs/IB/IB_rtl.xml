@@ -1,0 +1,786 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	// =============================================================================
+	// This confidential and proprietary information may be used only as
+	// authorised by a licensing agreement from ARM Limited
+	//   (C) COPYRIGHT 2008-2013 ARM Limited
+	//       ALL RIGHTS RESERVED
+	// The entire notice above must be reproduced on all authorised
+	// copies and copies may only be made to the extent permitted
+	// by a licensing agreement from ARM Limited.
+	//
+	// =============================================================================
+	//
+	// Purpose :
+	//           This defines the AMBA Advanced eXtensible Interconnect Bus (AXI)
+	//
+	// =============================================================================
+-->
+<spirit:abstractionDefinition xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/index.xsd ">
+  <spirit:vendor>arm.com</spirit:vendor>
+  <spirit:library>CoreLink</spirit:library>
+  <spirit:name>IB_rtl</spirit:name>
+  <spirit:version>r0p0_0</spirit:version>
+  <spirit:busType spirit:library="CoreLink" spirit:name="IB" spirit:vendor="arm.com" spirit:version="r0p0_0" />
+  <spirit:ports>
+    <!-- aw channel -->
+    <spirit:port>
+      <spirit:logicalName>AW_DATA</spirit:logicalName>
+      <spirit:description>Address Write Data.</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AW_WPNTR_GRY</spirit:logicalName>
+      <spirit:description>Grey-coded Write pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AW_RPNTR_BIN</spirit:logicalName>
+      <spirit:description>Binary Read pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AW_RPNTR_GRY</spirit:logicalName>
+      <spirit:description>Grey-coded Read Pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AW_VALID</spirit:logicalName>
+      <spirit:description>
+	Write address valid. This signal indicates that valid write address and control
+	information are available:
+	1 = address and control information available 
+	0 = address and control information not available. 
+	The address and control information remain stable until the address acknowledge signal, 
+	AWREADY, goes HIGH
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AW_READY</spirit:logicalName>
+      <spirit:description>
+	Write address ready. This signal indicates that the slave is ready to accept an address and
+	associated control signals: 
+	1 = slave ready 
+ 	0 = slave not ready
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <!-- ar channel -->
+    <spirit:port>
+      <spirit:logicalName>AR_DATA</spirit:logicalName>
+      <spirit:description>
+        Address Write Data.	
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AR_WPNTR_GRY</spirit:logicalName>
+      <spirit:description>Grey-coded Write pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AR_RPNTR_BIN</spirit:logicalName>
+      <spirit:description>Binary read pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AR_RPNTR_GRY</spirit:logicalName>
+      <spirit:description>Grey-coded read pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AR_VALID</spirit:logicalName>
+      <spirit:description>
+	Write address valid. This signal indicates that valid write address and control
+	information are available:
+	1 = address and control information available 
+	0 = address and control information not available. 
+	The address and control information remain stable until the address acknowledge signal, 
+	AWREADY, goes HIGH
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AR_READY</spirit:logicalName>
+      <spirit:description>
+	Write address ready. This signal indicates that the slave is ready to accept an address and
+	associated control signals: 
+	1 = slave ready 
+ 	0 = slave not ready
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <!-- a channel -->
+    <spirit:port>
+      <spirit:logicalName>A_DATA</spirit:logicalName>
+      <spirit:description>
+        Address Write Data.	
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>A_WPNTR_GRY</spirit:logicalName>
+      <spirit:description>Grey-coded write pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>A_RPNTR_BIN</spirit:logicalName>
+      <spirit:description>Binary read pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>A_RPNTR_GRY</spirit:logicalName>
+      <spirit:description>Grey-coded read pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>A_VALID</spirit:logicalName>
+      <spirit:description>
+	Write address valid. This signal indicates that valid write address and control
+	information are available:
+	1 = address and control information available 
+	0 = address and control information not available. 
+	The address and control information remain stable until the address acknowledge signal, 
+	AWREADY, goes HIGH
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>A_READY</spirit:logicalName>
+      <spirit:description>
+	Write address ready. This signal indicates that the slave is ready to accept an address and
+	associated control signals: 
+	1 = slave ready 
+ 	0 = slave not ready
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <!-- w channel -->
+    <spirit:port>
+      <spirit:logicalName>W_DATA</spirit:logicalName>
+      <spirit:description>
+        Write Data.	
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>W_WPNTR_GRY</spirit:logicalName>
+      <spirit:description>Grey-coded write pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>W_LPNTR_GRY</spirit:logicalName>
+      <spirit:description>Grey-coded leading-write data pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>W_RPNTR_BIN</spirit:logicalName>
+      <spirit:description>Binary read pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>W_RPNTR_GRY</spirit:logicalName>
+      <spirit:description>Grey-coded read pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>W_VALID</spirit:logicalName>
+      <spirit:description>
+	Write address valid. This signal indicates that valid write address and control
+	information are available:
+	1 = address and control information available 
+	0 = address and control information not available. 
+	The address and control information remain stable until the address acknowledge signal, 
+	AWREADY, goes HIGH
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>W_READY</spirit:logicalName>
+      <spirit:description>
+	Write address ready. This signal indicates that the slave is ready to accept an address and
+	associated control signals: 
+	1 = slave ready 
+ 	0 = slave not ready
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <!-- r channel -->
+    <spirit:port>
+      <spirit:logicalName>R_DATA</spirit:logicalName>
+      <spirit:description>
+        Address Write Data.	
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>R_WPNTR_GRY</spirit:logicalName>
+      <spirit:description>Grey-coded write pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>R_RPNTR_BIN</spirit:logicalName>
+      <spirit:description>Binary read pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>R_RPNTR_GRY</spirit:logicalName>
+      <spirit:description>Grey-coded read pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>R_VALID</spirit:logicalName>
+      <spirit:description>
+	Write address valid. This signal indicates that valid write address and control
+	information are available:
+	1 = address and control information available 
+	0 = address and control information not available. 
+	The address and control information remain stable until the address acknowledge signal, 
+	AWREADY, goes HIGH
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>R_READY</spirit:logicalName>
+      <spirit:description>
+	Write address ready. This signal indicates that the slave is ready to accept an address and
+	associated control signals: 
+	1 = slave ready 
+ 	0 = slave not ready
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <!-- b channel -->
+    <spirit:port>
+      <spirit:logicalName>B_DATA</spirit:logicalName>
+      <spirit:description>
+        Address Write Data.	
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>B_WPNTR_GRY</spirit:logicalName>
+      <spirit:description>Grey-coded write pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>B_RPNTR_BIN</spirit:logicalName>
+      <spirit:description>Binary read pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>B_RPNTR_GRY</spirit:logicalName>
+      <spirit:description>Grey-coded read pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>B_VALID</spirit:logicalName>
+      <spirit:description>
+	Write address valid. This signal indicates that valid write address and control
+	information are available:
+	1 = address and control information available 
+	0 = address and control information not available. 
+	The address and control information remain stable until the address acknowledge signal, 
+	AWREADY, goes HIGH
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>B_READY</spirit:logicalName>
+      <spirit:description>
+	Write address ready. This signal indicates that the slave is ready to accept an address and
+	associated control signals: 
+	1 = slave ready 
+ 	0 = slave not ready
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <!-- d channel -->
+    <spirit:port>
+      <spirit:logicalName>D_DATA</spirit:logicalName>
+      <spirit:description>
+        Address Write Data.	
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>D_WPNTR_GRY</spirit:logicalName>
+      <spirit:description>Grey-coded write pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>D_RPNTR_BIN</spirit:logicalName>
+      <spirit:description>Binary read pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>D_RPNTR_GRY</spirit:logicalName>
+      <spirit:description>Grey-coded read pointer</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>D_VALID</spirit:logicalName>
+      <spirit:description>
+	Write address valid. This signal indicates that valid write address and control
+	information are available:
+	1 = address and control information available 
+	0 = address and control information not available. 
+	The address and control information remain stable until the address acknowledge signal, 
+	AWREADY, goes HIGH
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>D_READY</spirit:logicalName>
+      <spirit:description>
+	Write address ready. This signal indicates that the slave is ready to accept an address and
+	associated control signals: 
+	1 = slave ready 
+ 	0 = slave not ready
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>EMPTY</spirit:logicalName>
+      <spirit:description>
+	Empty signal required for HCG if the clock boundary has different freqs
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+  </spirit:ports>
+  <spirit:description>The current file describes the RTL view of an IB interface</spirit:description>
+</spirit:abstractionDefinition>

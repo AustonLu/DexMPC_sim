@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!DOCTYPE periph [<!ENTITY system SYSTEM "../../xml/nic400_internal.xml">
+<!ENTITY axi_ext         SYSTEM "../../shared/busdefs/AXI_ext/AXI_ext.xml">
+<!ENTITY axi_ext_rtl     SYSTEM "../../shared/busdefs/AXI_ext/AXI_ext_rtl.xml">
+<!ENTITY axi4            SYSTEM "../../shared/busdefs/AXI4/AXI4.xml">
+<!ENTITY axi4_rtl        SYSTEM "../../shared/busdefs/AXI4/AXI4_rtl.xml">
+<!ENTITY aximon          SYSTEM "../../shared/busdefs/AXIMON.xml">
+<!ENTITY ahb             SYSTEM "../../shared/busdefs/AHBLite/AHBLite.xml">
+<!ENTITY ahb_rtl         SYSTEM "../../shared/busdefs/AHBLite/AHBLite_rtl.xml">
+<!ENTITY apb             SYSTEM "../../shared/busdefs/APB/APB.xml">
+<!ENTITY apb_rtl         SYSTEM "../../shared/busdefs/APB/APB_rtl.xml">
+<!ENTITY asib_sSpi SYSTEM "../../asib_sSpi/xml/asib_sSpi_io.xml">
+<!ENTITY asib_sD2dData SYSTEM "../../asib_sD2dData/xml/asib_sD2dData_io.xml">
+<!ENTITY asib_sIrisBridge SYSTEM "../../asib_sIrisBridge/xml/asib_sIrisBridge_io.xml">
+<!ENTITY amib_mGauxCore SYSTEM "../../amib_mGauxCore/xml/amib_mGauxCore_io.xml">
+<!ENTITY amib_mDexmpcCore SYSTEM "../../amib_mDexmpcCore/xml/amib_mDexmpcCore_io.xml">
+<!ENTITY inter_bm0 SYSTEM "../../busmatrix_bm0/xml/busmatrix_bm0_io.xml">
+<!ENTITY inter_ds_1 SYSTEM "../../default_slave_ds_1/xml/default_slave_ds_1_io.xml">
+<!ENTITY inter_sSpi_ib SYSTEM "../../ib_sSpi_ib/xml/ib_sSpi_ib_io.xml">]>
+
+<periph>
+
+
+&system;
+&apb;
+&aximon;
+&ahb;
+&apb_rtl;
+&axi_ext;
+&axi_ext_rtl;
+&axi4;
+&axi4_rtl;
+&ahb_rtl;
+<vlog_io>
+     <name>sSpi</name>
+     &asib_sSpi;
+</vlog_io>
+
+<vlog_io>
+     <name>sD2dData</name>
+     &asib_sD2dData;
+</vlog_io>
+
+<vlog_io>
+     <name>sIrisBridge</name>
+     &asib_sIrisBridge;
+</vlog_io>
+
+<vlog_io>
+     <name>mGauxCore</name>
+     &amib_mGauxCore;
+</vlog_io>
+
+<vlog_io>
+     <name>mDexmpcCore</name>
+     &amib_mDexmpcCore;
+</vlog_io>
+
+<vlog_io>
+     <name>bm0</name>
+     &inter_bm0;
+</vlog_io>
+
+<vlog_io>
+     <name>ds_1</name>
+     &inter_ds_1;
+</vlog_io>
+
+<vlog_io>
+     <name>sSpi_ib</name>
+     &inter_sSpi_ib;
+</vlog_io>
+
+<parcfg>nic400</parcfg>
+<xmlcfg>1</xmlcfg>
+<spirit_file>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/nic400/../spirit/nic400_1.xml</spirit_file>
+</periph>
+

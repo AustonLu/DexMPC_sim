@@ -1,0 +1,21 @@
+VN         http://cam-svn2.cambridge.arm.com/svn/ippd/spirit/busdefs/tags/released/ipxact1.4/arm.com/CoreLink/VN/r0p0_0
+AXI_VN     http://cam-svn2.cambridge.arm.com/svn/ippd/spirit/busdefs/tags/released/ipxact1.4/arm.com/CoreLink/AXI_VN/r0p0_0
+AXI4       http://cam-svn2.cambridge.arm.com/svn/ippd/spirit/busdefs/tags/released/ipxact1.4/amba.com/AMBA4/AXI4/r0p0_0
+APB4       http://cam-svn2.cambridge.arm.com/svn/ippd/spirit/busdefs/tags/released/ipxact1.4/amba.com/AMBA4/APB4/r0p0_0
+AXI        http://cam-svn2.cambridge.arm.com/svn/ippd/spirit/busdefs/tags/released/ipxact1.4/amba.com/AMBA3/AXI/r2p0_0
+AHBLite    http://cam-svn2.cambridge.arm.com/svn/ippd/spirit/busdefs/tags/released/ipxact1.4/amba.com/AMBA3/AHBLite/r2p0_0
+APB        http://cam-svn2.cambridge.arm.com/svn/ippd/spirit/busdefs/tags/released/ipxact1.4/amba.com/AMBA3/APB/r2p0_0
+LPI        http://cam-svn2.cambridge.arm.com/svn/ippd/spirit/busdefs/tags/released/ipxact1.4/amba.com/AMBA3/LPI/r2p0_0
+clock      http://cam-svn2.cambridge.arm.com/svn/ippd/spirit/busdefs/tags/released/ipxact1.4/arm.com/generic/clock/r0p0_0
+AXI_ext/AXI_ext.xml     http://cam-svn2.cambridge.arm.com/svn/fipd/ip/pl301r2/trunk/shared/logical/pl301/shared/busdefs/AXI_ext.xml
+AXI_ext/AXI_ext_rtl.xml http://cam-svn2.cambridge.arm.com/svn/fipd/ip/pl301r2/trunk/shared/logical/pl301/shared/busdefs/AXI_ext_rtl.xml
+
+
+
+
+
+
+
+
+
+

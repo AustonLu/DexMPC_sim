@@ -1,0 +1,347 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2009-2012 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2012-08-17 11:34:10 +0100 (Fri, 17 Aug 2012)
+#-     Revision            : 135252
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import the Base Class
+import re
+from os import path
+from sm_base import sm_base
+from ipfs_std_lib import *
+from glob import glob
+from copy import copy, deepcopy
+
+
+class synthesis (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise -
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Set the name
+        self.name = 'synthesis'
+
+        #Register report function
+        self.self_report = True
+
+        #Set up the path control functionality
+        self.search_file = 'synth.opts'
+        self.search_option = 'CLK_PERIOD'
+
+        #Add Lincense Requirement
+        self.licenses.append('dc')
+
+        # Tools Needed
+        self.tools.append('dc')
+
+   #-------------------------------------------------------------------------------
+   # options - This function registers all valid command line options for this SM
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+
+        # Add options and return
+        group.add_option("--flatten", dest="FLATTEN",default='1',
+                         help = "Select FLATTEN option. Default causes all hiearchy to be ungrouped flattened")
+        group.add_option("--clk_period_ns", dest="CLK_PERIOD", default="1.8762",
+                         help = "Set the default clock period in ns. Use either the --clk_period_ns or --clk_freq_mhz option.")
+        group.add_option("--tech", dest="TECH",default='32LP',
+                         help = "Select which cell library and technology to target.Available technologies are TECH=32LP|65LP_HS|65GP_HS")
+        group.add_option("--sparse_layout", dest="SPARSE_LAYOUT",default='1',
+                         help = "Select constraints to be applied to the design. When 1, the assumed area utilisation is dropped to 20% and the  master and slave interfaces are forced to opposite sides of the bounding box")
+        group.add_option("--ext_delay", dest="EXT_DELAY",default='0.116',
+                         help = "Change the external delay (for example setup) used when constraining combinatorial paths from a fast clock domain through a slower sync domain to an external port")
+        group.add_option("--clk_freq_mhz", dest="CLK_FREQ", default="533",
+                         help = "Set the default clock period in MHz. Use either the --clk_period_ns or --clk_freq_mhz option.")
+        group.add_option("--metrics", dest="METRICS", action="store_true", default=None,
+                         help=SUPPRESS_HELP)
+        group.add_option("--impl_flow", dest="impl_flow", default="\0",
+                         help = "Specify the task for the implementation makefile. LSF dispatch is prepended unless --lsf_off is also used")
+        group.add_option("--dft", dest="dft", action="store_true",default=False,
+                         help = "Select dft insertion. Default no DFT cells are inserted")
+        group.add_option("--spg", dest="spg_flow", action="store_true",default=False,
+                         help = "Select Synopsys Physical Guidance flow. Default no SPG")
+        group.add_option("--quick", dest="quick_synth", action="store_true",default=False,
+                         help = SUPPRESS_HELP)
+        group.add_option("--rpt_power", dest="rpt_power", action="store_true",default=False,
+                         help = "Enable RM power reporting")
+        group.add_option("--suppress_warns", dest="suppress_warns", action="store_true",default=False,
+                         help = "Suppress some expected synthesis warnings")
+
+        #Clear options
+        return 0
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # run - Executes n-iterations of tool call, with options to call pre-processing
+   #        and post-processing scriptlets that perform specific housekeeping
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+        print "runnning synthesis now"
+        #string to store the options
+        opt_str = ''
+        impl_opt_str = ''
+        #string to store the clk_period
+        clk_period_str = '1.8762'  # 533 MHz Period
+
+        # If a clock frequency has been specified, convert the frequency (in
+        # MHz) to a clock period (in ns) and override the default
+        if self.options.CLK_FREQ != '533':
+
+            # Set Decimal precision to 5 significant figures
+            getcontext().prec = 5
+
+            clk_period_str = str(((Decimal(1/Decimal(self.options.CLK_FREQ)))*1000))
+
+        # If a clock period has been specific, override the default
+        if self.options.CLK_PERIOD != '1.8762':
+            clk_period_str = self.options.CLK_PERIOD
+
+        if self.options.TECH[0:2] == "65":
+            exec_script = "rm_compile.tcl"
+        else:
+            exec_script = "rm_synthesis.tcl"
+
+        if self.options.quick_synth:
+            opt_str+="set rm_quick_synth 1 ; "
+            impl_opt_str+="rm_quick_synth=1 "
+        if self.options.rpt_power:
+            opt_str+="set rm_report_power 1 ; "
+            impl_opt_str+="rm_report_power=1 "
+        if self.options.suppress_warns:
+            opt_str+="set rm_suppress_messages 1 ; "
+            impl_opt_str+="rm_suppress_messages=1 "
+        if self.options.spg_flow:
+            opt_str+="set rm_spg 1 ; "
+            impl_opt_str+="rm_spg=1 "
+
+        opt_str+="set rm_sparse_layout " + self.options.SPARSE_LAYOUT +"; set rm_use_ungroup " + self.options.FLATTEN +"; set rm_tech_name " + self.options.TECH +"; set clock_period " + clk_period_str + "; set rm_ext_delay " + self.options.EXT_DELAY + "; set rm_block_name top"
+        impl_opt_str+="rm_sparse_layout=" + self.options.SPARSE_LAYOUT +" FLATTEN=" + self.options.FLATTEN +" rm_tech_name=" + self.options.TECH +" clock_period=" + clk_period_str + " rm_ext_delay=" + self.options.EXT_DELAY + " rm_block_name=top"
+        #If there is no search file in the directory
+        if path.exists(directory + '/' + self.search_file):
+            #Now read in the search_file
+            clks = {}
+            clks[self.search_option] = {}
+            execfile(directory + '/' + self.search_file, clks)
+            # go through the clk options and set the value for a clk if user has specified,else use default
+            for k, v in clks[self.search_option].items():
+
+                #If set to default use the defined name
+                if v == 'DEFAULT':
+                    clks[self.search_option][k] = self.options.CLK_PERIOD
+                else:
+                    clks[self.search_option][k] = v
+
+                for i in self.args:
+                    split = re.split('=', i)
+                    if split.pop(0) == k:
+                        clks[self.search_option][k] = split.pop(0)
+            for k, v in clks[self.search_option].items():
+                opt_str+= "; set %s  %s" % (k, v)
+                impl_opt_str+= " %s=%s" % (k, v)
+
+        #Determine PERIPH_LOGICAL
+        periph_logical = sub(r'/implementation/(\S+)/synopsys$', r'/logical/\1', directory)
+        #periph_config = sub(r'/implementation/(\S+)/synopsys$', r'\1', directory)
+        dirs = directory.split('/')
+        periph_config = dirs[len(dirs) - 2]
+        print "\nConfig Name:" + periph_config + "\n"
+
+
+        #Determine if the -64bit flag must be set for dc_shell. Set a variable to be used in the dc_shell command line string below.
+        #Default value of self.options.os is a 64bit OS.
+        dc_mode = '';
+
+        if self.use_lsf == 1:
+            if (re.search("linux64", self.options.os) or re.search("default", self.options.os)):
+                dc_mode = ' -64bit'
+
+        #Create a run script
+        run_script = [ 'setenv PERIPH_LOGICAL ' + periph_logical,
+                       'set SCRIPTS = ' + directory + '/scripts',
+                       'set LOGS = ' + directory + '/logs',
+                       'set REPORTS = ' + directory + '/reports',
+                       'cd ' + directory,
+                       'mkdir -p work/',
+                       'mkdir -p elabs/',
+                       'mkdir -p logs/',
+                       'mkdir -p data/',
+                       'mkdir -p reports/compile/',
+                       'mkdir -p reports/synthesis/',
+                       'mkdir -p reports/layout/',
+                       'mkdir -p reports/dft/',
+                       'mkdir -p reports/lec/',
+                       'mkdir -p reports/sta/',
+                       'mkdir -p reports/dmsa/',
+                       'mkdir -p reports/power',
+                       'mkdir -p models/functional/',
+                       'mkdir -p models/physical/',
+                       'mkdir -p models/test/',
+                       'mkdir -p models/timing/',
+                     ];
+
+        if (hasattr(self.options, 'impl_flow') and self.options.impl_flow != '\0'):
+            run_script.extend(['pwd;cp -rf impl_scripts/scripts/* scripts/.',
+                               'cp -f impl_scripts/Makefile.ARM* .',
+                               'patch -p0 --fuzz 50 -f -s -i impl_scripts/patch_rm_synthesis.tcl.patch',
+                               'module load arm/cluster'])
+
+            if self.use_lsf == 0:
+                run_script.extend(['make '+self.options.impl_flow+' '+impl_opt_str])
+            else:
+                run_script.extend(['make bsub_'+self.options.impl_flow+' '+impl_opt_str])
+                self.use_lsf = 0
+        else:
+
+            if self.options.dft:
+                run_script.extend(['echo "# ------------------------------------------------------------------------------" >  ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# The confidential and proprietary information contained in this file may"        >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# only be used by a person authorised under and to the extent permitted"          >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# by a subsisting licensing agreement from ARM Limited."                          >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "#"                                                                                >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "#            (C) COPYRIGHT 2012 ARM Limited."                                     >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "#                ALL RIGHTS RESERVED"                                             >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "#"                                                                                >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# This entire notice must be reproduced on all copies of this file"               >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# and copies of this file may only be made by a person if such person is"         >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# permitted to do so under the terms of a subsisting license agreement"           >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# from ARM Limited."                                                              >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "#"                                                                                >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# ------------------------------------------------------------------------------" >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# Purpose : Set Netlist reference design extension"                               >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "#  THIS FILE IS AUTO_GENERATED - **DO NOT EDIT**"                                 >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# ------------------------------------------------------------------------------" >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "set netlist dft">> ${SCRIPTS}/synth_mode.tcl'])
+            else:
+                run_script.extend(['echo "# ------------------------------------------------------------------------------" >  ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# The confidential and proprietary information contained in this file may"        >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# only be used by a person authorised under and to the extent permitted"          >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# by a subsisting licensing agreement from ARM Limited."                          >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "#"                                                                                >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "#            (C) COPYRIGHT 2012 ARM Limited."                                     >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "#                ALL RIGHTS RESERVED"                                             >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "#"                                                                                >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# This entire notice must be reproduced on all copies of this file"               >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# and copies of this file may only be made by a person if such person is"         >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# permitted to do so under the terms of a subsisting license agreement"           >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# from ARM Limited."                                                              >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "#"                                                                                >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# ------------------------------------------------------------------------------" >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# Purpose : Set Netlist reference design extension"                               >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "#  THIS FILE IS AUTO_GENERATED - **DO NOT EDIT**"                                 >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "# ------------------------------------------------------------------------------" >> ${SCRIPTS}/synth_mode.tcl',
+                                   'echo "set netlist synthesis" >> ${SCRIPTS}/synth_mode.tcl'])
+            
+
+            run_script.extend(['cd work'])
+            # Switch between gui and batch
+            dc_command = 'time dc_shell-xg-t ' + dc_mode + ' -topographical_mode -x "' + opt_str + '" '
+            cmd_opt = '-f ${SCRIPTS}/' + exec_script + ' | tee ${LOGS}/synthesis.log ;'
+            if self.options.gui:
+                cmd_opt = ';'
+                dc_command = 'design_vision -topographical_mode -x "' + opt_str + ';" > ${LOGS}/synthesis.log'
+
+            run_script.extend([dc_command + cmd_opt]);
+            if self.options.dft:
+                dft_command = 'time dc_shell-xg-t -topo ' + dc_mode + ' -f ${SCRIPTS}/rm_dft.tcl | tee ${LOGS}/dft.log'
+                run_script.extend([dft_command]);
+
+        if self.options.METRICS != None:
+            run_script.extend(['$ASSESSMENT_HOME/scripts/synth_metrics.pl']);
+
+        #Write out script and run it
+        self.write_run_script(run_script, 'run_synthesis', args)
+        return self.run_command(args, './run_synthesis')
+        return 0
+
+   #-------------------------------------------------------------------------------
+   # report - Sumarises the log files
+   #-------------------------------------------------------------------------------
+   def report_sm(self, args, directory):
+
+        #Remove uneeded license request
+        if self.licenses.count('dc') > 0:
+            self.licenses.remove('dc')
+
+        if environ.get('DMC400_regression'):
+            #Create report run script
+            run_script = ['$ASSESSMENT_HOME/scripts/synth_metrics.pl',
+                          '$ASSESSMENT_HOME/scripts/synopsys_results.pl ./logs/synthesis.log ./reports top 10 1 ./raw.xml',
+                          '$ASSESSMENT_HOME/scripts/result_filter.pl raw.xml synth_filter.xml results.xml',
+                          'Xalan -o results.html results.xml $ASSESSMENT_HOME/scripts/results.xsl'];
+            #Write out script and run it
+            self.write_run_script(run_script, 'report_synthesis', args)
+            return self.run_command(args, './report_synthesis')
+        else:
+            message( 'e1.09', "Reporting not supported for OOB")
+            return 1
+
+   #-------------------------------------------------------------------------------
+   # clean - A housekeeping function for the purpose of updating the status of the
+   #          service after execution, and to perform clean-up of the workspace
+   #-------------------------------------------------------------------------------
+
+   def clean_sm(self, args,directory):
+
+        #Disable feature to automatically clean all loaded sub SMs
+        self.use_lsf = 0
+
+        self.delete_files.append('run*')
+        self.delete_files.append('bsub.log')
+        return 0;
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # help -
+   #-------------------------------------------------------------------------------
+   def help_sm(self, args):
+
+        #set the usage term
+        self.parser.usage = "ae synthesis [options] clock_period(s)"
+        #Set the help epilog
+        group = self.parser.get_option_group('--clk_period_ns')
+        if len(self.directories) > 1:
+         group.epilog = ["Clock period options are configuration specific and it cannot be obtained from this location "]
+        else:
+            if  path.exists(self.directories[0] + '/' + 'synth.opts'):
+                clks = {}
+                clks['CLK_PERIOD'] = {}
+                execfile(self.directories[0] + '/' + 'synth.opts', clks)
+                group.epilog.append("Clock period(s) can be set for following domains:")
+                group.epilog.append(", ".join(["%s" %k for k in clks[self.search_option].keys()]))
+                group.epilog.append("Use the form xxx_period=2.5")
+
+        return 0;
+
+

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+// =============================================================================
+// This confidential and proprietary software may be used only as
+// authorised by a licensing agreement from ARM Limited
+//   (C) COPYRIGHT 2012 ARM Limited
+//       ALL RIGHTS RESERVED
+// The entire notice above must be reproduced on all authorised
+// copies and copies may only be made to the extent permitted
+// by a licensing agreement from ARM Limited.
+//
+// =============================================================================
+//
+// Purpose :
+//           This defines the NIC400 simple internal C-channel
+//
+// =============================================================================
+-->
+<spirit:abstractionDefinition xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4                       http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/index.xsd">
+  <spirit:vendor>arm.com</spirit:vendor>
+  <spirit:library>CoreLink</spirit:library>
+  <spirit:name>AXI_C_rtl</spirit:name>
+  <spirit:version>r0p0</spirit:version>
+  <spirit:busType spirit:library="CoreLink" spirit:name="AXI_C" spirit:vendor="arm.com" spirit:version="r0p0" />
+  <spirit:ports>
+    <!-- Low power channel signals -->
+    <spirit:port>
+      <spirit:logicalName>CSYSREQ</spirit:logicalName>
+      <spirit:description>
+	System low-power request. This signal is a request from the system clock controller for the
+	peripheral to enter a low-power state
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>CSYSACK</spirit:logicalName>
+      <spirit:description>
+	Low-power request acknowledgement. This signal is the acknowledgement from a peripheral
+	of a system low-power request
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>CACTIVE</spirit:logicalName>
+      <spirit:description>
+	Clock active. This signal indicates that the peripheral requires its clock signal: 
+	1 = peripheral clock required 
+	0 = peripheral clock not required
+</spirit:description>
+      <spirit:wire>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+  </spirit:ports>
+  <spirit:description>Abstraction definition for AXI C channel low power interface</spirit:description>
+</spirit:abstractionDefinition>

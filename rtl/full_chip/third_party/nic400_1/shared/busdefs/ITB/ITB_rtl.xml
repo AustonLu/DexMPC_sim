@@ -1,0 +1,903 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	// =============================================================================
+	// This confidential and proprietary information may be used only as
+	// authorised by a licensing agreement from ARM Limited
+	//   (C) COPYRIGHT 2012 ARM Limited
+	//       ALL RIGHTS RESERVED
+	// The entire notice above must be reproduced on all authorised
+	// copies and copies may only be made to the extent permitted
+	// by a licensing agreement from ARM Limited.
+	//
+	// =============================================================================
+	//
+	// Purpose :
+	//           This defines the NIC400 Internal Bus
+	//
+	// =============================================================================
+-->
+<spirit:abstractionDefinition xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/index.xsd ">
+  <spirit:vendor>arm.com</spirit:vendor>
+  <spirit:library>CoreLink</spirit:library>
+  <spirit:name>ITB_rtl</spirit:name>
+  <spirit:version>r0p0_0</spirit:version>
+  <spirit:busType spirit:library="CoreLink" spirit:name="ITB" spirit:vendor="arm.com" spirit:version="r0p0_0" />
+  <spirit:ports>
+    <!-- Global signals -->
+    <spirit:port>
+      <spirit:logicalName>ACLK</spirit:logicalName>
+      <spirit:description>Global clock signal. All signals are sampled on the rising edge of the global clock</spirit:description>
+      <spirit:wire>
+        <spirit:qualifier>
+          <spirit:isClock>true</spirit:isClock>
+        </spirit:qualifier>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:requiresDriver spirit:driverType="clock">true</spirit:requiresDriver>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>ARESETn</spirit:logicalName>
+      <spirit:description>Global reset signal. This signal is active LOW</spirit:description>
+      <spirit:wire>
+        <spirit:qualifier>
+          <spirit:isReset>true</spirit:isReset>
+        </spirit:qualifier>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:requiresDriver spirit:driverType="singleShot">true</spirit:requiresDriver>
+      </spirit:wire>
+    </spirit:port>
+    <!-- Write address channel signals -->
+    <spirit:port>
+      <spirit:logicalName>AWRITE</spirit:logicalName>
+      <spirit:description>
+        Write/Read address signal
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AID</spirit:logicalName>
+      <spirit:description>
+	Write address ID. This signal is the identification tag for the write address group of
+	signals
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AADDR</spirit:logicalName>
+      <spirit:description>
+	Write address. The write address bus gives the address of the first transfer in a write burst
+	transaction. The associated control signals are used to determine the addresses of the
+	remaining transfers in the burst
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:qualifier>
+          <spirit:isAddress>true</spirit:isAddress>
+        </spirit:qualifier>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>ALEN</spirit:logicalName>
+      <spirit:description>
+	Burst length. The burst length gives the exact number of transfers in a burst. This
+	information determines the number of data transfers associated with the address
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>ASIZE</spirit:logicalName>
+      <spirit:description>
+	Burst size. This signal indicates the size of each transfer in the burst. Byte lane strobes
+	indicate exactly which byte lanes to update
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>3</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>3</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>ABURST</spirit:logicalName>
+      <spirit:description>
+	Burst type. The burst type, coupled with the size information, details how the address for
+	each transfer within the burst is calculated
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>2</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>2</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>ALOCK</spirit:logicalName>
+      <spirit:description>
+	Lock type. This signal provides additional information about the atomic characteristics
+	of the transfer
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>ACACHE</spirit:logicalName>
+      <spirit:description>
+	Cache type. This signal indicates the bufferable, cacheable, write-through, write-back,
+	and allocate attributes of the transaction
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>4</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>4</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>APROT</spirit:logicalName>
+      <spirit:description>
+	Protection type. This signal indicates the normal, privileged, or secure protection level
+	of the transaction and whether the transaction is a data access or an instruction access
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>3</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>3</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AREGION</spirit:logicalName>
+      <spirit:description>Address region signals. Non-standard in AXI3, optional in AXI4</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>4</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>4</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AVALID_VECT</spirit:logicalName>
+      <spirit:description>One-hot decode vector</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AVALID</spirit:logicalName>
+      <spirit:description>
+	Write address valid. This signal indicates that valid write address and control
+	information are available:
+	1 = address and control information available 
+	0 = address and control information not available. 
+	The address and control information remain stable until the address acknowledge signal, 
+	AWREADY, goes HIGH
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>AREADY</spirit:logicalName>
+      <spirit:description>
+	Write address ready. This signal indicates that the slave is ready to accept an address and
+	associated control signals: 
+	1 = slave ready 
+ 	0 = slave not ready
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <!-- Write data channel signals -->
+    <spirit:port>
+      <spirit:logicalName>WID</spirit:logicalName>
+      <spirit:description>
+	Write ID tag. This signal is the ID tag of the write data transfer. The WID value must match
+	the AWID value of the write transaction
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>WDATA</spirit:logicalName>
+      <spirit:description>Write data. The write data bus can be 8, 16, 32, 64, 128, 256, 512, or 1024 bits wide</spirit:description>
+      <spirit:wire>
+        <spirit:qualifier>
+          <spirit:isData>true</spirit:isData>
+        </spirit:qualifier>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>WSTRB</spirit:logicalName>
+      <spirit:description>
+	Write strobes. This signal indicates which byte lanes to update in memory. There is one
+	write strobe for each eight bits of the write data bus. 
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>WLAST</spirit:logicalName>
+      <spirit:description>Write last. This signal indicates the last transfer in a write burst</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>WVALID</spirit:logicalName>
+      <spirit:description>
+	Write valid. This signal indicates that valid write data and strobes are available: 
+	1 = write data and strobes available
+	0 = write data and strobes not available
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>WREADY</spirit:logicalName>
+      <spirit:description>
+	Write ready. This signal indicates that the slave can accept the write data:
+	1 = slave ready
+	0 = slave not ready
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>DBNR</spirit:logicalName>
+      <spirit:description>
+	Response ID. The identification tag of the write response. The BID value must match the
+	AWID value of the write transaction to which the slave is responding
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <!-- Write response channel signals -->
+    <spirit:port>
+      <spirit:logicalName>DID</spirit:logicalName>
+      <spirit:description>
+	Response ID. The identification tag of the write response. The BID value must match the
+	AWID value of the write transaction to which the slave is responding
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>DRESP</spirit:logicalName>
+      <spirit:description>
+	Write response. This signal indicates the status of the write transaction. The allowable
+	responses are OKAY, EXOKAY, SLVERR, and DECERR
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>2</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>2</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>DLAST</spirit:logicalName>
+      <spirit:description>Read last. This signal indicates the last transfer in a Read burst</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>DDATA</spirit:logicalName>
+      <spirit:description>
+        Data bus
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>DVALID</spirit:logicalName>
+      <spirit:description>
+	Write response valid. This signal indicates that a valid write response is available:
+	1 = write response available 
+	0 = write response not available
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>DREADY</spirit:logicalName>
+      <spirit:description>
+	Response ready. This signal indicates that the master can accept the response information.
+	1 = master ready 
+	0 = master not ready
+</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+      </spirit:wire>
+    </spirit:port>
+    <!-- Optional user signals -->
+    <spirit:port>
+      <spirit:logicalName>AUSER</spirit:logicalName>
+      <spirit:description>Optional AXI USER signals</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>WUSER</spirit:logicalName>
+      <spirit:description>Optional AXI USER signals</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>DUSER</spirit:logicalName>
+      <spirit:description>Optional AXI USER signals</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+
+    <spirit:port>
+      <spirit:logicalName>AVNET</spirit:logicalName>
+      <spirit:description>A channel Virtual network identifier</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>4</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>4</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>WVNET</spirit:logicalName>
+      <spirit:description>W channel Virtual network identifier</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>4</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>4</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+  </spirit:ports>
+  <spirit:description>The current file describes the RTL view of an AXI interface</spirit:description>
+</spirit:abstractionDefinition>

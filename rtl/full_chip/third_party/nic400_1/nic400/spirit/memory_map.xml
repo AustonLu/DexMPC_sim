@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spirit:Component xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4">
+  <spirit:busInterfaces>
+    <spirit:busInterface>
+      <spirit:name>sSpi</spirit:name>
+      <spirit:slave>
+        <spirit:memoryMapRef spirit:memoryMapRef="memoryMap_sSpi"/>
+        <spirit:bridge spirit:masterRef="mDexmpcCore" spirit:opaque="true"/>
+        <spirit:bridge spirit:masterRef="mGauxCore" spirit:opaque="true"/>
+      </spirit:slave>
+      <spirit:vendorExtensions xmlns:arm="http://www.arm.com/SPIRIT">
+        <arm:defReadResp>DEC</arm:defReadResp>
+        <arm:defWriteResp>DEC</arm:defWriteResp>
+      </spirit:vendorExtensions>
+    </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>sD2dData</spirit:name>
+      <spirit:slave>
+        <spirit:memoryMapRef spirit:memoryMapRef="memoryMap_sD2dData"/>
+        <spirit:bridge spirit:masterRef="mDexmpcCore" spirit:opaque="true"/>
+        <spirit:bridge spirit:masterRef="mGauxCore" spirit:opaque="true"/>
+      </spirit:slave>
+      <spirit:vendorExtensions xmlns:arm="http://www.arm.com/SPIRIT">
+        <arm:defReadResp>DEC</arm:defReadResp>
+        <arm:defWriteResp>DEC</arm:defWriteResp>
+      </spirit:vendorExtensions>
+    </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>sIrisBridge</spirit:name>
+      <spirit:slave>
+        <spirit:memoryMapRef spirit:memoryMapRef="memoryMap_sIrisBridge"/>
+        <spirit:bridge spirit:masterRef="mDexmpcCore" spirit:opaque="true"/>
+        <spirit:bridge spirit:masterRef="mGauxCore" spirit:opaque="true"/>
+      </spirit:slave>
+      <spirit:vendorExtensions xmlns:arm="http://www.arm.com/SPIRIT">
+        <arm:defReadResp>DEC</arm:defReadResp>
+        <arm:defWriteResp>DEC</arm:defWriteResp>
+      </spirit:vendorExtensions>
+    </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>mGauxCore</spirit:name>
+      <spirit:master>
+        <spirit:addressSpaceRef spirit:addressSpaceRef="addressSpace_mGauxCore"/>
+      </spirit:master>
+    </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>mDexmpcCore</spirit:name>
+      <spirit:master>
+        <spirit:addressSpaceRef spirit:addressSpaceRef="addressSpace_mDexmpcCore"/>
+      </spirit:master>
+    </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>clk0clk_if</spirit:name>
+      <spirit:busType spirit:version="r0p0_0" spirit:vendor="arm.com" spirit:library="generic" spirit:name="clock"/>
+      <spirit:abstractionType spirit:version="r0p0_0" spirit:vendor="arm.com" spirit:library="generic" spirit:name="clock_rtl"/>
+      <spirit:slave/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>CLK</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>clk0clk</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>RESETn</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>clk0resetn</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+    </spirit:busInterface>
+  </spirit:busInterfaces>
+  <spirit:model>
+    <spirit:vendorExtension>
+      <modelName>nic400_1</modelName>
+    </spirit:vendorExtension>
+  </spirit:model>
+  <spirit:addressSpaces>
+    <spirit:addressSpace>
+      <spirit:name>addressSpace_mGauxCore</spirit:name>
+      <spirit:range>4G</spirit:range>
+      <spirit:width>64</spirit:width>
+      <spirit:addressUnitBits>8</spirit:addressUnitBits>
+      <spirit:vendorExtensions>
+        <spirit:segments>
+          <spirit:segment>
+            <spirit:name>mGauxCore_0x80000_mm0</spirit:name>
+            <spirit:addressOffset>0x80000</spirit:addressOffset>
+            <spirit:range>0x80000</spirit:range>
+          </spirit:segment>
+          <spirit:segment>
+            <spirit:name>mGauxCore_0x80000_mm0</spirit:name>
+            <spirit:addressOffset>0x80000</spirit:addressOffset>
+            <spirit:range>0x80000</spirit:range>
+          </spirit:segment>
+          <spirit:segment>
+            <spirit:name>mGauxCore_0x80000_mm0</spirit:name>
+            <spirit:addressOffset>0x80000</spirit:addressOffset>
+            <spirit:range>0x80000</spirit:range>
+          </spirit:segment>
+        </spirit:segments>
+      </spirit:vendorExtensions>
+    </spirit:addressSpace>
+    <spirit:addressSpace>
+      <spirit:name>addressSpace_mDexmpcCore</spirit:name>
+      <spirit:range>4G</spirit:range>
+      <spirit:width>64</spirit:width>
+      <spirit:addressUnitBits>8</spirit:addressUnitBits>
+      <spirit:vendorExtensions>
+        <spirit:segments>
+          <spirit:segment>
+            <spirit:name>mDexmpcCore_0x0_mm0</spirit:name>
+            <spirit:addressOffset>0x0</spirit:addressOffset>
+            <spirit:range>0x80000</spirit:range>
+          </spirit:segment>
+          <spirit:segment>
+            <spirit:name>mDexmpcCore_0x0_mm0</spirit:name>
+            <spirit:addressOffset>0x0</spirit:addressOffset>
+            <spirit:range>0x80000</spirit:range>
+          </spirit:segment>
+          <spirit:segment>
+            <spirit:name>mDexmpcCore_0x0_mm0</spirit:name>
+            <spirit:addressOffset>0x0</spirit:addressOffset>
+            <spirit:range>0x80000</spirit:range>
+          </spirit:segment>
+        </spirit:segments>
+      </spirit:vendorExtensions>
+    </spirit:addressSpace>
+  </spirit:addressSpaces>
+  <spirit:memoryMaps>
+    <spirit:memoryMap>
+      <spirit:name>memoryMap_sSpi</spirit:name>
+      <spirit:subspaceMap spirit:masterRef="mDexmpcCore">
+        <spirit:name>subspaceMap_0_0x0_sSpi_state_default</spirit:name>
+        <spirit:description>subspaceMap_0 at remap state default for range 0x0</spirit:description>
+        <spirit:baseAddress spirit:maximum="0x7FFFF">0x0</spirit:baseAddress>
+        <spirit:vendorExtensions>
+          <arm:subspaceMap xmlns:arm="http://www.arm.com/SPIRIT" arm:masterRef="mDexmpcCore" arm:segmentRef="mDexmpcCore_0x0_mm0"/>
+        </spirit:vendorExtensions>
+      </spirit:subspaceMap>
+      <spirit:subspaceMap spirit:masterRef="mGauxCore">
+        <spirit:name>subspaceMap_0_0x80000_sSpi_state_default</spirit:name>
+        <spirit:description>subspaceMap_0 at remap state default for range 0x80000</spirit:description>
+        <spirit:baseAddress spirit:maximum="0xFFFFF">0x80000</spirit:baseAddress>
+        <spirit:vendorExtensions>
+          <arm:subspaceMap xmlns:arm="http://www.arm.com/SPIRIT" arm:masterRef="mGauxCore" arm:segmentRef="mGauxCore_0x80000_mm0"/>
+        </spirit:vendorExtensions>
+      </spirit:subspaceMap>
+    </spirit:memoryMap>
+    <spirit:memoryMap>
+      <spirit:name>memoryMap_sD2dData</spirit:name>
+      <spirit:subspaceMap spirit:masterRef="mDexmpcCore">
+        <spirit:name>subspaceMap_0_0x0_sD2dData_state_default</spirit:name>
+        <spirit:description>subspaceMap_0 at remap state default for range 0x0</spirit:description>
+        <spirit:baseAddress spirit:maximum="0x7FFFF">0x0</spirit:baseAddress>
+        <spirit:vendorExtensions>
+          <arm:subspaceMap xmlns:arm="http://www.arm.com/SPIRIT" arm:masterRef="mDexmpcCore" arm:segmentRef="mDexmpcCore_0x0_mm0"/>
+        </spirit:vendorExtensions>
+      </spirit:subspaceMap>
+      <spirit:subspaceMap spirit:masterRef="mGauxCore">
+        <spirit:name>subspaceMap_0_0x80000_sD2dData_state_default</spirit:name>
+        <spirit:description>subspaceMap_0 at remap state default for range 0x80000</spirit:description>
+        <spirit:baseAddress spirit:maximum="0xFFFFF">0x80000</spirit:baseAddress>
+        <spirit:vendorExtensions>
+          <arm:subspaceMap xmlns:arm="http://www.arm.com/SPIRIT" arm:masterRef="mGauxCore" arm:segmentRef="mGauxCore_0x80000_mm0"/>
+        </spirit:vendorExtensions>
+      </spirit:subspaceMap>
+    </spirit:memoryMap>
+    <spirit:memoryMap>
+      <spirit:name>memoryMap_sIrisBridge</spirit:name>
+      <spirit:subspaceMap spirit:masterRef="mDexmpcCore">
+        <spirit:name>subspaceMap_0_0x0_sIrisBridge_state_default</spirit:name>
+        <spirit:description>subspaceMap_0 at remap state default for range 0x0</spirit:description>
+        <spirit:baseAddress spirit:maximum="0x7FFFF">0x0</spirit:baseAddress>
+        <spirit:vendorExtensions>
+          <arm:subspaceMap xmlns:arm="http://www.arm.com/SPIRIT" arm:masterRef="mDexmpcCore" arm:segmentRef="mDexmpcCore_0x0_mm0"/>
+        </spirit:vendorExtensions>
+      </spirit:subspaceMap>
+      <spirit:subspaceMap spirit:masterRef="mGauxCore">
+        <spirit:name>subspaceMap_0_0x80000_sIrisBridge_state_default</spirit:name>
+        <spirit:description>subspaceMap_0 at remap state default for range 0x80000</spirit:description>
+        <spirit:baseAddress spirit:maximum="0xFFFFF">0x80000</spirit:baseAddress>
+        <spirit:vendorExtensions>
+          <arm:subspaceMap xmlns:arm="http://www.arm.com/SPIRIT" arm:masterRef="mGauxCore" arm:segmentRef="mGauxCore_0x80000_mm0"/>
+        </spirit:vendorExtensions>
+      </spirit:subspaceMap>
+    </spirit:memoryMap>
+  </spirit:memoryMaps>
+</spirit:Component>

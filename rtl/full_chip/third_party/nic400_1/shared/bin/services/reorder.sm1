@@ -1,0 +1,115 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2009-2015 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2009-10-05 17:49:52 +0100 (Mon, 05 Oct 2009)
+#-     Revision            : 77202
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import the Base Class
+import re
+from os import path
+from sm_base import sm_base
+from ipfs_std_lib import *
+from glob import glob
+from copy import copy, deepcopy
+
+
+class reorder (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise -
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, 0, use_tool)
+
+        #Set the name
+        self.name = 'reorder'
+
+        # Tools Needed
+        self.tools.append('perl')
+
+   #-------------------------------------------------------------------------------
+   # options - This function registers all valid command line options for this SM
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+
+        #Register Common options for simulate modules 
+        if not group.parser.has_option("--parcfg"):
+            group.add_option("--parcfg", dest="parcfg", default='nic400', type='string',
+                         help="Name of the product to render")
+        
+        #Clear options
+        return 0     
+   #-------------------------------------------------------------------------------
+   #-------------------------------------------------------------------------------
+   # run - Executes n-iterations of tool call, with options to call pre-processing
+   #        and post-processing scriptlets that perform specific housekeeping
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+        print "running register subsystem reordering service now"
+
+        # Recover configuration name from path
+        dirs = directory.split('/')
+        if (dirs[len(dirs) - 1 ] == 'rsb_components'):
+            dirs = dirs[:len(dirs) - 1]
+        periph_logical = '/'.join(dirs)
+        full_cfg = dirs[len(dirs) - 1]
+        cfg = full_cfg[7:]
+
+        # Generate the path to the closure defs file
+        closure_defs_path = periph_logical + '/nic400/verilog/' + self.options.parcfg + '_closure_' + cfg + '_defs.v'
+        # Generate the path to the reorder script
+        reorder_path =  periph_logical + '/shared/bin/rsb_reorder.pl'
+
+        #Create a run script
+        run_script = [ 'perl ' + reorder_path + ' ' + closure_defs_path
+                     ];
+        #Write out script and run it
+        self.write_run_script(run_script, 'run_reorder', args)
+        return self.run_command(args, './run_reorder')
+        return 0
+
+   #-------------------------------------------------------------------------------
+
+   def clean_sm(self, args,directory):
+
+        self.delete_files.append('run*')
+        return 0;
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # help -
+   #-------------------------------------------------------------------------------
+   def help_sm(self, args):
+
+        #set the usage term
+        self.parser.usage = "ae reorder"
+        return 0;

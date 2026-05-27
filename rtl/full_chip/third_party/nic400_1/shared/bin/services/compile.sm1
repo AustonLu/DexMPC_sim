@@ -1,0 +1,214 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2009 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2009-11-05 21:17:37 +0000 (Thu, 05 Nov 2009)
+#-     Revision            : 84668
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+   
+# Import the Base Class
+from os import path 
+from sm_base import sm_base
+from ipfs_std_lib import *
+from copy import copy
+
+class compile (sm_base):
+   
+   #-------------------------------------------------------------------------------
+   # initialise - 
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call (NB lsf turned off as it should be on in sub
+        #modules
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Set the name
+        self.name = 'compile'
+
+        #Set up the path control functionality 
+        self.search_file = 'validation.opts'
+        self.search_option = 'target'
+        self.option_config = 'target_options'
+        
+   #-------------------------------------------------------------------------------
+   # check load_sub_services - The default is not enough for simulate.
+   #                   It must extract the tool and testgroup options and check
+   #                   That an appropriate SM and test group exists at the required 
+   #                   location
+   #-------------------------------------------------------------------------------
+   def load_sub_services (self, directories, help):
+
+        dir_copy = copy(directories)
+
+        #Go through each directory
+        for directory in dir_copy:
+            
+            #If there is no search file in the directory remove it from the list     
+            if not path.exists(directory + '/' + self.search_file):
+                directories.remove(directory)
+                continue
+ 
+            #Now read in the search_file 
+            terms = {}
+            terms[self.search_option] = {}
+            terms[self.option_config] = {}
+            execfile(directory + '/' + self.search_file, terms)
+
+            #get a list of all args
+            targets = terms[self.search_option].keys()     
+
+            #If there are no targets remove the directory
+            if len(targets) == 0:
+                 directories.remove(directory)
+                 continue
+
+            if not help or (len(directories) == 1):            
+                #for every available target
+                for target in targets:    
+
+                    #Load sub_service modules        
+                    sm_path = self.get_sm_path(directory, terms[self.search_option][target])
+                    sm_ref = load_service(sm_path, self.launch_dir, self.bin_paths, self.use_lsf)
+
+                    #Store the loaded service module (against directory)
+                    if sm_ref != '':
+                         if not self.sub_modules.has_key(directory):
+                               self.sub_modules[directory] = {}  
+                               self.sub_module_names[directory] = {}  
+                         #Store the reference to the service module
+                         self.sub_modules[directory][target] = sm_ref
+                         self.sub_module_names[directory][target] = sm_path
+                         #Store extra options if they exist
+                         if terms[self.option_config].has_key(target):
+                              if not self.sub_module_prefix.has_key(directory):
+                                   self.sub_module_prefix[directory] = {}   
+                              self.sub_module_prefix[directory][target] = terms[self.option_config][target]
+                    else:          
+                         directories.remove(directory)
+
+        #Clear options
+        return directories     
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # run - Goes through all the specified targets and runs them.
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, dir):
+
+      targets = self.args
+      if len(targets) == 0 or targets[0] == 'all':
+          targets = self.sub_modules[dir].keys()    
+
+      #for every target in the directory
+      for target in targets:  
+           #Check that the target exists
+           if self.sub_modules[dir].has_key(target):
+               #Add the appropriate extra options if they exist and pass on the arguments     
+               cargs = copy(args) 
+               if self.sub_module_prefix.has_key(dir):
+                    if self.sub_module_prefix[dir].has_key(target):   
+                         newargs = self.sub_module_prefix[dir][target].split()
+                         newargs.extend(cargs)   
+                         cargs = newargs
+    
+               #Run the sub_modules
+               (result, returndata) = self.sub_modules[dir][target].run(cargs)
+
+               #Abort on error
+               if result:
+                  return result, returndata     
+               
+           else:
+               message( 'w1.09', "Target %s is not available on %s" % (target, dir))
+
+      return 0, []     
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # clean - Goes through all the specified tragets and cleans them
+   #-------------------------------------------------------------------------------
+   def clean_sm(self, args, dir):
+
+      targets = self.args
+      if len(targets) == 0 or targets[0] == 'all':
+          targets = self.sub_modules[dir].keys()    
+
+      #for every target in the directory
+      for target in targets:  
+           #Check that the target exists
+           if self.sub_modules[dir].has_key(target):
+
+               #Add the appropriate extra options if they exist and pass on the arguments     
+               cargs = copy(args) 
+               if self.sub_module_prefix.has_key(dir):
+                    if self.sub_module_prefix[dir].has_key(target):   
+                         newargs = self.sub_module_prefix[dir][target].split()
+                         newargs.extend(cargs)   
+                         cargs = newargs
+   
+               #Run the sub_modules
+               result = self.sub_modules[dir][target].clean(cargs)
+
+               #Abort on error
+               if result:
+                  return result, returndata     
+               
+           else:
+               message( 'w1.09', "Target %s is not available on %s" % (target, dir))
+
+      return 0     
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # help - Set up the complile SM help 
+   #-------------------------------------------------------------------------------
+   def help_sm(self, args):
+    
+     #disable lsf for clean
+     self.use_lsf = 0
+
+     #set the usage term
+     self.parser.usage = "ae compile [options] targets"
+  
+     #Set the help epilog 
+     group = self.parser.get_group(self.name + ' SM options')
+     if len(self.directories) > 1:
+         group.epilog = ["For help with a specific compile specify a specific location and target"]    
+     else:
+         group.epilog = ["Available compile targets are:"]    
+             
+         #Open the options file 
+         config = {}
+         config[self.search_option] = []
+         execfile(self.directories[0] + '/' + self.search_file, config)   
+         group.epilog.append(', '.join(config[self.search_option]))    
+         group.epilog.extend(['', "Target specific options (if any) are shown below are shown below:"])    
+       
+     return 0; 
+   
+   #-------------------------------------------------------------------------------

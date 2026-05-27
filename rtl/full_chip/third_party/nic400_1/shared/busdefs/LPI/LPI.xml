@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+//=============================================================================
+// This confidential and proprietary information may be used only as
+// authorised by a licensing agreement from ARM Limited 
+// (C) COPYRIGHT 2010-2011 ARM Limited 
+//     ALL RIGHTS RESERVED 
+// The entire notice above must be reproduced on all authorised 
+// copies and copies may only be made to the extent permitted 
+// by a licensing agreement from ARM Limited. 
+//
+//       7799               
+//
+//=============================================================================
+// Purpose : 
+// This describes the AMBA AXI Low Power Interface (LPI)
+// For more information about AXI interfaces refer to the AMBA AXI Protocol 
+// Specification V1.0 (ARM IHI 0022B).
+//=============================================================================
+-->
+<spirit:busDefinition
+	xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/index.xsd ">
+	<spirit:vendor>amba.com</spirit:vendor>
+	<spirit:library>AMBA3</spirit:library>
+	<spirit:name>LPI</spirit:name>
+	<spirit:version>r2p0_0</spirit:version>
+	<spirit:directConnection>true</spirit:directConnection>
+	<spirit:isAddressable>false</spirit:isAddressable>
+	<spirit:maxMasters>1</spirit:maxMasters>
+	<spirit:maxSlaves>1</spirit:maxSlaves>
+	<spirit:systemGroupNames>
+		<spirit:systemGroupName>CLOCK</spirit:systemGroupName>
+		<spirit:systemGroupName>RESETn</spirit:systemGroupName>
+	</spirit:systemGroupNames>
+	<spirit:description><![CDATA[This describes the AMBA AXI Low Power Interface (LPI)<p/>For more information about AXI interfaces refer to the AMBA AXI Protocol Specification V1.0 (ARM IHI 0022B).<p/>
+	 LPI enables controlled entry into and exit from a low-power state.<p/>
+     AMBA AXI Protocol Specification v1.0 (ARM IHI 0022B) can be obtained from :<p/>
+     http://infocenter.arm.com<p/>
+     AMBA FAQ's :<p/>
+     http://www.arm.com/support/AMBA.html<p/>
+     LPI targets two different classes of peripherals:<p/>
+	<li>Peripherals that require a power-down sequence, and that can have their clocks turned off only after they enter a low-power state. These peripherals require an indication from a system clock controller to determine when to initiate the power-down sequence. </li>
+    <li>Peripherals that have no power-down sequence, and that can independently indicate when it is acceptable to turn off their clocks.</li>
+	</ul><p/>]]>
+	</spirit:description>
+</spirit:busDefinition>

@@ -1,0 +1,331 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2013 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2013-05-09 16:08:52 +0100 (Thu, 09 May 2013)
+#-     Revision            : 150001
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import the Base Class
+from os import path, chdir, remove, getcwd
+from sm_base import sm_base
+from ipfs_std_lib import *
+from optparse import SUPPRESS_HELP
+from shutil import copy as filecopy
+from shutil import rmtree
+from copy import copy
+import sys
+
+class directed_vcs (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise -
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Set the name
+        self.name = 'directed_vcs'
+
+        #Register workflow
+        self.lsf_workflow = 'arm_engine-1.0-sim_vcs'
+
+        #Set the search_file .. used to identify source paths
+        self.search_file = 'validation.opts'
+
+        #Add a license requirment
+        self.licenses.append('vcs')
+
+        #Add tool requests
+        self.tools.append('vcs')
+        self.tools.append('g++')
+        self.tools.append('perl')
+
+        #Add any dependent SMs to the dependent services array
+        self.dependent_services.append('directed_so')
+        self.dependent_services.append('vcs_compile')
+
+        #Add reporting SM
+        self.report_service = 'clean_test'
+
+   #-------------------------------------------------------------------------------
+   # options - This function registers all valid command line options for this SM
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+
+        if not group.parser.has_option("--specman"):
+            group.add_option("--specman", dest="specman", action="store_true",
+                         default=False, help=SUPPRESS_HELP)
+        if not group.parser.has_option("--cov"):
+            group.add_option("--cov", dest="cov", action="store_true",
+                         default=False, help=SUPPRESS_HELP)
+
+        #add directed option
+        args.append("--directed")
+
+        #Complete
+        return 0
+
+   #-------------------------------------------------------------------------------
+   # run_pre_dep - Called before dependencies are processed in the base class
+   #-------------------------------------------------------------------------------
+   def run_pre_dep(self, args, directory):
+
+        if self.options.recompile and path.exists(self.gen_compile_dir()) and not self.options.report:
+             rmtree(self.gen_compile_dir(), 1)
+
+        if self.options.specman == True:
+             self.licenses.append('vcs_specman')
+             self.tools.append('specman')
+
+
+        #Delete the Verilog compile directory
+        return 0
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # run - Run the sub_module
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+
+        #determine PERIPH_LOGICAL and PERIPH_CONFIG
+        dirs = directory.split('/')
+        periph_config = dirs[len(dirs) - 4]
+        periph_logical = '/'.join(dirs[:len(dirs) - 4])
+        tb = dirs[len(dirs) - 1]
+
+        #Check that test is defined
+        if len(self.options.test) != 1:
+             message( 'e1.01', 'Only one test name should be supplied to the %s SM!' % self.name )
+             return 0, {}
+        else:
+             test = self.options.test[0]
+
+        #Scan the serach file to get source directories
+        terms = {}
+        terms['test_src_dirs'] = []
+        execfile(directory + '/' + self.search_file, terms)
+        #set default
+        terms['test_src_dirs'].append('./source')
+        src_dir = ''
+
+        #Find best match
+        for try_src_dir in terms['test_src_dirs']:
+            if path.exists(directory + '/' + try_src_dir + '/' + test + '.tsf'):
+                 src_dir = path.normpath(directory + '/' + try_src_dir)
+                 break
+            elif path.exists(directory + '/' + try_src_dir + '/' + test + '/' + test + '.tsf'):
+                 src_dir = path.normpath(directory + '/' + try_src_dir + '/' + test)
+                 break
+
+        #Fail if not found
+        if src_dir == '':
+             return 1, {}
+
+        #Move to the run directory (create if necessary)
+        self.cchdir(self.gen_run_dir())
+
+        #Copy files to the new directory
+        filecopy(src_dir + '/' + test + '.tsf', test + '.tsf')
+
+        #Determine the system xml file
+        if path.exists(directory + '/../../xml/system.xml'):
+             system_xml = '../../../xml/system.xml'
+        else:
+             system_xml = '../../../../xml/' + periph_config + '.xml'
+
+        #Create path to compiled Verilog
+        cmp_vcs = '../' + self.gen_compile_dir()
+        if self.options.specman == True:
+           cmp_vcs = cmp_vcs + '/vcs_specman'
+        else:
+           cmp_vcs = cmp_vcs + '/simv'
+
+        #Create a run script
+        #First cat the compile logs
+        run_script = ['echo Verilog compile ' + self.gen_compile_dir() + ':',
+                      'cat ../' + self.gen_compile_dir() + '/bsub.log',
+                      'echo Environment compile directed_so:',
+                      'cat ../directed_so/bsub.log',
+                      #Compile in the test code
+                      'g++ -o ' + test + '.exe ../directed_so/pl301_model.so ' +
+                      src_dir + '/' + test + '.cpp',
+                      #Run the gnerated program
+                      './' + test + '.exe ../../../xml/tbench_address_map.xml ' + system_xml,
+                      #Run only if test compiled sucessfully - there are *.m3i vector files
+                      'if ((${status} == 0) && (-f ' + cmp_vcs + ')) then',
+                      #Set periph logical
+                      'setenv PERIPH_LOGICAL ' + periph_logical + '/' + periph_config,
+                      #Run the the vector generation script
+                      '../../../../shared/validation/scripts/VecGen.pl',
+                      #Set periph logical
+                      'setenv PERIPH_LOGICAL ' + periph_logical
+                      ]
+
+        # If the two environment variables are set then try a number of times
+        # to get the work directory before failing. If the env vars are not set
+        # then just try once.
+        if 'DEP_SLEEP_TIME' in environ and 'DEP_SLEEP_COUNT' in environ:
+            run_script.extend([
+                          # Check to see if the compile directory exists.
+                          'set CMP_DIR_EXISTS = 0',
+                          'set CMP_DIR_COUNT = 0',
+                          'set CMP_DIR_TEST = 0',
+                          'while (($CMP_DIR_TEST == 0) && ($CMP_DIR_COUNT < ' + environ['DEP_SLEEP_COUNT'] + '))',
+                          '  sleep ' + environ['DEP_SLEEP_TIME'],
+                          '  @ CMP_DIR_COUNT++',
+                          # Do check for dir at the end of the loop to ensure
+                          # that there is always at least a DEP_SLEEP_TIME
+                          # delay.
+                          '  if (-e ' + cmp_vcs + ') then',
+                          '    set CMP_DIR_TEST = 1',
+                          '  endif',
+                          'end',
+                          'if ($CMP_DIR_COUNT < ' + environ['DEP_SLEEP_COUNT'] + ') then',
+                          '  echo "Tried $CMP_DIR_COUNT times before finding compile directory."',
+                          '  set CMP_DIR_EXISTS = 1',
+                          'else',
+                          '  echo "Tried $CMP_DIR_COUNT times and did not find compile directory."',
+                          'endif'])
+        else:
+            run_script.extend([
+                          # Check to see if the compile directory exists.
+                          'set CMP_DIR_EXISTS = 0',
+                          'if (-e ' + cmp_vcs + ') then',
+                          '  set CMP_DIR_EXISTS = 1',
+                          'endif'])
+
+
+        if self.options.specman == True:
+             #Setup specman env
+             run_script.extend(['cat ' + test + '.tsf | grep -v "execute vector file" > ' + test + '_xvc.tsf',
+                                'cp ../e/REMOVE.specman .specman',
+                                'setenv XVC_ROOT ' + str(environ.get('XVC_ROOT')),
+                                'setenv XVC_MANAGER_TESTBENCH_FILE ../e/tbench.tb',
+                                'setenv XVC_MANAGER_SCENARIO_FILES ' + test + '_xvc.tsf',
+                                'setenv LD_LIBRARY_PATH ' + environ.get('LD_LIBRARY_PATH') + ':../e'])
+
+        #Run simulation with specman in gui mode
+        if self.options.specman == True and self.options.gui == True:
+            run_script.extend(['specview -p "load ../e/top; test" vcs -RIG -o -sverilog' + cmp_vcs + ' \\',
+                               '-lib ' + cmp_vcs + ' +define+SPECMAN_COMPLETE  specman specman_wave \\'])
+        #Run simulation with specman in batch mode
+        elif self.options.specman == True:
+            run_script.extend(['specrun -p "load ../e/top; test" ' + cmp_vcs +' \\',
+                               '-lib ' + cmp_vcs + ' +define+SPECMAN_COMPLETE  specman specman_wave \\'])
+        #Run simulation  in gui mode
+        elif self.options.gui == True:
+            run_script.append(cmp_vcs + ' -gui  \\')
+        #Run simulation in batch mode
+        else:
+            run_script.append('echo "finish" | ' + cmp_vcs + ' \\')
+
+        #Generate vcs coverage databasae along with simulate
+        if self.options.cov == True:
+            run_script.append('-cm_name ' + test + ' -cm_dir ../../logs/vcs_coverage -cm line+cond+tgl+fsm \\')
+
+        #wait for license
+        run_script.append('+vcs+lic+wait')
+
+        #End of compilation check
+        run_script.append('else')
+        run_script.append('echo ERROR: Compilation failed!')
+        run_script.append('exit 1')
+        run_script.append('endif')
+
+        #Write compile run script and complete
+        self.write_run_script(run_script, 'compile_run', args)
+        return self.run_command(args, './compile_run')
+
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # report_sm - Run reporting functions
+   #-------------------------------------------------------------------------------
+   def report_sm(self, args, directory):
+
+         report_args = copy(args)
+         report_args.extend(["--target_dir", self.gen_run_dir()])
+
+         #If not using lsf clean up
+         if self.use_lsf == 0 or not hasattr(self.options, "wait") or \
+                 self.options.wait == None or len(self.options.wait) == 0:
+              self.report_mod.run(report_args)
+         else:
+              res = sys.argv[0] + " simulate --report " + " ".join(report_args)
+              #Schedule the call to reprot
+              return self.run_command(args, res)
+         #return
+         return 0, {}
+
+
+   #-------------------------------------------------------------------------------
+   # gen_run_dir - Builds up the run directory name
+   #-------------------------------------------------------------------------------
+   def gen_run_dir(self):
+
+        #build_directory name
+        run_dir = 'run_'
+        if self.options.specman == True:
+             run_dir = run_dir + 'sn_'
+        if self.options.cov == True:
+             run_dir = run_dir + 'cov_'
+        if self.options.gui == True:
+             run_dir = run_dir + 'gui_'
+        #add tool, test name
+        return run_dir + 'vcs_' + self.options.test[0]
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # clean_sm - Run the sub_module
+   #-------------------------------------------------------------------------------
+   def clean_sm(self, args, directory):
+
+        #Add the run_directory to the delete list
+        self.delete_files.append(self.gen_run_dir())
+
+   #-------------------------------------------------------------------------------
+   # gen_compile_dir - the directory which contains RTL compilation result
+   #-------------------------------------------------------------------------------
+   def gen_compile_dir(self):
+
+        #build_directory name
+        compile_dir = 'vcs_compile'
+        if self.options.specman == True:
+             compile_dir = compile_dir + '_sn'
+        if hasattr(self.options, 'cdc') and self.options.cdc == False: 
+             compile_dir = compile_dir + '_ncdc'
+        if self.options.cov == True:
+             compile_dir = compile_dir + '_cov'
+        if self.options.gui == True:
+             compile_dir = compile_dir + '_gui'
+
+        return compile_dir

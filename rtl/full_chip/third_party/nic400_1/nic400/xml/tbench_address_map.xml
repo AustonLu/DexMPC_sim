@@ -1,0 +1,504 @@
+
+
+<tbench>
+
+
+
+<tb>
+   <name>clkreset</name>
+   <apb_port>0</apb_port>
+   <spirit_file>../../shared/tb_spirit/clk_reset_if.xml</spirit_file>
+</tb>
+
+
+<tb>
+   <name>DUT</name>
+   <apb_port>0</apb_port>
+   <spirit_file>../../../../spirit/nic400_1.xml</spirit_file>
+   <data_width>32</data_width>
+   <cfg_master_name>AXIM_config</cfg_master_name>
+</tb>
+
+<xmlcfg>1</xmlcfg>
+
+
+
+<!-- Properties of asib port  -->
+<tb_master>
+
+   <!-- Register test component -->
+   <apb_port>2</apb_port>
+
+   <spirit_file>../../../../shared/validation/tb_spirit/axi4_m_if.xml</spirit_file>
+   <xvc>AXI4M_sSpi</xvc>
+
+   <valid_width>1</valid_width>
+      <addr_width>32</addr_width>
+   <aruser>false</aruser>
+   <awuser>false</awuser>
+   <buser>false</buser>
+   <data_width>32</data_width>
+   <dest>sSpi</dest>
+   <dest_port>sSpi_s</dest_port>
+   <dest_port_number>0</dest_port_number>
+   <fn_mod>false</fn_mod>
+   <lock>false</lock>
+   <out_reads>4</out_reads>
+   <out_trans>8</out_trans>
+   <out_writes>4</out_writes>
+   <pl_id_width>8</pl_id_width>
+   <protocol>axi4</protocol>
+   <ruser>false</ruser>
+   <src>external</src>
+   <src_port>sSpi</src_port>
+   <src_port_number>0</src_port_number>
+   <valid_width>1</valid_width>
+   <wuser>false</wuser>
+
+   <aruser_width>0</aruser_width>
+   <awuser_width>0</awuser_width>
+   <ruser_width>0</ruser_width>
+   <wuser_width>0</wuser_width>
+   <buser_width>0</buser_width>
+   <name>sSpi</name>
+   <read_acceptance_capability>4</read_acceptance_capability>
+   <write_acceptance_capability>4</write_acceptance_capability>
+   <combined_acceptance_capability>8</combined_acceptance_capability>
+
+   <!-- simulation control parameters and ID widths -->
+   <sim_start_point>sSpi.sSpi_s</sim_start_point>
+   <sim_end_point>external</sim_end_point>
+   <block_name>sSpi</block_name>
+   <add_siid>false</add_siid>
+   <aid_width>2</aid_width>
+
+   <enable_vn>false</enable_vn>
+   <one_hot_vn>true</one_hot_vn>
+   <default_vn></default_vn>
+
+   
+     <dpe_width>0</dpe_width>
+   
+   <block_type>asib</block_type>
+   <apb_config>false</apb_config>
+   <remap_width>0</remap_width>
+   <no_remaps>true</no_remaps>
+   
+
+   <regions_flag>0</regions_flag>
+
+   
+   
+   <trustzone>nsec</trustzone>
+   
+   <rsb_access>false</rsb_access>
+        
+
+
+   <!-- Address map -->
+   <address_ranges>
+
+       <range>
+           <addr_min>0x0</addr_min>
+           <addr_max>0x7FFFF</addr_max>
+           <remap>
+                <valid_base>1</valid_base>
+                               <bit>default</bit>
+               <dest_type>peripheral</dest_type>
+               <infra_mi_no>62</infra_mi_no>
+               <multi_region>false</multi_region>
+               <present>true</present>
+               <protocol>axi4</protocol>
+               <region>0</region>
+               <regss_target>false</regss_target>
+               <target>mDexmpcCore</target>
+               <trustzone>nsec</trustzone>
+               <valid>1</valid>
+
+           </remap>
+       </range>
+
+       <range>
+           <addr_min>0x80000</addr_min>
+           <addr_max>0xFFFFF</addr_max>
+           <remap>
+                <valid_base>0</valid_base>
+                               <bit>default</bit>
+               <dest_type>peripheral</dest_type>
+               <infra_mi_no>63</infra_mi_no>
+               <multi_region>false</multi_region>
+               <present>true</present>
+               <protocol>axi4</protocol>
+               <region>0</region>
+               <regss_target>false</regss_target>
+               <target>mGauxCore</target>
+               <trustzone>nsec</trustzone>
+               <valid>0</valid>
+
+           </remap>
+       </range>
+
+   </address_ranges>
+
+</tb_master>
+
+<!-- Properties of asib port  -->
+<tb_master>
+
+   <!-- Register test component -->
+   <apb_port>3</apb_port>
+
+   <spirit_file>../../../../shared/validation/tb_spirit/axi4_m_if.xml</spirit_file>
+   <xvc>AXI4M_sD2dData</xvc>
+
+   <valid_width>1</valid_width>
+      <addr_width>32</addr_width>
+   <aruser>false</aruser>
+   <awuser>false</awuser>
+   <buser>false</buser>
+   <data_width>64</data_width>
+   <dest>sD2dData</dest>
+   <dest_port>sD2dData_s</dest_port>
+   <dest_port_number>0</dest_port_number>
+   <fn_mod>false</fn_mod>
+   <lock>false</lock>
+   <out_reads>4</out_reads>
+   <out_trans>8</out_trans>
+   <out_writes>4</out_writes>
+   <pl_id_width>8</pl_id_width>
+   <protocol>axi4</protocol>
+   <ruser>false</ruser>
+   <src>external</src>
+   <src_port>sD2dData</src_port>
+   <src_port_number>0</src_port_number>
+   <valid_width>1</valid_width>
+   <wuser>false</wuser>
+
+   <aruser_width>0</aruser_width>
+   <awuser_width>0</awuser_width>
+   <ruser_width>0</ruser_width>
+   <wuser_width>0</wuser_width>
+   <buser_width>0</buser_width>
+   <name>sD2dData</name>
+   <read_acceptance_capability>4</read_acceptance_capability>
+   <write_acceptance_capability>4</write_acceptance_capability>
+   <combined_acceptance_capability>8</combined_acceptance_capability>
+
+   <!-- simulation control parameters and ID widths -->
+   <sim_start_point>sD2dData.sD2dData_s</sim_start_point>
+   <sim_end_point>external</sim_end_point>
+   <block_name>sD2dData</block_name>
+   <add_siid>false</add_siid>
+   <aid_width>5</aid_width>
+
+   <enable_vn>false</enable_vn>
+   <one_hot_vn>true</one_hot_vn>
+   <default_vn></default_vn>
+
+   
+     <dpe_width>0</dpe_width>
+   
+   <block_type>asib</block_type>
+   <apb_config>false</apb_config>
+   <remap_width>0</remap_width>
+   <no_remaps>true</no_remaps>
+   
+
+   <regions_flag>0</regions_flag>
+
+   
+   
+   <trustzone>nsec</trustzone>
+   
+   <rsb_access>false</rsb_access>
+        
+
+
+   <!-- Address map -->
+   <address_ranges>
+
+       <range>
+           <addr_min>0x0</addr_min>
+           <addr_max>0x7FFFF</addr_max>
+           <remap>
+                <valid_base>1</valid_base>
+                               <bit>default</bit>
+               <dest_type>peripheral</dest_type>
+               <infra_mi_no>62</infra_mi_no>
+               <multi_region>false</multi_region>
+               <present>true</present>
+               <protocol>axi4</protocol>
+               <region>0</region>
+               <regss_target>false</regss_target>
+               <target>mDexmpcCore</target>
+               <trustzone>nsec</trustzone>
+               <valid>1</valid>
+
+           </remap>
+       </range>
+
+       <range>
+           <addr_min>0x80000</addr_min>
+           <addr_max>0xFFFFF</addr_max>
+           <remap>
+                <valid_base>0</valid_base>
+                               <bit>default</bit>
+               <dest_type>peripheral</dest_type>
+               <infra_mi_no>63</infra_mi_no>
+               <multi_region>false</multi_region>
+               <present>true</present>
+               <protocol>axi4</protocol>
+               <region>0</region>
+               <regss_target>false</regss_target>
+               <target>mGauxCore</target>
+               <trustzone>nsec</trustzone>
+               <valid>0</valid>
+
+           </remap>
+       </range>
+
+   </address_ranges>
+
+</tb_master>
+
+<!-- Properties of asib port  -->
+<tb_master>
+
+   <!-- Register test component -->
+   <apb_port>4</apb_port>
+
+   <spirit_file>../../../../shared/validation/tb_spirit/axi4_m_if.xml</spirit_file>
+   <xvc>AXI4M_sIrisBridge</xvc>
+
+   <valid_width>1</valid_width>
+      <addr_width>32</addr_width>
+   <aruser>false</aruser>
+   <awuser>false</awuser>
+   <buser>false</buser>
+   <data_width>64</data_width>
+   <dest>sIrisBridge</dest>
+   <dest_port>sIrisBridge_s</dest_port>
+   <dest_port_number>0</dest_port_number>
+   <fn_mod>false</fn_mod>
+   <lock>false</lock>
+   <out_reads>4</out_reads>
+   <out_trans>8</out_trans>
+   <out_writes>4</out_writes>
+   <pl_id_width>8</pl_id_width>
+   <protocol>axi4</protocol>
+   <ruser>false</ruser>
+   <src>external</src>
+   <src_port>sIrisBridge</src_port>
+   <src_port_number>0</src_port_number>
+   <valid_width>1</valid_width>
+   <wuser>false</wuser>
+
+   <aruser_width>0</aruser_width>
+   <awuser_width>0</awuser_width>
+   <ruser_width>0</ruser_width>
+   <wuser_width>0</wuser_width>
+   <buser_width>0</buser_width>
+   <name>sIrisBridge</name>
+   <read_acceptance_capability>4</read_acceptance_capability>
+   <write_acceptance_capability>4</write_acceptance_capability>
+   <combined_acceptance_capability>8</combined_acceptance_capability>
+
+   <!-- simulation control parameters and ID widths -->
+   <sim_start_point>sIrisBridge.sIrisBridge_s</sim_start_point>
+   <sim_end_point>external</sim_end_point>
+   <block_name>sIrisBridge</block_name>
+   <add_siid>false</add_siid>
+   <aid_width>5</aid_width>
+
+   <enable_vn>false</enable_vn>
+   <one_hot_vn>true</one_hot_vn>
+   <default_vn></default_vn>
+
+   
+     <dpe_width>0</dpe_width>
+   
+   <block_type>asib</block_type>
+   <apb_config>false</apb_config>
+   <remap_width>0</remap_width>
+   <no_remaps>true</no_remaps>
+   
+
+   <regions_flag>0</regions_flag>
+
+   
+   
+   <trustzone>nsec</trustzone>
+   
+   <rsb_access>false</rsb_access>
+        
+
+
+   <!-- Address map -->
+   <address_ranges>
+
+       <range>
+           <addr_min>0x0</addr_min>
+           <addr_max>0x7FFFF</addr_max>
+           <remap>
+                <valid_base>1</valid_base>
+                               <bit>default</bit>
+               <dest_type>peripheral</dest_type>
+               <infra_mi_no>62</infra_mi_no>
+               <multi_region>false</multi_region>
+               <present>true</present>
+               <protocol>axi4</protocol>
+               <region>0</region>
+               <regss_target>false</regss_target>
+               <target>mDexmpcCore</target>
+               <trustzone>nsec</trustzone>
+               <valid>1</valid>
+
+           </remap>
+       </range>
+
+       <range>
+           <addr_min>0x80000</addr_min>
+           <addr_max>0xFFFFF</addr_max>
+           <remap>
+                <valid_base>0</valid_base>
+                               <bit>default</bit>
+               <dest_type>peripheral</dest_type>
+               <infra_mi_no>63</infra_mi_no>
+               <multi_region>false</multi_region>
+               <present>true</present>
+               <protocol>axi4</protocol>
+               <region>0</region>
+               <regss_target>false</regss_target>
+               <target>mGauxCore</target>
+               <trustzone>nsec</trustzone>
+               <valid>0</valid>
+
+           </remap>
+       </range>
+
+   </address_ranges>
+
+</tb_master>
+<!-- Properties of amin port  -->
+<tb_slave>
+
+    <!-- Register test component -->
+    <apb_port>5</apb_port>
+    <spirit_file>../../../../shared/validation/tb_spirit/axi4_s_if.xml</spirit_file>
+    <xvc>AXI4S_mGauxCore</xvc>
+
+    <valid_width>1</valid_width>
+       <addr_width>32</addr_width>
+   <aruser>false</aruser>
+   <awuser>false</awuser>
+   <buser>false</buser>
+   <data_width>64</data_width>
+   <dest>external</dest>
+   <dest_port>mGauxCore</dest_port>
+   <dest_port_number>0</dest_port_number>
+   <fn_mod>false</fn_mod>
+   <lock>false</lock>
+   <out_reads>1</out_reads>
+   <out_trans>1</out_trans>
+   <out_writes>1</out_writes>
+   <pl_id_width>8</pl_id_width>
+   <protocol>axi4</protocol>
+   <ruser>false</ruser>
+   <src>mGauxCore</src>
+   <src_port>mGauxCore_m</src_port>
+   <src_port_number>0</src_port_number>
+   <valid_width>1</valid_width>
+   <wuser>false</wuser>
+
+    <aruser_width>0</aruser_width>
+    <awuser_width>0</awuser_width>
+    <ruser_width>0</ruser_width>
+    <wuser_width>0</wuser_width>
+    <buser_width>0</buser_width>
+
+    
+    
+    <trustzone>nsec</trustzone>
+    
+
+    <name>mGauxCore</name>
+    <aid_width>7</aid_width>
+    <read_issuing_capability>1</read_issuing_capability>
+    <write_issuing_capability>1</write_issuing_capability>
+    <combined_issuing_capability>1</combined_issuing_capability>
+    <regions_flag>0</regions_flag>
+    <block_name>mGauxCore</block_name>
+    <addr_map_target>mGauxCore</addr_map_target>
+    <amib_name>mGauxCore</amib_name>
+
+</tb_slave>
+
+
+<!-- Properties of amin port  -->
+<tb_slave>
+
+    <!-- Register test component -->
+    <apb_port>6</apb_port>
+    <spirit_file>../../../../shared/validation/tb_spirit/axi4_s_if.xml</spirit_file>
+    <xvc>AXI4S_mDexmpcCore</xvc>
+
+    <valid_width>1</valid_width>
+       <addr_width>32</addr_width>
+   <aruser>false</aruser>
+   <awuser>false</awuser>
+   <buser>false</buser>
+   <data_width>64</data_width>
+   <dest>external</dest>
+   <dest_port>mDexmpcCore</dest_port>
+   <dest_port_number>0</dest_port_number>
+   <fn_mod>false</fn_mod>
+   <lock>false</lock>
+   <out_reads>1</out_reads>
+   <out_trans>1</out_trans>
+   <out_writes>1</out_writes>
+   <pl_id_width>8</pl_id_width>
+   <protocol>axi4</protocol>
+   <ruser>false</ruser>
+   <src>mDexmpcCore</src>
+   <src_port>mDexmpcCore_m</src_port>
+   <src_port_number>0</src_port_number>
+   <valid_width>1</valid_width>
+   <wuser>false</wuser>
+
+    <aruser_width>0</aruser_width>
+    <awuser_width>0</awuser_width>
+    <ruser_width>0</ruser_width>
+    <wuser_width>0</wuser_width>
+    <buser_width>0</buser_width>
+
+    
+    
+    <trustzone>nsec</trustzone>
+    
+
+    <name>mDexmpcCore</name>
+    <aid_width>7</aid_width>
+    <read_issuing_capability>1</read_issuing_capability>
+    <write_issuing_capability>1</write_issuing_capability>
+    <combined_issuing_capability>1</combined_issuing_capability>
+    <regions_flag>0</regions_flag>
+    <block_name>mDexmpcCore</block_name>
+    <addr_map_target>mDexmpcCore</addr_map_target>
+    <amib_name>mDexmpcCore</amib_name>
+
+</tb_slave>
+
+
+
+<rsb_node>
+   <address>1</address>
+   <block>regs</block>
+</rsb_node>
+
+
+
+
+
+
+
+</tbench>

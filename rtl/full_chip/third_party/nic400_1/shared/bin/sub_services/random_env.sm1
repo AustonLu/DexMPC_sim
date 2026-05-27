@@ -1,0 +1,100 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2013 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2013-05-09 15:18:04 +0100 (Thu, 09 May 2013)
+#-     Revision            : 149977
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-           It's purpose is bo build the random environment shared object
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+   
+# Import standard modules
+from os import path, chdir, mkdir 
+from sm_base import sm_base
+from ipfs_std_lib import *
+from shutil import copy as filecopy 
+
+class random_env (sm_base):
+   
+   #-------------------------------------------------------------------------------
+   # initialise - 
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Set the name
+        self.name = 'random_env'
+
+        #Register workflow
+        self.lsf_workflow = 'arm_engine-1.0-comp'
+
+        #Register license requirements
+        self.licenses.append('specman')
+  
+        #Register license requirements
+        self.tools.append('specman')
+        self.tools.append('g++')
+
+        #Register the input files
+        self.enable_dep_check = True;
+        self.input_files = ['./../../../shared/validation/c/include/*',
+                            './../../../shared/validation/c/model/*',
+                            './../../../shared/validation/c/misc/*',
+                            './../../../shared/validation/c/vec_gen/*',
+                            './../../../shared/validation/c/register/*',
+                            './../../../shared/validation/c/e_wrapper/*']
+        self.output_files = ['./random_env/PL301_mon.so']
+        self.output_dir   = 'random_env'
+
+   #-------------------------------------------------------------------------------
+   # run - Run the sub_module 
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+        #Create a run script
+        run_script = ['setenv PERIPH_LOGICAL ' + 
+                      path.normpath(directory + '/../../../'),
+                      #Get the makefile
+                      'cp ../../../../shared/validation/c/e_wrapper/makefile .',
+                      #Make the header
+                      'make dynamic']
+        #Create a random env directory if it doesn't exist
+        self.cchdir('random_env')
+        #Write compile run script and complete
+        self.write_run_script(run_script, 'compile_env', args)
+        return self.run_command(args, './compile_env')
+
+   #-------------------------------------------------------------------------------
+   # clean - clean the output of the sub_module 
+   #-------------------------------------------------------------------------------
+   def clean_sm(self, args, directory):
+   
+         self.delete_files.append('random_env')
+        
+   #-------------------------------------------------------------------------------
+   
+   

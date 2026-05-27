@@ -1,0 +1,155 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2013 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2013-05-09 15:18:04 +0100 (Thu, 09 May 2013)
+#-     Revision            : 149977
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+   
+# Import the Base Class
+from os import path, chdir, getcwd
+from sm_base import sm_base
+from ipfs_std_lib import *
+from glob import glob
+
+class jasper_formal (sm_base):
+   
+   #-------------------------------------------------------------------------------
+   # initialise - 
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call (NB lsf turned off as it should be on in sub
+        #modules
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Set the name
+        self.name = 'jasper_formal'
+
+        #Register workflow
+        self.lsf_workflow = 'arm_engine-1.0-formal_jg'
+
+        #Add license requirements -???
+        self.licenses.append('jasper')
+
+        #Add tool requirements
+        self.tools.append('jasper')
+
+        #Any lists etc required accross multiple blocks should be set up here
+       # self.files = ['run_ifv','INCA_libs','*.key','.formalrun','.ifv*','.simvision',
+       #               '.elab_checks.log','rtlchecks.log','.ncbrowse.args',
+       #               'modelchecks.log','.lock','.vlog_checks.log','*.log','lsf_job_code' ]
+        self.files = ['run_jasper*','jcproject','jgproject','*.log']
+
+        
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # options - This function registers all valid command line options for this SM
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+
+        if not group.parser.has_option("--disable_ovl"):          
+              group.add_option("--disable_ovl", dest="ovl", action="store_false", 
+                          default=True, help="Disable the built in OVLs")
+
+        #Clear options
+        return 0     
+   #-------------------------------------------------------------------------------
+
+
+   #-------------------------------------------------------------------------------
+   # run - Goes through every specified location.
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+        if self.options.ovl:
+              ovl_enable = ' +define+ASSERT_ON +define+OVL_ASSERT_ON '
+        else:
+              ovl_enable = ''
+
+        if self.options.gui:
+              gui_mode = 'jaspergold '
+              log_file = 'jgproject/jg.log '
+        else:
+              gui_mode = 'jaspercore '
+              log_file = 'jcproject/jc.log '
+
+
+        #Set some useful variable names
+        file_list  = glob(directory + '/*_jasper_sva.tcl')
+        if len(self.args) == 1 and self.args[0] != 'all':
+             (dir,target) = path.split(self.args[0])
+             #Create a run script
+             run_script = ['setenv ARM_OVL_VERILOG ' + environ.get('ARM_OVL_VERILOG')];
+             run_script.extend(['##Running Jasper for: ' + target,
+                            gui_mode + target +'.tcl' + ' -proj ' + target + '_jgproject_dir' + ' -acquire_proj'
+                           ]);
+             #run_script.extend(['##Check for log: ' + target +'.log',
+             #           'cp ' + log_file + target +'.log'
+             #          ]);           
+        else:
+             #run_script = [];
+             for file in file_list:
+                 run_script = [];
+                 run_script.extend(['setenv ARM_OVL_VERILOG ' + environ.get('ARM_OVL_VERILOG')]);
+                 (dir,filename) = path.split(file)
+                 target = filename[:-4]
+             #Create a run script
+                 run_script.extend(['##Running Jasper for: ' + target,
+                            gui_mode + target +'.tcl' + ' -proj ' + target + '_jgproject_dir' + ' -acquire_proj'
+                           ]);           
+                 #run_script.extend(['##Check for log: ' + target +'.log',
+                 #           'cp ' + log_file + target +'.log'
+                 #          ]);
+
+                 ##Write out multiple scripts and run them
+                 self.write_run_script(run_script, 'run_jasper_' + target, args)
+                 self.run_command(args, './run_jasper_' + target)
+
+
+        #Write out single script and run it
+        #self.write_run_script(run_script, 'run_jasper', args)
+        #return self.run_command(args, './run_jasper')
+
+        # to keep the script happy when multiple run commands done already
+        return self.run_command(args, 'touch done')
+
+   #-------------------------------------------------------------------------------
+   
+   #-------------------------------------------------------------------------------
+   # clean - A housekeeping function for the purpose of updating the status of the
+   #          service after execution, and to perform clean-up of the workspace
+   #-------------------------------------------------------------------------------
+   def clean_sm(self, args, directory):
+
+        #disable lsf for clean operations
+        self.use_lsf = 0 
+        self.delete_files = self.files
+   
+        return 0; 
+        
+   #-------------------------------------------------------------------------------

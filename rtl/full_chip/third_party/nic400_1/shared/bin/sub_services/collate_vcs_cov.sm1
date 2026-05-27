@@ -1,0 +1,224 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2014 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2014-06-05 18:05:49 +0100 (Thu, 05 Jun 2014)
+#-     Revision            : 174256
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-           Its purpose is to collate and filter the VCS code coverage.
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import standard modules
+from sm_base import sm_base
+from ipfs_std_lib import *
+from datetime import date
+
+class collate_vcs_cov (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise -
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Set the name
+        self.name = 'collate_vcs_cov'
+
+        #Register workflow
+        self.lsf_workflow = 'arm_engine-1.0-covmrg_vcs'
+
+        #Register license requirements
+        self.licenses.append('vcs')
+
+        #Register metrics function
+        self.self_metrics = True
+
+        #Set the search_file .. used to identify coveage targets
+        self.search_file = 'report.opts'
+
+        #Register report function
+        self.self_report = True
+
+        #Register license requirements
+        self.tools.append('vcs')
+        self.tools.append('xalan')
+        self.tools.append('perl')
+
+   #-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+   # options - This function registers all valid command line options for this SM
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+
+        if not group.parser.has_option("--dve"):
+             group.add_option("--dve", dest="dve", action="store_true",
+                  help="Load DVE (only applies in GUI mode)")
+
+
+   #-------------------------------------------------------------------------------
+   # run - Run the sub_module
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+       #Scan the serach file to get source directories
+       terms = {}
+       terms['code_filter_files'] = []
+       terms['hier_file']         = []
+       terms['map_name']          = []
+       terms['code_cov_db']       = []
+
+       if path.exists(directory + '/' + self.search_file):
+            execfile(directory + '/' + self.search_file, terms)
+
+       #set default cover filters
+       terms['code_filter_files'].append('../../../../shared/code_coverage/code_coverage_filter.xml')
+       terms['code_filter_files'].append('../code_coverage_filter.xml')
+       terms['code_filter_files'].append('code_coverage_filter.xml')
+
+       self.cchdir("collate_vcs_cov");
+
+       run_script = ['rm -rf full']
+       run_script = ['rm -rf holes']
+
+       cov_dirs = "../vcs_coverage.vdb"
+       for my_cov_dir in terms['code_cov_db']:
+       #     if path.exists(my_cov_dir):       # These may not exist at SM runtime
+             cov_dirs = cov_dirs + ' ' + my_cov_dir
+
+       hier = ""
+       for my_hier in terms['hier_file']:
+            hier = " -hier " + my_hier
+
+       mapping = ""
+       for my_map in terms['map_name']:
+            mapping = " -map " + my_map
+
+       #run_script.extend(['urg -dir ' + cov_dirs + hier + mapping + ' -parallel -lsf "-q PD -P PJ01329 -o merge.log" -metric -nocheck line+cond+tgl+fsm+group -format text -show brief -report holes +urg+lic+wait -cond ids'])
+       run_script.extend(['urg -dir ' + cov_dirs + hier + mapping + ' -metric line+cond+tgl+fsm -format text -show brief -report holes -full64 +urg+lic+wait -cond ids'])
+
+       # Parse reports and filter
+       run_script.extend(['$ASSESSMENT_HOME/scripts/vcs_line_ccov_result.pl   holes/modinfo.txt cc_line.xml'])
+       run_script.extend(['$ASSESSMENT_HOME/scripts/vcs_toggle_ccov_result.pl holes/modinfo.txt cc_toggle.xml'])
+       run_script.extend(['$ASSESSMENT_HOME/scripts/vcs_arc_ccov_result.pl    holes/modinfo.txt cc_arc.xml'])
+       run_script.extend(['$ASSESSMENT_HOME/scripts/vcs_cond_ccov_result.pl   holes/modinfo.txt cc_condition.xml'])
+
+       # Merge results
+       run_script.extend(['cat cc*.xml | grep -v "<?" > code_coverage_raw.xml'])
+       # Filter
+       run_script.extend(['echo "" > filter_file.xml'])
+       for my_filter_file in terms['code_filter_files']:
+            if path.exists(my_filter_file):
+                 run_script.extend(['cat ' + my_filter_file + ' >> filter_file.xml'])
+
+       run_script.extend(['$ASSESSMENT_HOME/scripts/cover_filter.pl code_coverage_raw.xml filter_file.xml code_coverage.xml waivers.el'])
+
+       #run_script.extend(['urg -dir ' + cov_dirs + hier + mapping + '  -parallel -lsf "-q PD -P PJ01329 -o merge.log" -metric -nocheck line+cond+tgl+fsm+group -report full +urg+lic+wait -elfile waivers.el ../fcw.el'])
+       run_script.extend(['urg -dir ' + cov_dirs + hier + mapping + ' -metric line+cond+tgl -line nocasedef -tgl portsonly -report full -full64 +urg+lic+wait -elfile waivers.el -excl_bypass_checks'])
+
+       # If GUI mode selected, first run dve GUI to display coverage
+       if self.options.gui == True:
+           if self.options.dve == True:
+               run_script.append('dve -dir ' + cov_dirs + ' -elfile waivers.el -excl_bypass_checks')
+           else:
+               run_script.append('firefox full/dashboard.html')
+
+       # Report
+       run_script.extend(['Xalan -o code_coverage.html code_coverage.xml $ASSESSMENT_HOME/scripts/results.xsl'])
+
+       #Write and execute run_script
+       self.write_run_script(run_script, 'compile_cov', args)
+       return self.run_command(args, './compile_cov')
+
+   #-------------------------------------------------------------------------------
+   # report - Sumarises the log files - When is this run? Ignore?
+   #-------------------------------------------------------------------------------
+   def report_sm(self, args, directory):
+
+       #Scan the serach file to get source directories
+       terms = {}
+       terms['code_filter_files'] = []
+       terms['hier_file']         = []
+
+       if path.exists(directory + '/' + self.search_file):
+            execfile(directory + '/' + self.search_file, terms)
+
+       #set default cover filters
+       terms['code_filter_files'].append('../../../../shared/code_coverage/code_coverage_filter.xml')
+       terms['code_filter_files'].append('../code_coverage_filter.xml')
+       terms['code_filter_files'].append('code_coverage_filter.xml')
+
+       self.cchdir("collate_vcs_cov");
+
+       run_script = ['rm -rf full']
+       run_script = ['rm -rf holes']
+
+       cov_dir = "../vcs_coverage.vdb"
+
+       hier = ""
+       for my_hier in terms['hier_file']:
+            hier = " -hier " + my_hier
+
+       run_script.extend(['urg -dir ' + cov_dir + hier + ' -metric line+cond+tgl+fsm -format text -show brief -report holes -full64 +urg+lic+wait -cond ids'])
+
+       # Parse reports and filter
+       run_script.extend(['$ASSESSMENT_HOME/scripts/vcs_line_ccov_result.pl   holes/modinfo.txt cc_line.xml'])
+       run_script.extend(['$ASSESSMENT_HOME/scripts/vcs_toggle_ccov_result.pl holes/modinfo.txt cc_toggle.xml'])
+       run_script.extend(['$ASSESSMENT_HOME/scripts/vcs_arc_ccov_result.pl    holes/modinfo.txt cc_arc.xml'])
+       run_script.extend(['$ASSESSMENT_HOME/scripts/vcs_cond_ccov_result.pl   holes/modinfo.txt cc_condition.xml'])
+
+       # Merge results
+       run_script.extend(['cat cc*.xml | grep -v "<?" > code_coverage_raw.xml'])
+       # Filter
+       run_script.extend(['echo "" > filter_file.xml'])
+       for my_filter_file in terms['code_filter_files']:
+            if path.exists(my_filter_file):
+                 run_script.extend(['cat ' + my_filter_file + ' >> filter_file.xml'])
+
+       run_script.extend(['$ASSESSMENT_HOME/scripts/cover_filter.pl code_coverage_raw.xml filter_file.xml code_coverage.xml waivers.el'])
+
+       # If GUI mode selected, first run dve GUI to display coverage
+       if self.options.gui == True:
+           run_script.append('firefox full/dashboard.html')
+
+       run_script.extend(['urg -dir ' + cov_dir + hier + ' -metric line+cond+tgl -line nocasedef -tgl portsonly -report full -full64 +urg+lic+wait -elfile waivers.el -excl_bypass_checks'])
+
+       # Report
+       run_script.extend(['Xalan -o code_coverage.html code_coverage.xml $ASSESSMENT_HOME/scripts/results.xsl'])
+
+       #Write and execute run_script
+       self.write_run_script(run_script, 'report_cov', args)
+       return self.run_command(args, './report_cov')
+
+   #-------------------------------------------------------------------------------
+   # clean - clean the output of the sub_module
+   #-------------------------------------------------------------------------------
+   def clean_sm(self, args, directory):
+
+         self.delete_files.append('collate_vcs_cov')
+
+   #-------------------------------------------------------------------------------

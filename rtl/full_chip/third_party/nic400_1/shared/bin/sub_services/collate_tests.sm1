@@ -1,0 +1,138 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2013 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2013-05-09 15:18:04 +0100 (Thu, 09 May 2013)
+#-     Revision            : 149977
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-           It's purpose is bo build the random environment shared object
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import standard modules
+from sm_base import sm_base
+from os import path, mkdir
+from ipfs_std_lib import *
+#from glob import glob
+#from shutil import copy as filecopy
+#from shutil import move as filemove
+#from string import replace
+
+class collate_tests (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise - 
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Register workflow
+        self.lsf_workflow = 'arm_engine-1.0-covmrg_spec'
+
+        #Set the name
+        self.name = 'collate_tests'
+        
+        #Register license requirements
+        self.tools.append('xalan')
+        self.tools.append('perl')
+
+   #-------------------------------------------------------------------------------
+   # run - Run the sub_module 
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+   
+        #Move into test directory
+        self.cchdir("collate_test");
+
+        #Create the logs directory if necessary
+        if not path.exists("../logs"):
+            mkdir("../logs")
+
+        # The copying of the files should be done in the bsub as well, since there might be a wait
+        # on other events and the files may not be ready at this point, so write to the script file
+        run_script = ["set bCopy = 0",
+                      "set bsubl =",
+                      "if (-e ../../random) then",
+                      "  set bsubl_1 = `ls ../../random/run*/bsub.log*`",
+                      "    if ($status == 0) then",
+                      "       set bCopy = 1",
+                      "       set bsubl = ($bsubl $bsubl_1)",
+                      "    endif ",
+                      "  endif",
+                      "  if (-e ../../directed) then",
+                      "    set bsubl_1 = `ls ../../directed/run*/bsub.log*`",
+                      "    if ($status == 0) then",
+                      "       set bCopy = 1",
+                      "       set bsubl = ($bsubl $bsubl_1)",
+                      "    endif ",
+                      "  endif",
+                      "  if (-e ../../directed2) then",
+                      "    set bsubl_1 = `ls ../../directed2/run*/bsub.log*`",
+                      "    if ($status == 0) then",
+                      "       set bCopy = 1",
+                      "       set bsubl = ($bsubl $bsubl_1)",
+                      "    endif ",
+                      "  endif",
+                      "foreach bsub ( $bsubl )",
+                      "  set tname = `echo $bsub | awk '{sub(\"../../random/\",\"\"); print $0}'`",
+                      "  set tname = `echo $tname | awk '{sub(\"../../directed/\",\"\"); print $0}'`",
+                      "  set tname = `echo $tname | awk '{sub(\"../../directed2/\",\"\"); print $0}'`",
+                      "  set tname = `echo $tname | awk '{sub(\"/\",\"_\"); print $0}'`",
+                      "  set tname = `echo $tname | awk '{sub(\"seed_\",\"\"); print $0}'`",
+                      "  set tname = `echo $tname | awk '{sub(\".log\",\"\"); print $0}'`",
+                      "  echo \"copy $bsub to ../logs/$tname.log\"",
+                      "  cp $bsub ../logs/$tname.log ",
+                      "end"
+                      ]
+        run_script.extend(['cd ../',
+                           'rm -rf xml/*.xml'])
+
+        #Summarise the test report summarise all the logs
+        run_script.extend(["cd logs",
+                           "foreach log (*.log)",
+                           "$ASSESSMENT_HOME/scripts/gen_simulation_result.pl ./${log} $log:s/.log/.xml/",
+                           "gzip -f ${log}",
+                           "end",
+                           "cd ../"])
+
+        #Summarise into html doc
+        run_script.extend(["$ASSESSMENT_HOME/scripts/merge_results.pl xml logs collate_test/merged.xml"])
+        run_script.extend(["Xalan -o test_results.html collate_test/merged.xml $ASSESSMENT_HOME/scripts/results.xsl"])
+
+        #Write and execute run_script
+        self.write_run_script(run_script, 'compile_test', args)
+        return self.run_command(args, './compile_test')
+
+   #-------------------------------------------------------------------------------
+   # clean - clean the output of the sub_module 
+   #-------------------------------------------------------------------------------
+   def clean_sm(self, args, directory):
+
+         self.delete_files.append('collate_test')
+         self.delete_files.append('test_results.html')
+         self.delete_files.append('logs/*.log')
+         self.delete_files.append('logs/*.xml')
+   #-------------------------------------------------------------------------------

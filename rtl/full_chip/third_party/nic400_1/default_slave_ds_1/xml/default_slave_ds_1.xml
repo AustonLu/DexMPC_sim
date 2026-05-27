@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!DOCTYPE periph [
+<!ENTITY nic400_axi      SYSTEM "../../shared/busdefs/NIC400_AXI/NIC400_AXI.xml">
+<!ENTITY nic400_axi_rtl  SYSTEM "../../shared/busdefs/NIC400_AXI/NIC400_AXI_rtl.xml">
+<!ENTITY nic400_axi4     SYSTEM "../../shared/busdefs/NIC400_AXI4/NIC400_AXI4.xml">
+<!ENTITY nic400_axi4_rtl SYSTEM "../../shared/busdefs/NIC400_AXI4/NIC400_AXI4_rtl.xml">
+<!ENTITY files           SYSTEM "default_slave_ds_1_vlog_files.xml">
+<!ENTITY connect         SYSTEM "default_slave_ds_1_io.xml">]>
+
+<def_slave>
+
+  <xmlcfg>1</xmlcfg>
+  <parcfg>nic400</parcfg>
+  <spirit_prefix>nic400_default_slave</spirit_prefix>
+
+  <protocol>axi4</protocol>
+  
+
+   <addr_width>32</addr_width>
+   <clock_domain_name_master_if>clk0</clock_domain_name_master_if>
+   <clock_domain_name_slave_if>clk0</clock_domain_name_slave_if>
+   <data_width>64</data_width>
+   <name>ds_1</name>
+   <pl_id_width>8</pl_id_width>
+   <spirit_prefix>nic400_default_slave</spirit_prefix>
+   <type>default_slave</type>
+   <master_if_port_name></master_if_port_name>
+   <slave_if_port_name>axi_s_0</slave_if_port_name>
+
+  <system_name>nic400_1</system_name>
+
+
+
+   <clock>
+      <name>clk0</name>
+   </clock>
+
+
+<!-- Parameters used for TB -->
+<slave_if>
+    <name>axi_s_0</name>
+    <read_acceptance_capability>1</read_acceptance_capability>
+    <write_acceptance_capability>1</write_acceptance_capability>
+    <combined_acceptance_capability>2</combined_acceptance_capability>
+    <protocol>axi4</protocol>
+    <addr_width>32</addr_width>
+    <awuser_width>0</awuser_width>
+    <aruser_width>0</aruser_width>
+    <wuser_width>0</wuser_width>
+    <buser_width>0</buser_width>
+    <ruser_width>0</ruser_width>
+    <aid_width>8</aid_width>
+    <add_siid>false</add_siid>
+    
+    
+    <sim_start_point>ds_1.axi_s_0</sim_start_point>
+
+    
+    <id_width>8</id_width>
+    <data_width>64</data_width>
+</slave_if>
+
+
+&nic400_axi;
+&nic400_axi_rtl;
+&nic400_axi4;
+&nic400_axi4_rtl;
+&files;
+&connect;
+
+</def_slave>
+
+

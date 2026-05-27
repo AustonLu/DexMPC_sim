@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!DOCTYPE bm_cfgfile [
+<!ENTITY nic400_axi      SYSTEM "../../shared/busdefs/NIC400_AXI/NIC400_AXI.xml">
+<!ENTITY nic400_axi_rtl  SYSTEM "../../shared/busdefs/NIC400_AXI/NIC400_AXI_rtl.xml">
+<!ENTITY nic400_axi4     SYSTEM "../../shared/busdefs/NIC400_AXI4/NIC400_AXI4.xml">
+<!ENTITY nic400_axi4_rtl SYSTEM "../../shared/busdefs/NIC400_AXI4/NIC400_AXI4_rtl.xml">
+<!ENTITY files           SYSTEM "busmatrix_bm0_vlog_files.xml">
+<!ENTITY connect         SYSTEM "busmatrix_bm0_io.xml">]>
+
+<bm_cfgfile>
+
+<addr_width>32</addr_width>
+<buser_width>0</buser_width>
+<clock_domain_name_master_if>clk0</clock_domain_name_master_if>
+<clock_domain_name_slave_if>clk0</clock_domain_name_slave_if>
+<data_width>64</data_width>
+<iid_width>0</iid_width>
+<impl>mlayer</impl>
+<name>bm0</name>
+<pl_id_width>8</pl_id_width>
+<protocol>axi4</protocol>
+<regions_flag>false</regions_flag>
+<ruser_width>0</ruser_width>
+<siid_width>2</siid_width>
+<sparse_axi_s_0>axi_m_0,axi_m_1,axi_m_2</sparse_axi_s_0>
+<sparse_axi_s_1>axi_m_0,axi_m_1,axi_m_2</sparse_axi_s_1>
+<sparse_axi_s_2>axi_m_0,axi_m_1,axi_m_2</sparse_axi_s_2>
+<spirit_prefix>nic400</spirit_prefix>
+<type>busmatrix</type>
+<wuser_width>0</wuser_width>
+<master_if_port_name>axi_m_0,axi_m_1,axi_m_2</master_if_port_name>
+<slave_if_port_name>axi_s_0,axi_s_1,axi_s_2</slave_if_port_name>
+
+<xmlcfg>1</xmlcfg>
+<parcfg>nic400</parcfg>
+<spirit_prefix></spirit_prefix>
+
+<one_hot_vn>true</one_hot_vn>
+
+<aruser_width>0</aruser_width>
+<awuser_width>0</awuser_width>
+
+<clock>
+   <name>clk0</name>
+</clock>
+
+<system_name>nic400_1</system_name>
+
+
+<sparse>
+    <master_count>3</master_count>
+    <iid>0</iid>
+    <sas>false</sas>
+    <slave>0</slave>
+    
+    <master>
+          <name>axi_m_0</name>
+      <number>0</number>
+      <reg>
+         <impl>absent</impl>
+         <name>aw</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>ar</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>r</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>w</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>b</name>
+         <type>full</type>
+      </reg>
+      <valid_width>1</valid_width>
+
+    </master>
+    <master>
+          <name>axi_m_1</name>
+      <number>1</number>
+      <reg>
+         <impl>absent</impl>
+         <name>aw</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>ar</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>r</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>w</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>b</name>
+         <type>full</type>
+      </reg>
+      <valid_width>1</valid_width>
+
+    </master>
+    <master>
+          <name>axi_m_2</name>
+      <number>2</number>
+      <reg>
+         <impl>absent</impl>
+         <name>aw</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>ar</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>r</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>w</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>b</name>
+         <type>full</type>
+      </reg>
+      <valid_width>1</valid_width>
+
+    </master>
+</sparse>
+
+<sparse>
+    <master_count>3</master_count>
+    <iid>0</iid>
+    <sas>false</sas>
+    <slave>1</slave>
+    
+    <master>
+          <name>axi_m_0</name>
+      <number>0</number>
+      <reg>
+         <impl>absent</impl>
+         <name>aw</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>ar</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>r</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>w</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>b</name>
+         <type>full</type>
+      </reg>
+      <valid_width>1</valid_width>
+
+    </master>
+    <master>
+          <name>axi_m_1</name>
+      <number>1</number>
+      <reg>
+         <impl>absent</impl>
+         <name>aw</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>ar</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>r</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>w</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>b</name>
+         <type>full</type>
+      </reg>
+      <valid_width>1</valid_width>
+
+    </master>
+    <master>
+          <name>axi_m_2</name>
+      <number>2</number>
+      <reg>
+         <impl>absent</impl>
+         <name>aw</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>ar</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>r</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>w</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>b</name>
+         <type>full</type>
+      </reg>
+      <valid_width>1</valid_width>
+
+    </master>
+</sparse>
+
+<sparse>
+    <master_count>3</master_count>
+    <iid>0</iid>
+    <sas>false</sas>
+    <slave>2</slave>
+    
+    <master>
+          <name>axi_m_0</name>
+      <number>0</number>
+      <reg>
+         <impl>absent</impl>
+         <name>aw</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>ar</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>r</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>w</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>b</name>
+         <type>full</type>
+      </reg>
+      <valid_width>1</valid_width>
+
+    </master>
+    <master>
+          <name>axi_m_1</name>
+      <number>1</number>
+      <reg>
+         <impl>absent</impl>
+         <name>aw</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>ar</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>r</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>w</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>b</name>
+         <type>full</type>
+      </reg>
+      <valid_width>1</valid_width>
+
+    </master>
+    <master>
+          <name>axi_m_2</name>
+      <number>2</number>
+      <reg>
+         <impl>absent</impl>
+         <name>aw</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>ar</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>r</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>w</name>
+         <type>full</type>
+      </reg>
+      <reg>
+         <impl>absent</impl>
+         <name>b</name>
+         <type>full</type>
+      </reg>
+      <valid_width>1</valid_width>
+
+    </master>
+</sparse>
+
+<master_if>
+   <name>axi_m_0</name>
+   <number>0</number>
+   <post_arb_reg>absent</post_arb_reg>
+   <lock>false</lock>
+   <sparse_slave>3</sparse_slave>
+</master_if>
+
+<master_if>
+   <name>axi_m_1</name>
+   <number>1</number>
+   <post_arb_reg>absent</post_arb_reg>
+   <lock>false</lock>
+   <sparse_slave>3</sparse_slave>
+</master_if>
+
+<master_if>
+   <name>axi_m_2</name>
+   <number>2</number>
+   <post_arb_reg>absent</post_arb_reg>
+   <lock>false</lock>
+   <sparse_slave>3</sparse_slave>
+</master_if>
+
+
+<master>
+    <name>axi_m_0</name>
+    <number>0</number>
+    <read_issuing_capability>1</read_issuing_capability>
+    <write_issuing_capability>1</write_issuing_capability>
+    <combined_issuing_capability>1</combined_issuing_capability>
+    <limit_acceptance_capability>0</limit_acceptance_capability>
+    <leading_writes>0</leading_writes>
+    <valid_width>1</valid_width>
+    <awuser_width>0</awuser_width>
+    <aruser_width>0</aruser_width>
+    <buser_width>0</buser_width>
+    <wuser_width>0</wuser_width>
+    <ruser_width>0</ruser_width>
+    <pl_id_width>8</pl_id_width>
+    <addr_width>32</addr_width>
+    <data_width>64</data_width>
+    <data_width>64</data_width>
+    <protocol>axi4</protocol>
+    <regions_flag>0</regions_flag>
+    <fn_mod>false</fn_mod>
+</master>
+
+
+<master>
+    <name>axi_m_1</name>
+    <number>1</number>
+    <read_issuing_capability>1</read_issuing_capability>
+    <write_issuing_capability>1</write_issuing_capability>
+    <combined_issuing_capability>1</combined_issuing_capability>
+    <limit_acceptance_capability>0</limit_acceptance_capability>
+    <leading_writes>0</leading_writes>
+    <valid_width>1</valid_width>
+    <awuser_width>0</awuser_width>
+    <aruser_width>0</aruser_width>
+    <buser_width>0</buser_width>
+    <wuser_width>0</wuser_width>
+    <ruser_width>0</ruser_width>
+    <pl_id_width>8</pl_id_width>
+    <addr_width>32</addr_width>
+    <data_width>64</data_width>
+    <data_width>64</data_width>
+    <protocol>axi4</protocol>
+    <regions_flag>0</regions_flag>
+    <fn_mod>false</fn_mod>
+</master>
+
+
+<master>
+    <name>axi_m_2</name>
+    <number>2</number>
+    <read_issuing_capability>1</read_issuing_capability>
+    <write_issuing_capability>1</write_issuing_capability>
+    <combined_issuing_capability>2</combined_issuing_capability>
+    <limit_acceptance_capability>0</limit_acceptance_capability>
+    <leading_writes>0</leading_writes>
+    <valid_width>1</valid_width>
+    <awuser_width>0</awuser_width>
+    <aruser_width>0</aruser_width>
+    <buser_width>0</buser_width>
+    <wuser_width>0</wuser_width>
+    <ruser_width>0</ruser_width>
+    <pl_id_width>8</pl_id_width>
+    <addr_width>32</addr_width>
+    <data_width>64</data_width>
+    <data_width>64</data_width>
+    <protocol>axi4</protocol>
+    <regions_flag>0</regions_flag>
+    <fn_mod>false</fn_mod>
+</master>
+
+<slave>
+    <name>axi_s_0</name>
+    <number>0</number>
+    <read_acceptance_capability>4</read_acceptance_capability>
+    <write_acceptance_capability>4</write_acceptance_capability>
+    <combined_acceptance_capability>8</combined_acceptance_capability>
+    <unlimited_acceptance_capability>0</unlimited_acceptance_capability>
+    <limit_issuing_capability>1</limit_issuing_capability>
+    <leading_write_depth>0</leading_write_depth>
+    <cds>singleslave</cds>
+    <user_width></user_width>
+    <valid_width>3</valid_width>
+    <awuser_width>0</awuser_width>
+    <aruser_width>0</aruser_width>
+    <buser_width>0</buser_width>
+    <wuser_width>0</wuser_width>
+    <ruser_width>0</ruser_width>
+    <pl_id_width>8</pl_id_width>
+    <addr_width>32</addr_width>
+    <data_width>64</data_width>
+    <protocol>axi4</protocol>
+    <add_siid>true</add_siid>
+    <siid_width>2</siid_width>
+    <iid_width>0</iid_width>
+    <vid_width>6</vid_width>
+    <siid>0</siid>
+    <iid>0</iid>
+    <aid_width>8</aid_width>
+    <regions_flag>0</regions_flag>
+</slave>
+
+<slave>
+    <name>axi_s_1</name>
+    <number>1</number>
+    <read_acceptance_capability>4</read_acceptance_capability>
+    <write_acceptance_capability>4</write_acceptance_capability>
+    <combined_acceptance_capability>8</combined_acceptance_capability>
+    <unlimited_acceptance_capability>0</unlimited_acceptance_capability>
+    <limit_issuing_capability>1</limit_issuing_capability>
+    <leading_write_depth>0</leading_write_depth>
+    <cds>singleslave</cds>
+    <user_width></user_width>
+    <valid_width>3</valid_width>
+    <awuser_width>0</awuser_width>
+    <aruser_width>0</aruser_width>
+    <buser_width>0</buser_width>
+    <wuser_width>0</wuser_width>
+    <ruser_width>0</ruser_width>
+    <pl_id_width>8</pl_id_width>
+    <addr_width>32</addr_width>
+    <data_width>64</data_width>
+    <protocol>axi4</protocol>
+    <add_siid>true</add_siid>
+    <siid_width>2</siid_width>
+    <iid_width>0</iid_width>
+    <vid_width>6</vid_width>
+    <siid>1</siid>
+    <iid>0</iid>
+    <aid_width>8</aid_width>
+    <regions_flag>0</regions_flag>
+</slave>
+
+<slave>
+    <name>axi_s_2</name>
+    <number>2</number>
+    <read_acceptance_capability>4</read_acceptance_capability>
+    <write_acceptance_capability>4</write_acceptance_capability>
+    <combined_acceptance_capability>8</combined_acceptance_capability>
+    <unlimited_acceptance_capability>0</unlimited_acceptance_capability>
+    <limit_issuing_capability>1</limit_issuing_capability>
+    <leading_write_depth>0</leading_write_depth>
+    <cds>singleslave</cds>
+    <user_width></user_width>
+    <valid_width>3</valid_width>
+    <awuser_width>0</awuser_width>
+    <aruser_width>0</aruser_width>
+    <buser_width>0</buser_width>
+    <wuser_width>0</wuser_width>
+    <ruser_width>0</ruser_width>
+    <pl_id_width>8</pl_id_width>
+    <addr_width>32</addr_width>
+    <data_width>64</data_width>
+    <protocol>axi4</protocol>
+    <add_siid>true</add_siid>
+    <siid_width>2</siid_width>
+    <iid_width>0</iid_width>
+    <vid_width>6</vid_width>
+    <siid>2</siid>
+    <iid>0</iid>
+    <aid_width>8</aid_width>
+    <regions_flag>0</regions_flag>
+</slave>
+
+
+
+&files;
+&connect;
+&nic400_axi;
+&nic400_axi_rtl;
+&nic400_axi4;
+&nic400_axi4_rtl;
+
+</bm_cfgfile>
+
+

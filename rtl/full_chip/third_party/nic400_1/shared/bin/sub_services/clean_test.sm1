@@ -1,0 +1,170 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2012 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2012-10-04 12:07:10 +0100 (Thu, 04 Oct 2012)
+#-     Revision            : 137192
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import standard modules
+from os import path, chdir, mkdir
+from time import sleep
+from sm_base import sm_base
+from ipfs_std_lib import *
+from shutil import copy as filecopy
+from shutil import move as filemove
+from shutil import rmtree
+from glob import glob
+from subprocess import call
+from string import replace
+import errno
+
+class clean_test (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise -
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Set the name
+        self.name = 'clean_test'
+        self.change_dir = False
+
+        #Register workflow
+        self.lsf_workflow = 'arm_engine-1.0-clean'
+
+        #Register tool requirements
+        self.tools.append('perl')
+
+   #-------------------------------------------------------------------------------
+   # options - This function registers all valid command line options for this SM
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+
+         group.add_option("--target_dir", dest="t_dir", action="store",
+                              default='', help=SUPPRESS_HELP)
+         if not self.parser.has_option("--tidy"):
+              group.add_option("--tidy", dest="tidy", action="store_true",
+                              default=False, help="Remove or compress directories after running")
+         #Complete
+         return 0
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # run - Run the sub_module
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+       # If the time delay options are set and the job was called as part of a tidy
+       # i.e. it was not called as an explicit command then pause to assure the
+       # previous job has completed and finished writing.
+       if 'DEP_SLEEP_TIME' in environ and 'DEP_SLEEP_COUNT' in environ and self.options.tidy:
+          sleep(float(environ['DEP_SLEEP_TIME'])*float(environ['DEP_SLEEP_COUNT']))
+
+       #Create the logs directory if necessary
+       if not path.exists("../logs"):
+          try:
+             mkdir("../logs")
+          except OSError, e:
+             # Ignore directory exists error
+             if e.errno <> errno.EEXIST:
+                raise
+       if not path.exists("../logs/xml"):
+          try:
+             mkdir("../logs/xml")
+          except OSError, e:
+             # Ignore directory exists error
+             if e.errno <> errno.EEXIST:
+                raise
+       if not path.exists("../logs/logs"):
+          try:
+             mkdir("../logs/logs")
+          except OSError, e:
+             # Ignore directory exists error
+             if e.errno <> errno.EEXIST:
+                raise
+       if not path.exists("../logs/fn_cov"):
+          try:
+             mkdir("../logs/fn_cov")
+          except OSError, e:
+             # Ignore directory exists error
+             if e.errno <> errno.EEXIST:
+                raise
+
+       #Get and location of parser script
+       parser_script = "$ASSESSMENT_HOME/scripts/gen_simulation_result.pl"
+
+       #Look at the target directory
+       dir = self.options.t_dir
+
+       #Get a list of all the output directories
+       logs = glob(dir + '/' + self.options.output_file + '*')
+
+       total_result = 0
+
+       #Go through all the logs
+       for log in logs:
+
+           logname = replace(log, "/", "_");
+           logname = replace(logname, ".log", "");
+
+           logfile_name  = "../logs/logs/" + logname + ".log"
+           result_xml  = "../logs/xml/" + logname + ".xml"
+
+           #Step if copy bsub.log to final destination
+           #if path.exists(dir + "/" + self.options.output_file):
+           #filecopy(log, logfile_name)
+           filemove(log, logfile_name)
+
+           #Copy any ecov files to the target directory
+           ecov_files = glob(dir + "/*.ecov")
+           ecov_files += glob(dir + "/seed*/*.ecov")
+           for ecov in ecov_files:
+               tname = replace(ecov,"/","_")
+               tname = replace(tname,"seed_","")
+               #filecopy(ecov, "../logs/fn_cov/" + tname)
+               filemove(ecov, "../logs/fn_cov/" + tname)
+
+           #Summarise test
+           result = system(parser_script + " " + logfile_name + " " + result_xml)
+
+           total_result += result
+
+       if self.options.tidy:
+
+           #compress folder if test failed
+           if total_result:
+                result = system("gtar -czf " + dir + ".tgz  " + dir)
+
+           #remove folder
+           rmtree(dir)
+
+       return 0, {}
+
+   #-------------------------------------------------------------------------------

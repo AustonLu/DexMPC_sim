@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+//=============================================================================
+// This confidential and proprietary information may be used only as
+// authorised by a licensing agreement from ARM Limited 
+// (C) COPYRIGHT 2012 ARM Limited 
+//     ALL RIGHTS RESERVED 
+// The entire notice above must be reproduced on all authorised 
+// copies and copies may only be made to the extent permitted 
+// by a licensing agreement from ARM Limited. 
+//
+//      90557
+//
+//=============================================================================
+// Purpose : 
+// This defines the AMBA AXI4 Stream Bus (version 1.0)
+//=============================================================================
+-->
+
+<spirit:busDefinition
+	xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/index.xsd ">
+	<spirit:vendor>amba.com</spirit:vendor>
+	<spirit:library>AMBA4</spirit:library>
+	<spirit:name>AXI4Stream</spirit:name>
+	<spirit:version>r0p0_0</spirit:version>
+	<spirit:directConnection>true</spirit:directConnection>
+	<spirit:maxMasters>1</spirit:maxMasters>
+	<spirit:maxSlaves>1</spirit:maxSlaves>
+	<spirit:systemGroupNames>
+		<spirit:systemGroupName>CLOCK</spirit:systemGroupName>
+		<spirit:systemGroupName>RESETn</spirit:systemGroupName>
+	</spirit:systemGroupNames>
+	<spirit:description>
+AMBA AXI4-Stream Protocol Specification v1.0 (ARM IHI 0051A) can be obtained from :
+http://infocenter.arm.com
+AMBA FAQ's :
+http://www.arm.com/support/AMBA.html</spirit:description>
+
+</spirit:busDefinition>

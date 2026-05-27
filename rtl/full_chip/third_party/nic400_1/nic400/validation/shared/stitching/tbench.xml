@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<spirit:design xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/design.xsd">
+  <spirit:vendor>arm.com</spirit:vendor>
+  <spirit:library>CoreLink</spirit:library>
+  <spirit:name>tbench</spirit:name>
+  <spirit:version>r0p0</spirit:version>
+  <spirit:componentInstances>
+    <spirit:componentInstance> 
+      <spirit:instanceName>u_nic400</spirit:instanceName>
+      <spirit:componentRef spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="nic400_1" spirit:version="r1p2"/>
+      <spirit:configurableElementValues>
+      
+      </spirit:configurableElementValues>
+    </spirit:componentInstance>
+    <spirit:componentInstance> 
+      <spirit:instanceName>sSpi</spirit:instanceName>
+      <spirit:componentRef spirit:vendor="arm.com" spirit:library="TBench" spirit:name="axi4_m_if" spirit:version="r0p0"/>
+      <spirit:configurableElementValues>
+      <spirit:configurableElementValue spirit:referenceId="unlimited_acceptance_id">0</spirit:configurableElementValue>
+      
+      <spirit:configurableElementValue spirit:referenceId="limit_issuing_id">0</spirit:configurableElementValue>
+      <spirit:configurableElementValue spirit:referenceId="instance_id">"sSpi"</spirit:configurableElementValue>
+      </spirit:configurableElementValues>
+    </spirit:componentInstance>
+    <spirit:componentInstance> 
+      <spirit:instanceName>sD2dData</spirit:instanceName>
+      <spirit:componentRef spirit:vendor="arm.com" spirit:library="TBench" spirit:name="axi4_m_if" spirit:version="r0p0"/>
+      <spirit:configurableElementValues>
+      <spirit:configurableElementValue spirit:referenceId="unlimited_acceptance_id">0</spirit:configurableElementValue>
+      
+      <spirit:configurableElementValue spirit:referenceId="limit_issuing_id">0</spirit:configurableElementValue>
+      <spirit:configurableElementValue spirit:referenceId="instance_id">"sD2dData"</spirit:configurableElementValue>
+      </spirit:configurableElementValues>
+    </spirit:componentInstance>
+    <spirit:componentInstance> 
+      <spirit:instanceName>sIrisBridge</spirit:instanceName>
+      <spirit:componentRef spirit:vendor="arm.com" spirit:library="TBench" spirit:name="axi4_m_if" spirit:version="r0p0"/>
+      <spirit:configurableElementValues>
+      <spirit:configurableElementValue spirit:referenceId="unlimited_acceptance_id">0</spirit:configurableElementValue>
+      
+      <spirit:configurableElementValue spirit:referenceId="limit_issuing_id">0</spirit:configurableElementValue>
+      <spirit:configurableElementValue spirit:referenceId="instance_id">"sIrisBridge"</spirit:configurableElementValue>
+      </spirit:configurableElementValues>
+    </spirit:componentInstance>
+    <spirit:componentInstance> 
+      <spirit:instanceName>mGauxCore</spirit:instanceName>
+      <spirit:componentRef spirit:vendor="arm.com" spirit:library="TBench" spirit:name="axi4_s_if" spirit:version="r0p0"/>
+       <spirit:configurableElementValues>
+      <spirit:configurableElementValue spirit:referenceId="write_issuing_id">1</spirit:configurableElementValue>
+      <spirit:configurableElementValue spirit:referenceId="read_issuing_id">1</spirit:configurableElementValue>
+      <spirit:configurableElementValue spirit:referenceId="limit_acceptance_id">1</spirit:configurableElementValue>
+      <spirit:configurableElementValue spirit:referenceId="instance_id">"mGauxCore"</spirit:configurableElementValue>
+      <spirit:configurableElementValue spirit:referenceId="regions_flag_id">1</spirit:configurableElementValue>
+      </spirit:configurableElementValues>
+    </spirit:componentInstance>
+    <spirit:componentInstance> 
+      <spirit:instanceName>mDexmpcCore</spirit:instanceName>
+      <spirit:componentRef spirit:vendor="arm.com" spirit:library="TBench" spirit:name="axi4_s_if" spirit:version="r0p0"/>
+       <spirit:configurableElementValues>
+      <spirit:configurableElementValue spirit:referenceId="write_issuing_id">1</spirit:configurableElementValue>
+      <spirit:configurableElementValue spirit:referenceId="read_issuing_id">1</spirit:configurableElementValue>
+      <spirit:configurableElementValue spirit:referenceId="limit_acceptance_id">1</spirit:configurableElementValue>
+      <spirit:configurableElementValue spirit:referenceId="instance_id">"mDexmpcCore"</spirit:configurableElementValue>
+      <spirit:configurableElementValue spirit:referenceId="regions_flag_id">1</spirit:configurableElementValue>
+      </spirit:configurableElementValues>
+    </spirit:componentInstance>
+    <spirit:componentInstance> 
+      <spirit:instanceName>FrmEvent</spirit:instanceName>
+      <spirit:componentRef spirit:vendor="arm.com" spirit:library="TBench" spirit:name="FrmEventDistributor" spirit:version="r0p0"/>
+    </spirit:componentInstance>
+    <spirit:componentInstance>  
+      <spirit:instanceName>clk_reset_if</spirit:instanceName>
+      <spirit:componentRef spirit:vendor="arm.com" spirit:library="TBench" spirit:name="clk_reset_if" spirit:version="r0p0"/>
+    </spirit:componentInstance>
+    <spirit:componentInstance> 
+      <spirit:instanceName>config_if</spirit:instanceName>
+      <spirit:componentRef spirit:vendor="arm.com" spirit:library="TBench" spirit:name="config_if" spirit:version="r0p0"/>
+    </spirit:componentInstance>
+  </spirit:componentInstances> 
+
+
+  <spirit:interconnections> 
+
+    <spirit:interconnection> 
+        <spirit:name>sSpi_data</spirit:name>
+        <spirit:activeInterface spirit:componentRef="u_nic400" spirit:busRef="sSpi"/>
+        <spirit:activeInterface spirit:componentRef="sSpi" spirit:busRef="axi4"/>
+    </spirit:interconnection>
+
+    
+    <spirit:interconnection> 
+        <spirit:name>sSpi_apb</spirit:name>
+        <spirit:activeInterface spirit:componentRef="sSpi" spirit:busRef="apb"/>
+        <spirit:activeInterface spirit:componentRef="config_if" spirit:busRef="apb_1"/>
+    </spirit:interconnection>
+   <spirit:interconnection> 
+        <spirit:name>sSpi_event</spirit:name>
+        <spirit:activeInterface spirit:componentRef="sSpi" spirit:busRef="Event"/>
+        <spirit:activeInterface spirit:componentRef="FrmEvent" spirit:busRef="Event1"/>
+    </spirit:interconnection>
+    
+    <spirit:interconnection> 
+        <spirit:name>sD2dData_data</spirit:name>
+        <spirit:activeInterface spirit:componentRef="u_nic400" spirit:busRef="sD2dData"/>
+        <spirit:activeInterface spirit:componentRef="sD2dData" spirit:busRef="axi4"/>
+    </spirit:interconnection>
+
+    
+    <spirit:interconnection> 
+        <spirit:name>sD2dData_apb</spirit:name>
+        <spirit:activeInterface spirit:componentRef="sD2dData" spirit:busRef="apb"/>
+        <spirit:activeInterface spirit:componentRef="config_if" spirit:busRef="apb_2"/>
+    </spirit:interconnection>
+   <spirit:interconnection> 
+        <spirit:name>sD2dData_event</spirit:name>
+        <spirit:activeInterface spirit:componentRef="sD2dData" spirit:busRef="Event"/>
+        <spirit:activeInterface spirit:componentRef="FrmEvent" spirit:busRef="Event2"/>
+    </spirit:interconnection>
+    
+    <spirit:interconnection> 
+        <spirit:name>sIrisBridge_data</spirit:name>
+        <spirit:activeInterface spirit:componentRef="u_nic400" spirit:busRef="sIrisBridge"/>
+        <spirit:activeInterface spirit:componentRef="sIrisBridge" spirit:busRef="axi4"/>
+    </spirit:interconnection>
+
+    
+    <spirit:interconnection> 
+        <spirit:name>sIrisBridge_apb</spirit:name>
+        <spirit:activeInterface spirit:componentRef="sIrisBridge" spirit:busRef="apb"/>
+        <spirit:activeInterface spirit:componentRef="config_if" spirit:busRef="apb_3"/>
+    </spirit:interconnection>
+   <spirit:interconnection> 
+        <spirit:name>sIrisBridge_event</spirit:name>
+        <spirit:activeInterface spirit:componentRef="sIrisBridge" spirit:busRef="Event"/>
+        <spirit:activeInterface spirit:componentRef="FrmEvent" spirit:busRef="Event3"/>
+    </spirit:interconnection>
+    
+    <spirit:interconnection> 
+        <spirit:name>mGauxCore</spirit:name>
+        <spirit:activeInterface spirit:componentRef="u_nic400" spirit:busRef="mGauxCore"/>
+        <spirit:activeInterface spirit:componentRef="mGauxCore" spirit:busRef="axi4"/>
+    </spirit:interconnection>
+    
+    <spirit:interconnection> 
+        <spirit:name>mGauxCore_event</spirit:name>
+        <spirit:activeInterface spirit:componentRef="mGauxCore" spirit:busRef="Event"/>
+        <spirit:activeInterface spirit:componentRef="FrmEvent" spirit:busRef="Event4"/>
+    </spirit:interconnection>
+    <spirit:interconnection> 
+        <spirit:name>mGauxCore_apb</spirit:name>
+        <spirit:activeInterface spirit:componentRef="mGauxCore" spirit:busRef="apb"/>
+        <spirit:activeInterface spirit:componentRef="config_if" spirit:busRef="apb_4"/>
+    </spirit:interconnection>
+
+        
+    <spirit:interconnection> 
+        <spirit:name>mDexmpcCore</spirit:name>
+        <spirit:activeInterface spirit:componentRef="u_nic400" spirit:busRef="mDexmpcCore"/>
+        <spirit:activeInterface spirit:componentRef="mDexmpcCore" spirit:busRef="axi4"/>
+    </spirit:interconnection>
+    
+    <spirit:interconnection> 
+        <spirit:name>mDexmpcCore_event</spirit:name>
+        <spirit:activeInterface spirit:componentRef="mDexmpcCore" spirit:busRef="Event"/>
+        <spirit:activeInterface spirit:componentRef="FrmEvent" spirit:busRef="Event5"/>
+    </spirit:interconnection>
+    <spirit:interconnection> 
+        <spirit:name>mDexmpcCore_apb</spirit:name>
+        <spirit:activeInterface spirit:componentRef="mDexmpcCore" spirit:busRef="apb"/>
+        <spirit:activeInterface spirit:componentRef="config_if" spirit:busRef="apb_5"/>
+    </spirit:interconnection>
+
+        
+    <spirit:interconnection> 
+        <spirit:name>cfg_event</spirit:name>
+        <spirit:activeInterface spirit:componentRef="config_if" spirit:busRef="Event"/>
+        <spirit:activeInterface spirit:componentRef="FrmEvent" spirit:busRef="Event"/>
+    </spirit:interconnection>
+    <spirit:interconnection> 
+        <spirit:name>clk_rst_apb</spirit:name>
+        <spirit:activeInterface spirit:componentRef="clk_reset_if" spirit:busRef="apb"/>
+        <spirit:activeInterface spirit:componentRef="config_if" spirit:busRef="apb_0"/>
+    </spirit:interconnection>
+    
+
+     
+
+  </spirit:interconnections> 
+
+
+  <spirit:adHocConnections>
+     <spirit:adHocConnection>
+         <spirit:name>clk_tb</spirit:name>
+         
+         <spirit:internalPortReference spirit:portRef="PCLK" spirit:componentRef="mGauxCore"/>
+         
+         <spirit:internalPortReference spirit:portRef="PCLK" spirit:componentRef="mDexmpcCore"/>
+         
+         <spirit:internalPortReference spirit:portRef="PCLK" spirit:componentRef="sSpi"/>
+         
+         <spirit:internalPortReference spirit:portRef="PCLK" spirit:componentRef="sD2dData"/>
+         
+         <spirit:internalPortReference spirit:portRef="PCLK" spirit:componentRef="sIrisBridge"/>
+         
+         <spirit:internalPortReference spirit:portRef="PCLK" spirit:componentRef="config_if"/>
+         <spirit:internalPortReference spirit:portRef="pclk" spirit:componentRef="FrmEvent"/>
+         <spirit:internalPortReference spirit:portRef="clk_tb" spirit:componentRef="clk_reset_if"/>
+     </spirit:adHocConnection>
+     <spirit:adHocConnection>
+         <spirit:name>resetn_tb</spirit:name>
+         
+         <spirit:internalPortReference spirit:portRef="PRESETn" spirit:componentRef="mGauxCore"/>
+         
+         <spirit:internalPortReference spirit:portRef="PRESETn" spirit:componentRef="mDexmpcCore"/>
+         
+         <spirit:internalPortReference spirit:portRef="PRESETn" spirit:componentRef="sSpi"/>
+         
+         <spirit:internalPortReference spirit:portRef="PRESETn" spirit:componentRef="sD2dData"/>
+         
+         <spirit:internalPortReference spirit:portRef="PRESETn" spirit:componentRef="sIrisBridge"/>
+         
+         <spirit:internalPortReference spirit:portRef="PRESETn" spirit:componentRef="config_if"/>
+         <spirit:internalPortReference spirit:portRef="presetn" spirit:componentRef="FrmEvent"/>
+         <spirit:internalPortReference spirit:portRef="resetn_tb" spirit:componentRef="clk_reset_if"/>
+     </spirit:adHocConnection>
+
+<spirit:adHocConnection>
+     <!-- clock_name clk0 -->
+         <spirit:name>clk0clk</spirit:name>
+         
+                       <spirit:internalPortReference spirit:portRef="clk0clk" spirit:componentRef="u_nic400"/>
+         <spirit:internalPortReference spirit:portRef="clk0clk_tb" spirit:componentRef="clk_reset_if"/>
+         
+         <spirit:internalPortReference spirit:portRef="ACLK" spirit:componentRef="mGauxCore"/>
+         
+         <spirit:internalPortReference spirit:portRef="ACLK" spirit:componentRef="mDexmpcCore"/>
+         
+         <spirit:internalPortReference spirit:portRef="ACLK" spirit:componentRef="sSpi"/>
+         
+         <spirit:internalPortReference spirit:portRef="ACLK" spirit:componentRef="sD2dData"/>
+         
+         <spirit:internalPortReference spirit:portRef="ACLK" spirit:componentRef="sIrisBridge"/>
+         
+     </spirit:adHocConnection>
+     <spirit:adHocConnection>
+         <spirit:name>clk0resetn</spirit:name>
+         <spirit:internalPortReference spirit:portRef="clk0resetn" spirit:componentRef="u_nic400"/>
+         <spirit:internalPortReference spirit:portRef="clk0resetn" spirit:componentRef="clk_reset_if"/>
+         
+         <spirit:internalPortReference spirit:portRef="ARESETn" spirit:componentRef="mGauxCore"/>
+         
+         <spirit:internalPortReference spirit:portRef="ARESETn" spirit:componentRef="mDexmpcCore"/>
+         
+         <spirit:internalPortReference spirit:portRef="ARESETn" spirit:componentRef="sSpi"/>
+         
+         <spirit:internalPortReference spirit:portRef="ARESETn" spirit:componentRef="sD2dData"/>
+         
+         <spirit:internalPortReference spirit:portRef="ARESETn" spirit:componentRef="sIrisBridge"/>
+         
+     </spirit:adHocConnection>
+     
+     <spirit:adHocConnection>
+         <spirit:name>clk0clk_r</spirit:name>
+         <spirit:internalPortReference spirit:portRef="clk0clk_r" spirit:componentRef="clk_reset_if"/>
+     </spirit:adHocConnection>
+     <spirit:adHocConnection>
+         <spirit:name>clk0resetn_r</spirit:name>
+         <spirit:internalPortReference spirit:portRef="clk0resetn_r" spirit:componentRef="clk_reset_if"/>
+     </spirit:adHocConnection>
+     <spirit:adHocConnection spirit:name="clk0clken">
+         <spirit:name>clk0clken</spirit:name>
+         <spirit:internalPortReference spirit:portRef="clk0en_apb" spirit:componentRef="clk_reset_if"/>
+         
+     </spirit:adHocConnection>
+     
+
+  </spirit:adHocConnections>
+  <spirit:vendorExtensions>
+  </spirit:vendorExtensions>
+  <spirit:vendorExtensions>
+  </spirit:vendorExtensions>
+</spirit:design>
+

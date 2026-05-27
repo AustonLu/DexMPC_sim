@@ -1,0 +1,66 @@
+
+#==============================================================================#
+#   The confidential and proprietary information contained in this file may
+#   only be used by a person authorised under and to the extent permitted
+#   by a subsisting licensing agreement from ARM Limited.
+#    (C) COPYRIGHT 2007-2013 ARM Limited.
+#        ALL RIGHTS RESERVED
+#   This entire notice must be reproduced on all copies of this file
+#   and copies of this file may only be made by a person if such person is
+#   permitted to do so under the terms of a subsisting license agreement
+#   from ARM Limited.
+#  
+#-----------------------------------------------------------------------------
+#  Version and Release Control Information:
+#  
+#  File Revision       : 149998
+#  File Date           :  2013-05-09 16:04:36 +0100 (Thu, 09 May 2013)
+#  
+#  Release Information : PL401-r1p2-00rel0
+#  
+#-----------------------------------------------------------------------------
+<source_list>/capsule/home/linyuzheng/yujiema-miaomiaomiao/arm-socrates/workspace/cihto2026mar/logical/nic400_1/busmatrix_bm0/xml/busmatrix_bm0_vlog_file_list</source_list>
+#  Purpose : Verilog files for busmatrix called bm0 
+<dependency>../../reg_slice/verilog</dependency>
+<file>../../reg_slice/verilog/nic400_ful_regd_slice_1.v</file>
+<file>../../reg_slice/verilog/nic400_fwd_regd_slice_1.v</file>
+<file>../../reg_slice/verilog/nic400_rev_regd_slice_1.v</file>
+<file>../../reg_slice/verilog/nic400_ax4_reg_slice_1.v</file>
+<file>../../reg_slice/verilog/nic400_buf_reg_slice_1.v</file>
+<file>../../reg_slice/verilog/nic400_rd_reg_slice_1.v</file>
+<file>../../reg_slice/verilog/nic400_wr_reg_slice_1.v</file>
+<file>../../reg_slice/verilog/nic400_reg_slice_axi_1.v</file>
+<file>../verilog/nic400_bm0_ml_map_1.v</file>
+<file>../verilog/nic400_bm0_add_sel_ml2_1.v</file>
+<file>../verilog/nic400_bm0_add_arb_ml1_1.v</file>
+<file>../verilog/nic400_bm0_1.v</file>
+<file>../verilog/nic400_bm0_ml_mlayer_2_1.v</file>
+<file>../verilog/nic400_bm0_rd_ss_tt_s2_1.v</file>
+<file>../verilog/nic400_bm0_ret_sel_ml0_1.v</file>
+<file>../verilog/nic400_bm0_add_sel_ml0_1.v</file>
+<file>../verilog/nic400_bm0_maskcntl_ml2_1.v</file>
+<file>../verilog/nic400_bm0_ret_sel_ml1_1.v</file>
+<file>../verilog/nic400_bm0_ml_mlayer_0_1.v</file>
+<file>../verilog/nic400_bm0_add_sel_ml1_1.v</file>
+<file>../verilog/nic400_bm0_rd_ss_tt_s1_1.v</file>
+<file>../verilog/nic400_bm0_qv_cmp_1.v</file>
+<file>../verilog/nic400_bm0_ml_blayer_1_1.v</file>
+<file>../verilog/nic400_bm0_wr_ss_tt_s1_1.v</file>
+<file>../verilog/nic400_bm0_wr_sel_ml1_1.v</file>
+<file>../verilog/nic400_bm0_ret_sel_ml2_1.v</file>
+<file>../verilog/nic400_bm0_ml_mlayer_1_1.v</file>
+<file>../verilog/nic400_bm0_wr_sel_ml2_1.v</file>
+<file>../verilog/nic400_bm0_rd_ss_tt_s0_1.v</file>
+<file>../verilog/nic400_bm0_rd_wr_arb_0_1.v</file>
+<file>../verilog/nic400_bm0_rd_wr_arb_1_1.v</file>
+<file>../verilog/nic400_bm0_add_arb_ml0_1.v</file>
+<file>../verilog/nic400_bm0_wr_ss_tt_s2_1.v</file>
+<file>../verilog/nic400_bm0_maskcntl_ml1_1.v</file>
+<file>../verilog/nic400_bm0_ml_blayer_0_1.v</file>
+<file>../verilog/nic400_bm0_wr_ss_tt_s0_1.v</file>
+<file>../verilog/nic400_bm0_add_arb_ml2_1.v</file>
+<file>../verilog/nic400_bm0_lrg_arb_1.v</file>
+<file>../verilog/nic400_bm0_maskcntl_ml0_1.v</file>
+<file>../verilog/nic400_bm0_ml_build_1.v</file>
+<file>../verilog/nic400_bm0_ml_blayer_2_1.v</file>
+<file>../verilog/nic400_bm0_wr_sel_ml0_1.v</file>

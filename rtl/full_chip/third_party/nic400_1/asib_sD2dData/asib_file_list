@@ -1,0 +1,63 @@
+
+
+
+COVERAGE_ON xsl_cov
+INCLUDE ./xml/asib_sD2dData_vlog_file_list
+COVERAGE_OFF
+
+
+
+./verilog/parcfg_asib_name_defs_xmlcfg.v.xsl SCRIPT(create_undefs.pl)
+
+
+INCLUDE ./xml/asib_sD2dData_sva_file_list REGRESSION2
+
+
+./spirit/asib_name_spirit.xml.xsl DIRECTORY
+
+REGRESSION_ON
+
+./validation/shared/tb_spirit/config_if.xml.xsl
+./validation/shared/tb_components/config_if.v.xsl
+
+
+
+
+
+./validation/shared/stitching/DUT_wrapper.xml.xsl
+
+./validation/shared/stitching/tbench.xml.xsl
+./validation/shared/tbench
+./validation/shared/stitching/DUT_wrapper_config.xml.xsl DIRECTORY SCRIPT(generic_stitcher_core)
+
+./validation/shared/stitching/tbench_config.xml.xsl DIRECTORY SCRIPT(generic_stitcher_core)
+
+
+./validation/directed/e
+
+
+./validation/directed
+./validation/directed/source
+
+
+./validation/directed/source/pmap_test
+
+
+./validation/random
+./validation/random/e
+
+
+./validation/logs
+./validation/logs/vcs_coverage
+
+
+./lint
+
+
+./formal REGRESSION2
+./formal/cdc REGRESSION2
+
+REGRESSION_OFF
+
+
+

@@ -1,0 +1,79 @@
+
+#- --=================================================================--
+#- This confidential and proprietary software may be used only as
+#- authorised by a licensing agreement from ARM Limited
+#-   (C) COPYRIGHT 2008-2017 ARM Limited
+#-       ALL RIGHTS RESERVED
+#- The entire notice above must be reproduced on all authorised
+#- copies and copies may only be made to the extent permitted
+#- by a licensing agreement from ARM Limited.
+#-
+#- ---------------------------------------------------------------------
+#- Version and Release Control Information:
+#-
+#- Checked In          :  2017-11-23 12:29:16 +0000 (Thu, 23 Nov 2017)
+#- File Revision       : 226545
+#-
+#- Release Information : PL401-r1p2-00rel0
+#-
+#- ---------------------------------------------------------------------
+#- Purpose : Master Control File
+#-
+#- --=================================================================--
+
+# Set up the standard messaging service (should be first in this file)
+MESSAGING_WIDTH 72            # Positive integer
+MESSAGING_VERBOSITY full      # String literal: quiet|minimal|full
+
+# Declare pre-requisites for this product
+REQUIRE_PYTHON {min=2.4.2 max=3.2.0}
+REQUIRE_OS {linux solaris sunos}
+
+# Displayed information will be shown for this duration
+#- zero means not at all
+SUMMARY_DELAY 0                     # Integer, in seconds
+
+# Declare product information
+PRODUCT_NAME "NIC400r1p2"              # String
+PRODUCT_RELEASE_YEAR 2016           # Four-digit integer
+
+# Declare script information
+SCRIPT_VERSION "V1.00"                             # String of format 'Vd.dd' - the V prefix is optional
+SCRIPT_TITLE "Configurable IP from ARM Limited"    # Any old string
+SCRIPT_NAME "ae"                                   # An name-alias for the engine script
+
+SCRIPT_LEGALESE                                                # Verbatim text section
+      This confidential and proprietary software may be used only
+        as authorised by a licensing agreement from ARM Limited
+            (C) COPYRIGHT <unset_copyright_year> ARM Limited    
+                      ALL RIGHTS RESERVED
+      The entire notice above must be reproduced on all authorised
+      copies and copies may only be made to the extent permitted
+            by a licensing agreement from ARM Limited.
+END_SECTION
+
+# Define script error behaviour and exit codes
+ABORT_ON_ERROR false     # Boolean literal: true|false
+EXIT_CODE_OK 0           # Positive integer not equal to EXIT_CODE_ERROR or EXIT_CODE_FATAL
+EXIT_CODE_ERROR 1        # Positive integer not equal to EXIT_CODE_OK or EXIT_CODE_FATAL
+EXIT_CODE_FATAL 2        # Positive integer not equal to EXIT_CODE_OK or EXIT_CODE_ERROR
+
+# Control debugging information
+DEVELOPER_MODE false
+
+# Set up any bin directories relative to this file 
+IPFS_BIN_DIR '../'
+
+#- --=================================================================--
+#- Service Module Paths
+#- 
+#- SM_PATH <service> '<path>' 
+#-  
+#- Any <xxx> in SM_PATH will be register as options 
+#- --=================================================================--
+SM_PATH_MAP simulate   './<block>/validation/<tb>/validation.opts'
+SM_PATH_MAP compile    './<block>/validation/<tb>/validation.opts'
+SM_PATH_MAP synthesis  './../../implementation/nic400_1/synopsys/'
+SM_PATH_MAP lec        './../../implementation/nic400_1/synopsys/'
+SM_PATH_MAP reorder    './rsb_components/'
+

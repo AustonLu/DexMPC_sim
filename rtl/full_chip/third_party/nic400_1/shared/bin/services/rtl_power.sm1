@@ -1,0 +1,179 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2014 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2014-04-23 14:20:23 +0100 (Wed, 23 Apr 2014)
+#-     Revision            : 171830
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+   
+# Import the Base Class
+from os import path 
+from sm_base import sm_base
+from ipfs_std_lib import *
+from copy import copy, deepcopy
+import sys
+
+class rtl_power (sm_base):
+   
+   #-------------------------------------------------------------------------------
+   # initialise - 
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call (NB lsf turned off as it should be on in sub
+        #modules
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Set the name
+        self.name = 'rtl_power'
+
+        # 
+        self.lsf_workflow = 'arm_engine-1.0-comp'
+
+        #Add license requirments -???
+        #self.licenses.append('powerartist')
+
+        #Register report function
+        #self.self_report = False
+        #True
+
+        #Add tool requirements
+        self.tools.append('powerartist')
+        self.tools.append('verdi')
+
+        #Any lists etc required accross multiple blocks should be set up here
+        self.files = ['*.log', '*.rpt', '*.gaf', '*.pdb', '*.scn',
+                      '*.fsdb', '*.v', '*.vc', '*Lib', 'ptshell_work/ptshell.*']
+   #-------------------------------------------------------------------------------
+   # options - This function registers all valid command line options for this SM
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+
+        #Register Common options for rtl_power module
+        group.add_option("--vcdfile", dest="vcdfile", action="store", default='default',
+                       help='Select the input VCD file')
+        
+        group.add_option("--scenario", dest="scenario", action="store", default='default',
+                       help='Select the scenario (test used to generate VCD)')
+
+        group.add_option("--vcdlen",  dest="vcdlen", action="store", default='default',
+                       help='Select the VCD simulation run length')
+
+        group.add_option("--bandwidth", dest="bandwidth", action="store_true",
+                         default=False, help=SUPPRESS_HELP)
+
+        group.add_option("--data_bandwidth", dest="data_bandwidth", action="store",
+                         default=1, help=SUPPRESS_HELP)
+
+        #Complete
+        return 0     
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # gen_run_dir - Builds up the run directory name
+   #-------------------------------------------------------------------------------
+   def gen_run_dir(self):
+
+        #build_directory name
+        if self.options.bandwidth == True:
+             run_dir = self.options.scenario + '_' + str(self.options.data_bandwidth)
+        else:
+             run_dir = self.options.scenario
+
+        return run_dir
+
+   #-------------------------------------------------------------------------------
+   #-------------------------------------------------------------------------------
+   # run - Goes through every specified location.
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+        # Determine VCD file path
+        if self.options.bandwidth == True:
+             vcd_file = (directory + '/../validation/random/run_tc_' + str(self.options.data_bandwidth) + '_mti_sn1_' + self.options.scenario + '/' + self.options.vcdfile)
+             saif_file = (directory + '/' + self.options.scenario + '_' + str(self.options.data_bandwidth) + '/' + self.options.vcdfile + '.saif')
+        else:
+             vcd_file = (directory + '/../validation/random/run_tc_mti_sn1_' + self.options.scenario + '/' + self.options.vcdfile)
+             saif_file = (directory + '/' + self.options.scenario + '/' + self.options.vcdfile + '.saif')
+
+        #Move to the run directory (create if necessary)
+        self.cchdir(self.gen_run_dir())
+
+        run_script = ['setenv VCDFILE '  + vcd_file]
+
+        if self.options.bandwidth == True:
+             run_script.extend(['setenv SCENARIO ' + self.options.scenario + '_' + str(self.options.data_bandwidth)])
+        else:
+             run_script.extend(['setenv SCENARIO ' + self.options.scenario])
+
+        run_script.extend(['setenv VCDLEN '   + self.options.vcdlen,
+                           'setenv PA_DIR '   + directory,
+                           'setenv PT_DISABLE_APSH 0',
+                           'setenv PT_ENABLE_OADB 1',
+                           'fsdb2saif ' + vcd_file + ' -o ' + saif_file + ' -bt 0 -et ' + self.options.vcdlen,
+                           'cd ..',
+                           './run_power'])
+
+    
+        self.write_run_script(run_script, 'run_rtl_power', args)
+        #run the rendered script
+        return self.run_command(args, './run_rtl_power')
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # clean - A housekeeping function for the purpose of updating the status of the
+   #          service after execution, and to perform clean-up of the workspace
+   #-------------------------------------------------------------------------------
+   def clean_sm(self, args, dir):
+
+        #Delete all the files set up above
+        self.delete_files = self.files
+
+        #Add log file if use_lsf is on
+        if self.use_lsf:
+           self.delete_files.append('./bsub.log')
+
+        #Return ok
+        return 0;
+   
+   #-------------------------------------------------------------------------------
+   
+   #-------------------------------------------------------------------------------
+   # help - A housekeeping function for the purpose of updating the status of the
+   #          service after execution, and to perform clean-up of the workspace
+   #-------------------------------------------------------------------------------
+   def help_sm(self, args):
+    
+     #disable lsf for clean
+     #self.use_lsf = 0
+
+     #set the usage term
+     self.parser.usage = "ae rtl_power [options]"
+  
+     return 0; 
+   
+   #-------------------------------------------------------------------------------

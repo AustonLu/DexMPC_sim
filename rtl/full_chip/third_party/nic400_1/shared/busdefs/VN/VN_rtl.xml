@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+// =============================================================================
+// This confidential and proprietary information may be used only as
+// authorised by a licensing agreement from ARM Limited
+//   (C) COPYRIGHT 2008-2011 ARM Limited
+//       ALL RIGHTS RESERVED
+// The entire notice above must be reproduced on all authorised
+// copies and copies may only be made to the extent permitted
+// by a licensing agreement from ARM Limited.
+//
+// =============================================================================
+//
+// Purpose :
+//           This defines the AMBA Advanced Peripheral Bus (APB 3.0)
+//
+// =============================================================================
+-->
+<spirit:abstractionDefinition xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/index.xsd ">
+  <spirit:vendor>arm.com</spirit:vendor>
+  <spirit:library>CoreLink</spirit:library>
+  <spirit:name>VN_rtl</spirit:name>
+  <spirit:version>r0p0_0</spirit:version>
+  <spirit:busType spirit:library="CoreLink" spirit:name="VN" spirit:vendor="arm.com" spirit:version="r0p0_0" />
+  <spirit:ports>
+    <spirit:port>
+      <spirit:logicalName>CLK</spirit:logicalName>
+      <spirit:description>Clock - The rising edge of CLK times all transfers</spirit:description>
+      <spirit:wire>
+        <spirit:qualifier>
+          <spirit:isClock>true</spirit:isClock>
+        </spirit:qualifier>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:requiresDriver spirit:driverType="clock">true</spirit:requiresDriver>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>RESETn</spirit:logicalName>
+      <spirit:description>Reset - The VN reset signal is active LOW. This signal is normally connected directly to the system bus reset signal.</spirit:description>
+      <spirit:wire>
+        <spirit:qualifier>
+          <spirit:isReset>true</spirit:isReset>
+        </spirit:qualifier>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:requiresDriver spirit:driverType="singleShot">true</spirit:requiresDriver>
+      </spirit:wire>
+    </spirit:port>
+
+<!-- Virual Network Bus Signals -->
+        <spirit:port>
+            <spirit:logicalName>VAWVALID</spirit:logicalName>
+            <spirit:description>Token request valid. A master uses this signal to request a write address token for a virtual network : 1 = token request, 0 = no token request. When a master sets VAWVALID HIGH, the signal must remain asserted until a token is granted.</spirit:description>
+            <spirit:wire>
+                <spirit:onSystem>
+                    <spirit:group>CLOCK</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onSystem>
+                    <spirit:group>RESETn</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onMaster>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>1</spirit:width>
+                    <spirit:direction>out</spirit:direction>
+                </spirit:onMaster>
+                <spirit:onSlave>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>1</spirit:width>
+                    <spirit:direction>in</spirit:direction>
+                </spirit:onSlave>
+            </spirit:wire>
+        </spirit:port>
+
+        <spirit:port>
+            <spirit:logicalName>VAWREADY</spirit:logicalName>
+            <spirit:description>Token request accepted. A slave uses this signal to indicate to the master whether a write address token is available for a virtual network: 1 = token available, 0 = no token available.</spirit:description>
+            <spirit:wire>
+                <spirit:onSystem>
+                    <spirit:group>CLOCK</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onSystem>
+                    <spirit:group>RESETn</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onMaster>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>1</spirit:width>
+                    <spirit:direction>in</spirit:direction>
+                </spirit:onMaster>
+                <spirit:onSlave>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>1</spirit:width>
+                    <spirit:direction>out</spirit:direction>
+                </spirit:onSlave>
+            </spirit:wire>
+        </spirit:port>
+
+        <spirit:port>
+            <spirit:logicalName>VAWQOS</spirit:logicalName>
+            <spirit:description>Quality of service value. A master uses this signal to set the priority of a write address token request for a virtual network. When a master sets VAWVALID HIGH, it can change VAWQOS but only if the value increases.</spirit:description>
+            <spirit:wire>
+                <spirit:onSystem>
+                    <spirit:group>CLOCK</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onSystem>
+                    <spirit:group>RESETn</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onMaster>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>4</spirit:width>
+                    <spirit:direction>out</spirit:direction>
+                </spirit:onMaster>
+                <spirit:onSlave>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>4</spirit:width>
+                    <spirit:direction>in</spirit:direction>
+                </spirit:onSlave>
+            </spirit:wire>
+        </spirit:port>
+
+        <spirit:port>
+            <spirit:logicalName>VWVALID</spirit:logicalName>
+            <spirit:description>Token request valid. A master uses this signal to request a write data token for a virtual network : 1 = token request, 0 = no token request. When a master sets VWVALID HIGH, the signal must remain asserted until a token is granted.</spirit:description>
+            <spirit:wire>
+                <spirit:onSystem>
+                    <spirit:group>CLOCK</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onSystem>
+                    <spirit:group>RESETn</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onMaster>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>1</spirit:width>
+                    <spirit:direction>out</spirit:direction>
+                </spirit:onMaster>
+                <spirit:onSlave>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>1</spirit:width>
+                    <spirit:direction>in</spirit:direction>
+                </spirit:onSlave>
+            </spirit:wire>
+        </spirit:port>
+
+        <spirit:port>
+            <spirit:logicalName>VWREADY</spirit:logicalName>
+            <spirit:description>Token request accepted. A slave uses this signal to indicate to the master whether a write data token is available for a virtual network: 1 = token available, 0 = no token available.</spirit:description>
+            <spirit:wire>
+                <spirit:onSystem>
+                    <spirit:group>CLOCK</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onSystem>
+                    <spirit:group>RESETn</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onMaster>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>1</spirit:width>
+                    <spirit:direction>in</spirit:direction>
+                </spirit:onMaster>
+                <spirit:onSlave>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>1</spirit:width>
+                    <spirit:direction>out</spirit:direction>
+                </spirit:onSlave>
+            </spirit:wire>
+        </spirit:port>
+
+        <spirit:port>
+            <spirit:logicalName>VARVALID</spirit:logicalName>
+            <spirit:description>Token request valid. A master uses this signal to request a read address token for a virtual network : 1 = token request, 0 = no token request. When a master sets VARVALID HIGH, the signal must remain asserted until a token is granted.</spirit:description>
+            <spirit:wire>
+                <spirit:onSystem>
+                    <spirit:group>CLOCK</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onSystem>
+                    <spirit:group>RESETn</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onMaster>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>1</spirit:width>
+                    <spirit:direction>out</spirit:direction>
+                </spirit:onMaster>
+                <spirit:onSlave>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>1</spirit:width>
+                    <spirit:direction>in</spirit:direction>
+                </spirit:onSlave>
+            </spirit:wire>
+        </spirit:port>
+
+        <spirit:port>
+            <spirit:logicalName>VARREADY</spirit:logicalName>
+            <spirit:description>Token request accepted. A slave uses this signal to indicate to the master whether a read address token is available for a virtual network: 1 = token available, 0 = no token available.</spirit:description>
+            <spirit:wire>
+                <spirit:onSystem>
+                    <spirit:group>CLOCK</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onSystem>
+                    <spirit:group>RESETn</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onMaster>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>1</spirit:width>
+                    <spirit:direction>in</spirit:direction>
+                </spirit:onMaster>
+                <spirit:onSlave>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>1</spirit:width>
+                    <spirit:direction>out</spirit:direction>
+                </spirit:onSlave>
+            </spirit:wire>
+        </spirit:port>
+
+        <spirit:port>
+            <spirit:logicalName>VARQOS</spirit:logicalName>
+            <spirit:description>Quality of service value. A master uses this signal to set the priority of a read address token request for a virtual network. When a master sets VARVALID HIGH, it can change VARQOS but only if the value increases.</spirit:description>
+            <spirit:wire>
+                <spirit:onSystem>
+                    <spirit:group>CLOCK</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onSystem>
+                    <spirit:group>RESETn</spirit:group>
+                    <spirit:presence>illegal</spirit:presence>
+                </spirit:onSystem>
+                <spirit:onMaster>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>4</spirit:width>
+                    <spirit:direction>out</spirit:direction>
+                </spirit:onMaster>
+                <spirit:onSlave>
+                    <spirit:presence>required</spirit:presence>
+                    <spirit:width>4</spirit:width>
+                    <spirit:direction>in</spirit:direction>
+                </spirit:onSlave>
+            </spirit:wire>
+        </spirit:port>
+
+
+  </spirit:ports>
+  <spirit:description>The current file describes the RTL view of a VN token request interface</spirit:description>
+</spirit:abstractionDefinition>

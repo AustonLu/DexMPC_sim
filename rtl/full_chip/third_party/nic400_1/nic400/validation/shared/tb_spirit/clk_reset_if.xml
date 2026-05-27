@@ -1,0 +1,419 @@
+
+<!--=========================================================================-->
+<!-- The confidential and proprietary information contained in this file may -->
+<!-- only be used by a person authorised under and to the extent permitted   -->
+<!-- by a subsisting licensing agreement from ARM Limited or its affiliates. -->
+<!--                                                                         -->
+<!--            (C) COPYRIGHT 2008-2012 ARM Limited or its affiliates.       -->
+<!--                ALL RIGHTS RESERVED                                      -->
+<!--                                                                         -->
+<!-- This entire notice must be reproduced on all copies of this file        -->
+<!-- and copies of this file may only be made by a person if such person is  -->
+<!-- permitted to do so under the terms of a subsisting license agreement    -->
+<!-- from ARM Limited or its affiliates.                                     -->
+<!--=========================================================================-->
+<!-- Version and Release Control Information:                                -->
+<!--                                                                         -->
+<!-- File Revision       : 134060                                        -->
+<!-- File Date           :  2012-07-20 17:50:04 +0100 (Fri, 20 Jul 2012)       -->
+<!-- Release Information : PL401-r1p2-00rel0                             -->
+<!--=========================================================================-->
+<!-- Purpose : SPIRIT component stylesheet                                   -->
+<!--=========================================================================-->
+
+<spirit:component xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:arm="http://www.arm.com/SPIRIT-arm"
+                  xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4
+                  http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/component.xsd">
+
+        <spirit:vendor>arm.com</spirit:vendor>
+        <spirit:library>TBench</spirit:library>
+        <spirit:name>clk_reset_if</spirit:name>
+        <spirit:version>r0p0</spirit:version>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- Bus Interface                                                           -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+            <spirit:busInterfaces>
+               <spirit:busInterface>
+                        <spirit:name>apb</spirit:name>
+                        <spirit:busType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="T_APB" spirit:version="r0p0"/>
+                        <spirit:abstractionType spirit:vendor="amba.com" spirit:library="TBench" spirit:name="T_APB_rtl" spirit:version="r0p0"/>
+                        <spirit:slave>
+                                <spirit:memoryMapRef spirit:memoryMapRef="Mem_if"/>
+                        </spirit:slave>
+                        <spirit:connectionRequired>true</spirit:connectionRequired>
+                        <spirit:portMaps>
+                                <spirit:portMap>
+                                        <spirit:logicalPort>
+                                                <spirit:name>PCLK</spirit:name>
+                                        </spirit:logicalPort>
+                                        <spirit:physicalPort>
+                                                <spirit:name>clk_tb</spirit:name>
+                                        </spirit:physicalPort>
+                                </spirit:portMap>
+                                <spirit:portMap>
+                                        <spirit:logicalPort>
+                                                <spirit:name>PRESETn</spirit:name>
+                                        </spirit:logicalPort>
+                                        <spirit:physicalPort>
+                                                <spirit:name>resetn_tb</spirit:name>
+                                        </spirit:physicalPort>
+                                </spirit:portMap>
+                                <spirit:portMap>
+                                        <spirit:logicalPort>
+                                                <spirit:name>PADDR</spirit:name>
+                                        </spirit:logicalPort>
+                                        <spirit:physicalPort>
+                                                <spirit:name>paddr</spirit:name>
+                                        </spirit:physicalPort>
+                                </spirit:portMap>
+                                <spirit:portMap>
+                                        <spirit:logicalPort>
+                                                <spirit:name>PWDATA</spirit:name>
+                                        </spirit:logicalPort>
+                                        <spirit:physicalPort>
+                                                <spirit:name>pwdata</spirit:name>
+                                        </spirit:physicalPort>
+                                </spirit:portMap>
+                                <spirit:portMap>
+                                        <spirit:logicalPort>
+                                                <spirit:name>PWRITE</spirit:name>
+                                        </spirit:logicalPort>
+                                        <spirit:physicalPort>
+                                                <spirit:name>pwrite</spirit:name>
+                                        </spirit:physicalPort>
+                                </spirit:portMap>
+                                <spirit:portMap>
+                                        <spirit:logicalPort>
+                                                <spirit:name>PENABLE</spirit:name>
+                                        </spirit:logicalPort>
+                                        <spirit:physicalPort>
+                                                <spirit:name>penable</spirit:name>
+                                        </spirit:physicalPort>
+                                </spirit:portMap>
+                                <spirit:portMap>
+                                        <spirit:logicalPort>
+                                                <spirit:name>PSELx</spirit:name>
+                                        </spirit:logicalPort>
+                                        <spirit:physicalPort>
+                                                <spirit:name>psel</spirit:name>
+                                        </spirit:physicalPort>
+                                </spirit:portMap>
+                                <spirit:portMap>
+                                        <spirit:logicalPort>
+                                                <spirit:name>PRDATA</spirit:name>
+                                        </spirit:logicalPort>
+                                        <spirit:physicalPort>
+                                                <spirit:name>prdata</spirit:name>
+                                        </spirit:physicalPort>
+                                </spirit:portMap>
+                                <spirit:portMap>
+                                        <spirit:logicalPort>
+                                                <spirit:name>PSLVERR</spirit:name>
+                                        </spirit:logicalPort>
+                                        <spirit:physicalPort>
+                                                <spirit:name>pslverr</spirit:name>
+                                        </spirit:physicalPort>
+                                </spirit:portMap>
+                                <spirit:portMap>
+                                        <spirit:logicalPort>
+                                                <spirit:name>PREADY</spirit:name>
+                                        </spirit:logicalPort>
+                                        <spirit:physicalPort>
+                                                <spirit:name>pready</spirit:name>
+                                        </spirit:physicalPort>
+                                </spirit:portMap>
+                        </spirit:portMaps>
+                </spirit:busInterface>
+
+               
+          </spirit:busInterfaces>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- MemMap                                                                  -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <spirit:memoryMaps>
+                 <spirit:memoryMap>
+                        <spirit:name>Mem_if</spirit:name>
+                        <spirit:addressBlock>
+                                <spirit:name>defaultN0x805ac78.0x80873a0</spirit:name>
+                                <spirit:baseAddress>0x00000000</spirit:baseAddress>
+                                <spirit:range spirit:format="long">1024</spirit:range>
+                                <spirit:width spirit:format="long" spirit:id="width">32</spirit:width>
+                                <spirit:register>
+                                        <spirit:name>def</spirit:name>
+                                        <spirit:addressOffset>0</spirit:addressOffset>
+                                        <spirit:size>32</spirit:size>
+                                        <spirit:access>write-only</spirit:access>
+                                        <spirit:reset>
+                                             <spirit:value>0</spirit:value>
+                                        </spirit:reset>
+                                        <spirit:field>
+                                                <spirit:name>reserved3</spirit:name>
+                                                <spirit:bitOffset>0</spirit:bitOffset>
+                                                <spirit:bitWidth>1</spirit:bitWidth>
+                                                <spirit:access>write-only</spirit:access>
+                                        </spirit:field>
+                                        <spirit:field>
+                                                <spirit:name>rclk_stop</spirit:name>
+                                                <spirit:bitOffset>1</spirit:bitOffset>
+                                                <spirit:bitWidth>1</spirit:bitWidth>
+                                                <spirit:access>write-only</spirit:access>
+                                        </spirit:field>
+                                        <spirit:field>
+                                                <spirit:name>disable_clk_gate</spirit:name>
+                                                <spirit:bitOffset>2</spirit:bitOffset>
+                                                <spirit:bitWidth>1</spirit:bitWidth>
+                                                <spirit:access>write-only</spirit:access>
+                                        </spirit:field>
+                                        <spirit:field>
+                                                <spirit:name>reserved0</spirit:name>
+                                                <spirit:bitOffset>3</spirit:bitOffset>
+                                                <spirit:bitWidth>13</spirit:bitWidth>
+                                                <spirit:access>write-only</spirit:access>
+                                        </spirit:field>
+                                        <spirit:field>
+                                                <spirit:name>reset</spirit:name>
+                                                <spirit:bitOffset>16</spirit:bitOffset>
+                                                <spirit:bitWidth>2</spirit:bitWidth>
+                                                <spirit:access>write-only</spirit:access>
+                                        </spirit:field>
+                                        <spirit:field>
+                                                <spirit:name>reserved1</spirit:name>
+                                                <spirit:bitOffset>18</spirit:bitOffset>
+                                                <spirit:bitWidth>14</spirit:bitWidth>
+                                                <spirit:access>write-only</spirit:access>
+                                        </spirit:field>
+                                </spirit:register>
+                                <spirit:register>
+                                        <spirit:name>clk0</spirit:name>
+                                        <spirit:addressOffset>4</spirit:addressOffset>
+                                        <spirit:size>32</spirit:size>
+                                        <spirit:access>read-write</spirit:access>
+                                        <spirit:reset>
+                                             <spirit:value>0</spirit:value>
+                                        </spirit:reset>
+                                        <spirit:field>
+                                                <spirit:name>ratio</spirit:name>
+                                                <spirit:bitOffset>0</spirit:bitOffset>
+                                                <spirit:bitWidth>8</spirit:bitWidth>
+                                                <spirit:access>read-write</spirit:access>
+                                        </spirit:field>
+                                        <spirit:field>
+                                                <spirit:name>offset</spirit:name>
+                                                <spirit:bitOffset>8</spirit:bitOffset>
+                                                <spirit:bitWidth>8</spirit:bitWidth>
+                                                <spirit:access>read-write</spirit:access>
+                                        </spirit:field>
+                                        <spirit:field>
+                                                <spirit:name>reset_r</spirit:name>
+                                                <spirit:bitOffset>16</spirit:bitOffset>
+                                                <spirit:bitWidth>1</spirit:bitWidth>
+                                                <spirit:access>read-write</spirit:access>
+                                        </spirit:field>
+                                        <spirit:field>
+                                                <spirit:name>reset</spirit:name>
+                                                <spirit:bitOffset>17</spirit:bitOffset>
+                                                <spirit:bitWidth>1</spirit:bitWidth>
+                                                <spirit:access>read-write</spirit:access>
+                                        </spirit:field>
+                                        <spirit:field>
+                                                <spirit:name>div_ratio</spirit:name>
+                                                <spirit:bitOffset>18</spirit:bitOffset>
+                                                <spirit:bitWidth>8</spirit:bitWidth>
+                                                <spirit:access>read-write</spirit:access>
+                                        </spirit:field>
+                                        <spirit:field>
+                                                <spirit:name>reserved</spirit:name>
+                                                <spirit:bitOffset>26</spirit:bitOffset>
+                                                <spirit:bitWidth>6</spirit:bitWidth>
+                                                <spirit:access>read-write</spirit:access>
+                                        </spirit:field>
+                                </spirit:register>
+                                     <spirit:register>
+                                        <spirit:name>def2</spirit:name>
+                                        <spirit:addressOffset>8</spirit:addressOffset>
+                                        <spirit:size>32</spirit:size>
+                                        <spirit:access>read-write</spirit:access>
+                                        <spirit:reset>
+                                             <spirit:value>0</spirit:value>
+                                        </spirit:reset>
+                                        <spirit:field>
+                                                <spirit:name>clk_stop</spirit:name>
+                                                <spirit:bitOffset>0</spirit:bitOffset>
+                                                <spirit:bitWidth>32</spirit:bitWidth>
+                                                <spirit:access>read-write</spirit:access>
+                                        </spirit:field>
+                                </spirit:register>
+                        </spirit:addressBlock>
+                </spirit:memoryMap>
+        </spirit:memoryMaps>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- model                                                                   -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <spirit:model>
+     <spirit:views>
+                <spirit:view>
+                        <spirit:name>config_master</spirit:name>
+                        <spirit:envIdentifier>::modelsim.mentor.com</spirit:envIdentifier>
+                        <spirit:language>verilog</spirit:language>
+                        <spirit:fileSetRef>fs-VerilogSource</spirit:fileSetRef>
+                        <spirit:parameters>
+                                <spirit:parameter>
+                                        <spirit:name>entityName</spirit:name>
+                                        <spirit:value>config_master</spirit:value>
+                                </spirit:parameter>
+                        </spirit:parameters>
+                </spirit:view>
+     </spirit:views>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+<!-- Signals                                                                            -->
+<!--                                                                                    -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+
+     <spirit:ports>
+              <spirit:port>
+                      <spirit:name>penable</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>in</spirit:direction>
+                      </spirit:wire>
+              </spirit:port>
+              <spirit:port>
+                      <spirit:name>pwrite</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>in</spirit:direction>
+                      </spirit:wire>
+              </spirit:port>
+              <spirit:port>
+                      <spirit:name>paddr</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>in</spirit:direction>
+                              <spirit:vector>
+                                      <spirit:left>31</spirit:left>
+                                      <spirit:right>0</spirit:right>
+                              </spirit:vector>
+                      </spirit:wire>
+              </spirit:port>
+              <spirit:port>
+                      <spirit:name>pwdata</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>in</spirit:direction>
+                              <spirit:vector>
+                                      <spirit:left>31</spirit:left>
+                                      <spirit:right>0</spirit:right>
+                              </spirit:vector>
+                      </spirit:wire>
+              </spirit:port>
+              <spirit:port>
+                      <spirit:name>pready</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>out</spirit:direction>
+                      </spirit:wire>
+              </spirit:port>
+              <spirit:port>
+                      <spirit:name>pslverr</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>out</spirit:direction>
+                      </spirit:wire>
+              </spirit:port>
+              <spirit:port>
+                      <spirit:name>prdata</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>out</spirit:direction>
+                              <spirit:vector>
+                                      <spirit:left>31</spirit:left>
+                                      <spirit:right>0</spirit:right>
+                              </spirit:vector>
+                      </spirit:wire>
+              </spirit:port>
+              <spirit:port>
+                      <spirit:name>psel</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>in</spirit:direction>
+                      </spirit:wire>
+              </spirit:port>
+
+              <spirit:port>
+                      <spirit:name>clk0clk</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>out</spirit:direction>
+                      </spirit:wire>
+              </spirit:port>
+              <spirit:port>
+                      <spirit:name>clk0clk_tb</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>out</spirit:direction>
+                      </spirit:wire>
+              </spirit:port>
+              <spirit:port>
+                      <spirit:name>clk0clk_r</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>out</spirit:direction>
+                      </spirit:wire>
+              </spirit:port>
+              <spirit:port>
+                      <spirit:name>clk0resetn</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>out</spirit:direction>
+                      </spirit:wire>
+              </spirit:port>
+              <spirit:port>
+                      <spirit:name>clk0resetn_r</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>out</spirit:direction>
+                      </spirit:wire>
+              </spirit:port>
+              <spirit:port>
+                      <spirit:name>clk0en</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>out</spirit:direction>
+                      </spirit:wire>
+              </spirit:port>
+              <spirit:port>
+                      <spirit:name>clk0en_apb</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>out</spirit:direction>
+                      </spirit:wire>
+              </spirit:port>
+
+              
+              <spirit:port>
+                      <spirit:name>clk_tb</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>out</spirit:direction>
+                      </spirit:wire>
+              </spirit:port>
+              <spirit:port>
+                      <spirit:name>resetn_tb</spirit:name>
+                      <spirit:wire>
+                              <spirit:direction>out</spirit:direction>
+                      </spirit:wire>
+              </spirit:port>
+         </spirit:ports>
+  </spirit:model>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+<!-- Verilog Files                                                                      -->
+<!--                                                                                    -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+  <spirit:fileSets>
+        <spirit:fileSet>
+                <spirit:name>fs-VerilogSource</spirit:name>
+                <spirit:file>
+                        <spirit:name>../tb_components/clk_reset_if.v</spirit:name>
+                        <spirit:fileType>verilogSource</spirit:fileType>
+                </spirit:file>
+                <spirit:dependency>.</spirit:dependency>
+                <spirit:dependency>../../../../cdc_blocks/verilog/</spirit:dependency>
+        </spirit:fileSet>
+  </spirit:fileSets>
+</spirit:component>
+

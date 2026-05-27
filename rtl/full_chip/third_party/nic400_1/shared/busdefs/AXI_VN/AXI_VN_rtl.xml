@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	// =============================================================================
+	// This confidential and proprietary information may be used only as
+	// authorised by a licensing agreement from ARM Limited
+	//   (C) COPYRIGHT 2008-2015 ARM Limited
+	//       ALL RIGHTS RESERVED
+	// The entire notice above must be reproduced on all authorised
+	// copies and copies may only be made to the extent permitted
+	// by a licensing agreement from ARM Limited.
+	//
+	// =============================================================================
+	//
+	// Purpose :
+	//           This defines the AMBA Advanced eXtensible Interconnect Bus (AXI)
+	//
+	// =============================================================================
+-->
+<spirit:abstractionDefinition xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:arm="http://www.arm.com/SPIRIT" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/index.xsd ">
+  <spirit:vendor>arm.com</spirit:vendor>
+  <spirit:library>CoreLink</spirit:library>
+  <spirit:name>AXI_VN_rtl</spirit:name>
+  <spirit:version>r0p0_0</spirit:version>
+  <spirit:busType spirit:library="CoreLink" spirit:name="AXI_VN" spirit:vendor="arm.com" spirit:version="r0p0_0" />
+  <spirit:ports>
+    <!-- Global signals -->
+    <spirit:port>
+      <spirit:logicalName>ACLK</spirit:logicalName>
+      <spirit:description>Global clock signal. All signals are sampled on the rising edge of the clock</spirit:description>
+      <spirit:wire>
+        <spirit:qualifier>
+          <spirit:isClock>true</spirit:isClock>
+        </spirit:qualifier>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:requiresDriver spirit:driverType="clock">true</spirit:requiresDriver>
+      </spirit:wire>
+    </spirit:port>
+
+    <spirit:port>
+      <spirit:logicalName>ACLKEN</spirit:logicalName>
+      <spirit:description>Clock enable signal. Used as a qualifier for the ACLK signal. This signal indicates which rising edges of ACLK should be acted upon: 1 = valid rising edge of ACLK, 0 = any rising edge of ACLK should be ignored and no bus-state altered.</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>1</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+
+    <spirit:port>
+      <spirit:logicalName>ARESETn</spirit:logicalName>
+      <spirit:description>Global reset signal. This signal is active LOW</spirit:description>
+      <spirit:wire>
+        <spirit:qualifier>
+          <spirit:isReset>true</spirit:isReset>
+        </spirit:qualifier>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>required</spirit:presence>
+          <spirit:width>1</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:requiresDriver spirit:driverType="singleShot">true</spirit:requiresDriver>
+      </spirit:wire>
+    </spirit:port>
+
+    <spirit:port>
+      <spirit:logicalName>AWVNET</spirit:logicalName>
+      <spirit:description>AW channel Virtual network identifier</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>4</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>4</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>WVNET</spirit:logicalName>
+      <spirit:description>W channel Virtual network identifier</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>4</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>4</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+    <spirit:port>
+      <spirit:logicalName>ARVNET</spirit:logicalName>
+      <spirit:description>AR channel Virtual network identifier</spirit:description>
+      <spirit:wire>
+        <spirit:onSystem>
+          <spirit:group>CLOCK</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onSystem>
+          <spirit:group>RESETn</spirit:group>
+          <spirit:presence>illegal</spirit:presence>
+        </spirit:onSystem>
+        <spirit:onMaster>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>4</spirit:width>
+          <spirit:direction>out</spirit:direction>
+        </spirit:onMaster>
+        <spirit:onSlave>
+          <spirit:presence>optional</spirit:presence>
+          <spirit:width>4</spirit:width>
+          <spirit:direction>in</spirit:direction>
+        </spirit:onSlave>
+        <spirit:defaultValue>0</spirit:defaultValue>
+      </spirit:wire>
+    </spirit:port>
+  </spirit:ports>
+  <spirit:description>The current file describes the RTL view of a VN_AXI interface.</spirit:description>
+  <spirit:vendorExtensions>
+    <arm:revision>1</arm:revision>
+  </spirit:vendorExtensions>
+
+</spirit:abstractionDefinition>

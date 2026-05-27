@@ -1,0 +1,246 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2014 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2014-01-17 16:32:25 +0000 (Fri, 17 Jan 2014)
+#-     Revision            : 165349
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-           It's purpose is bo build the random environment shared object
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import standard modules
+from os import path, chdir, mkdir 
+from sm_base import sm_base
+from ipfs_std_lib import *
+from shutil import copy as filecopy
+
+class vcs_compile (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise - 
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Set the name
+        self.name = 'vcs_compile'
+
+        #Register workflow
+        self.lsf_workflow = 'arm_engine-1.0-comp_vcs'
+
+        #Register license requirements
+        self.licenses.append('vcs')
+
+        #Register license requirements
+        self.tools.append('vcs')
+        self.tools.append('perl')
+
+        #Set up dependency checks
+        self.enable_dep_check = True;
+
+   #-------------------------------------------------------------------------------
+   # run_pre_dep - Called before dependencies are processed in the base class
+   #-------------------------------------------------------------------------------
+   def run_pre_dep(self, args, directory):
+
+        self.output_dir = self.gen_compile_dir();
+
+
+   #-------------------------------------------------------------------------------
+   # options - This function registers options if not passed from directed_vcs
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+   
+        if not group.parser.has_option("--disable_ovl"): 
+            group.add_option("--disable_ovl", dest="ovl", action="store_false", 
+                            default=True, help="Disable the built in OVLs")
+        if not group.parser.has_option("--specman"): 
+            group.add_option("--specman", dest="specman", action="store_true", 
+                            default=False, help=SUPPRESS_HELP)
+        if not group.parser.has_option("--cov"): 
+            group.add_option("--cov", dest="cov", action="store_true", 
+                            default=False, help=SUPPRESS_HELP)
+        if not group.parser.has_option("--no_cdc"): 
+            group.add_option("--no_cdc", dest="cdc", action="store_false", 
+                            default=True, help="Disable built in CDC checks")
+        if not group.parser.has_option("--pdc_sim"):
+            group.add_option("--pdc_sim", dest="pdc_sim", action="store_true",
+                             default=False, help="Enable power aware simulation for TLX PDC testing")
+        if not group.parser.has_option("--cdc_block_level"): 
+            group.add_option("--cdc_block_level", dest="cdc_bl", action="store_true", 
+                            default=False, help=SUPPRESS_HELP)
+        if not group.parser.has_option("--directed"): 
+            group.add_option("--directed", dest="directed", action="store_true", 
+                            default=False, help=SUPPRESS_HELP)
+        if not group.parser.has_option("--tlx_pl_delay"): 
+            group.add_option("--tlx_pl_delay", dest="tlx_pl_delay", action="store_true", 
+                            default=False, help=SUPPRESS_HELP)
+        if not group.parser.has_option("--silent"): 
+            group.add_option("--silent", dest="silent", action="store_true", 
+                            default=False, help="Disable OVL warnings about improper transactions to AHB and APB")    
+        if not group.parser.has_option("--dump"):
+            group.add_option("--dump", dest="dump", action="store_true",
+                            default=False, help="output wave.vcd")
+        if not group.parser.has_option("--trace"):
+            group.add_option("--trace", dest="trace", action="store_true",
+                             default=False, help=SUPPRESS_HELP)
+
+        #Complete
+        return 0
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # run - Run the sub_module 
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+        #load specman module, request specman and vcs_specman license
+        if self.options.specman == True: 
+             self.licenses.append('vcs_specman')
+             self.tools.append('specman')
+
+        self.cchdir(self.gen_compile_dir());
+
+
+        #Create a run script
+        if self.options.specman == True and self.options.pdc_sim == False:
+             run_script = ['if (! -e ../e/specman.v) then',
+                           'cd ../e',
+                           'cp REMOVE.specman .specman',
+                           'setenv XVC_ROOT ' + environ.get('XVC_ROOT'),
+                           'specman -c "load top.e; write stubs -verilog; quit"',
+                           'cd -',
+                           'endif',
+                           '../../../../shared/validation/scripts/EnvSub.pl -infile=../../shared/tbench/tbench.vc',
+                           'sn_compile.sh -sim vcs -vcs_flags "-timescale=1ns/1ps -sverilog +libext+.v+.sv+.vlib+.vh+.svh -Mupdate +cli +vcs+lic+wait \\']
+
+        elif self.options.specman == True and self.options.pdc_sim == True:
+             run_script = ['if (! -e ../e/specman.v) then',
+                           'cd ../e',
+                           'cp REMOVE.specman .specman',
+                           'setenv XVC_ROOT ' + environ.get('XVC_ROOT'),
+                           'specman -c "load top.e; write stubs -verilog; quit"',
+                           'cd -',
+                           'endif',
+                           '../../../../shared/validation/scripts/EnvSub.pl -infile=../../shared/tbench/tbench.vc',
+                           'sn_compile.sh -sim vcs -vcs_flags "-timescale=1ns/1ps -sverilog +libext+.v+.sv+.vlib+.vh+.svh -Mupdate +cli +vcs+lic+wait -upf ../../shared/upf/tbench.upf \\']
+
+        else: 
+             run_script = [ '../../../../shared/validation/scripts/EnvSub.pl -infile=../../shared/tbench/tbench.vc',
+                            'vcs +cli -timescale=1ns/1ps -sverilog +libext+.v+.sv+.vlib+.vh+.svh -Mupdate +vcs+lic+wait\\']
+
+        # To load the lib AxiPC include, coz tbench.vc list all the files even they are not used
+        run_script.extend(['-y ' + environ.get('ARM_OVL_VERILOG') + ' \\',
+                           '+incdir+' + environ.get('ARM_OVL_VERILOG') + ' \\',
+                           '+define+ARM_ASSERT_PSTRB_ON \\',
+                           '+define+LIMIT_OVL \\'])
+
+        if self.options.ovl == True:              
+             run_script.extend(['+define+ARM_ASSERT_ON \\',
+                                '+define+OVL_INIT_MSG \\',
+                                '+define+OVL_ASSERT_ON \\',
+                                '+define+OVL_MAX_REPORT_ERROR=10 \\',
+                                '+define+AXIPC_ON \\',]) 
+
+        if self.options.cdc == True:              
+             run_script.extend(['+define+ARM_CDC_CHECK \\'])
+        if self.options.cdc_bl == True:              
+             run_script.extend(['+define+ARM_CDC_BLOCK_LEVEL \\'])
+
+        #Add silent term
+        if self.options.silent == True:
+             run_script.extend(['+define+ARM_OVL_IGNORE_UNALIGN \\'])
+
+        #Add silent term
+        if self.options.tlx_pl_delay == True:
+             run_script.extend(['+define+ARM_TLX_PL_DELAY \\'])
+
+        #Define to make any supporting File componenets auto size their memory arrays
+        run_script.extend(['+define+FILE_AUTO_SIZE \\'])
+       
+        if self.options.dump == True:
+             run_script.append('+vcs+dumpvars+wave.vcd \\')
+
+        if self.options.trace == True:
+            run_script.extend(['+define+TRACE \\'])
+
+        #coverage option
+        if self.options.cov == True:     
+             run_script.extend(['-cm line+cond+tgl+fsm -cm_cond std+allops -cm_fsmopt optimist \\',
+                                '-cm_hier ../../shared/tbench/vcs_cov_hier.txt -cm_dir ../../logs/vcs_coverage -cm_libs yv \\',])
+
+        #gui option
+        if self.options.gui == True:     
+             run_script.append('+acc +memcbk -debug_all\\')
+
+        #Enable SVA limit
+        run_script.append('-assert enable_diag\\')
+             
+        #tbench
+        if self.options.specman == True:  
+             if self.options.directed == True:   
+                 run_script.append('-f tbench.vc +define++SPECMAN_COMPLETE ../e/specman.v"')
+             else:    
+                 run_script.append('-f tbench.vc +define+SN ../e/specman.v"')
+        else:
+             run_script.append('-f tbench.vc')
+
+        #Write and execute run_script
+        self.write_run_script(run_script, 'compile_src', args)
+        return self.run_command(args, './compile_src')
+
+   #-------------------------------------------------------------------------------
+   # clean - clean the output of the sub_module 
+   #-------------------------------------------------------------------------------
+   def clean_sm(self, args, directory):
+
+         self.use_lsf = 0
+         self.delete_files.append('vcs_compile*')
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # gen_compile_dir - Builds up the compile directory name 
+   #-------------------------------------------------------------------------------
+   def gen_compile_dir(self):
+
+        #build_directory name 
+        compile_dir = 'vcs_compile'
+        if self.options.specman == True: 
+             compile_dir = compile_dir + '_sn'
+        if self.options.cdc == False: 
+             compile_dir = compile_dir + '_ncdc'
+        if self.options.cov == True: 
+             compile_dir = compile_dir + '_cov' 
+        if self.options.gui == True: 
+             compile_dir = compile_dir + '_gui'
+        if self.options.pdc_sim == True:
+             compile_dir = compile_dir + '_pdc'     
+
+        return compile_dir  
+

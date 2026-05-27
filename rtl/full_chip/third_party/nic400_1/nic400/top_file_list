@@ -1,0 +1,63 @@
+
+
+./spirit/.empty
+
+COVERAGE_ON xsl_cov
+
+
+
+./stitching/parcfg_cd_name_xmlcfg.xml.xsl USING name=clk0
+./stitching/parcfg_cd_name_xmlcfg_config.xml.xsl USING name=clk0 DIRECTORY SCRIPT(generic_stitcher_core)
+
+
+COVERAGE_OFF
+
+
+./spirit/memory_map.xml.xsl SCRIPT(add_spirit_mem_map.pl) 
+
+
+./validation/shared/tbench/
+./validation/shared/tb_spirit/
+./validation/shared/tb_components/
+./validation/shared/stitching/tbench_netlist.xml.xsl REGRESSION
+./validation/shared/stitching/tbench_netlist_config.xml.xsl REGRESSION DIRECTORY
+./validation/shared/stitching/tbench.xml.xsl
+./validation/shared/stitching/tbench_config.xml.xsl DIRECTORY SCRIPT(generic_stitcher_core)
+
+
+./validation/directed
+./validation/directed/source
+
+
+./validation/directed/source/clock_sep_ring REGRESSION
+./validation/directed/source/clock_sep_main REGRESSION
+./validation/directed/source/all_lock_allowed REGRESSION
+./validation/directed/source/all_lock_not_allowed REGRESSION
+
+
+./validation/directed/source/addr_map/addr_map.tsf
+./validation/directed/source/pmap_test/pmap_test.tsf
+
+
+PUSH ../spirit/nic400_1.xml
+./validation/directed/source/addr_map/addr_map.cpp.xsl
+./validation/directed/source/pmap_test/pmap_test.cpp.xsl
+POP
+
+
+./formal REGRESSION2
+./formal/cdc REGRESSION2
+./formal/sva REGRESSION2  USING name=1
+
+./lint REGRESSION
+
+./lint/sg_setup REGRESSION
+./lint/sg_setup/parcfg_xmlcfg REGRESSION
+./dft_lint REGRESSION
+
+./power REGRESSION
+./power/implementation REGRESSION
+./validation/logs REGRESSION
+./validation/logs/vcs_coverage REGRESSION
+
+

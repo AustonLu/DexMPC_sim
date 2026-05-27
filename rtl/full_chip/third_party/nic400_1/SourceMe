@@ -1,0 +1,120 @@
+#!/bin/csh -f
+#-------------------------------------------------------------------------------
+# The confidential and proprietary information contained in this file may
+# only be used by a person authorised under and to the extent permitted
+# by a subsisting licensing agreement from ARM Limited.
+#
+#            (C) COPYRIGHT 2008-2013 ARM Limited.
+#                ALL RIGHTS RESERVED
+#
+# This entire notice must be reproduced on all copies of this file
+# and copies of this file may only be made by a person if such person is
+# permitted to do so under the terms of a subsisting license agreement
+# from ARM Limited.
+#-------------------------------------------------------------------------------
+# Version and Release Control Information:
+#
+# File Revision       : 150027
+# File Date           :  2013-05-09 17:50:52 +0100 (Thu, 09 May 2013)
+# Release Information : PL401-r1p2-00rel0
+#-------------------------------------------------------------------------------
+# Purpose : SourceMe to define tools required for NIC400
+#-------------------------------------------------------------------------------
+
+##############################################################################
+# Common variable set-up
+##############################################################################
+         
+setenv PROJECTCODE PJ01329
+
+##############################################################################
+# TOOLS
+##############################################################################
+
+#Enable use of LSF
+setenv ARM_USE_LSF "false"
+
+#COMMON TOOL PRECOMMANDS
+setenv ARM_PRECOMMANDS "source /arm/tools/setup/init/tcsh"
+setenv ARM_TOOLS "module load eda util swdev"
+
+#Modelsim 
+setenv ARM_MTI "module load mentor/questasim/10.2c" 
+#VCS
+setenv ARM_VCS "module load synopsys/vcs/2013.06"
+#NC
+setenv ARM_NC  "module load cadence/incisive/11.10.002"
+#GCC
+setenv ARM_GCC "module load gnu/gcc/3.4.2"
+#Perl
+setenv ARM_PERL "module load perl/perl/5.8.8"
+#Python
+setenv ARM_PYTHON "module load python/python/2.4.2"
+
+
+#Load Perl - if not available by default
+eval $ARM_PERL
+#Load Python - if not available by default
+eval $ARM_PYTHON
+
+##############################################################################
+# Libraries
+##############################################################################
+
+setenv ARM_OVL_VERILOG /arm/tools/accellera/ovl/releases/ovl_v2p7_Feb2013/std_ovl/ 
+
+##############################################################################
+# Scripting setup
+##############################################################################
+setenv PRODUCT_HOME 'pwd'
+
+if (${?NIC400_INSTALL_DIR}) then
+   if (-d $NIC400_INSTALL_DIR) then    
+       echo "Continuing to use shared area pointed to by 'NIC400_INSTALL_DIR'"     
+       setenv PRODUCT_HOME `pwd | awk '{c=split($0, s, "/"); for(n=1; n<=c-3; ++n) printf("%s/",s[n]); print s[c-2] }'`
+   endif    
+endif   
+         
+
+if (${PRODUCT_HOME} == 'pwd') then
+   setenv PRODUCT_HOME `pwd`
+
+   # First remove references to previous IPFS_SCRIPT_DIR if it exists
+   if ($?IPFS_SCRIPT_DIR) then
+       setenv PATH `echo -n "${PATH}" | awk 'BEGIN {RS=":"; ORS=":"} {if (!(index($0, "'${IPFS_SCRIPT_DIR}'"))) print $0}'`
+
+       if ($?PYTHONPATH) then
+          setenv PYTHONPATH `echo -n "${PYTHONPATH}" | awk 'BEGIN {RS=":"; ORS=":"} {if (!(index($0, "'${IPFS_SCRIPT_DIR}'"))) print $0}'`
+       endif       
+   endif  
+
+   # Tool path (which could be pointing to a read-only tool install area)
+   setenv IPFS_SCRIPT_DIR ${PRODUCT_HOME}/shared/bin
+   setenv IPFS_MCF_FILE ${PRODUCT_HOME}/shared/bin/setup/arm_engine.mcf
+
+   # Create the Python path environment variable, if it does not exist
+   if ( ! ${?PYTHONPATH} ) setenv PYTHONPATH ''
+
+   # Set-up the Python path if it does not exist in the shell variable
+   if ( `echo ${PYTHONPATH} | grep -c ${IPFS_SCRIPT_DIR}` == 0 ) then
+      setenv PYTHONPATH ${PYTHONPATH}:${IPFS_SCRIPT_DIR}/lib
+   endif
+
+   # Set-up the user's path if it does not exist in the $PATH shell variable
+   if ( `echo ${PATH} | grep -c ${IPFS_SCRIPT_DIR}` == 0 ) then
+      setenv PATH ${PATH}:${IPFS_SCRIPT_DIR}
+   endif
+
+   # Alias for the engine
+   alias ae arm_engine.py
+endif
+
+##############################################################################
+# Modules 
+##############################################################################
+
+#setenv NIC400_PRECOMMANDS "source /arm/tools/setup/init/tcsh" 
+#setenv NIC400_TOOLS "module load eda" 
+#setenv NIC400_DISPATCHER LSF
+setenv PERIPH_LOGICAL `pwd`
+setenv PERIPH_CFG `ls xml/`

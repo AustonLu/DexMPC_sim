@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+#==============================================================================#
+#   The confidential and proprietary information contained in this file may
+#   only be used by a person authorised under and to the extent permitted
+#   by a subsisting licensing agreement from ARM Limited.
+#    (C) COPYRIGHT 2007-2012 ARM Limited.
+#        ALL RIGHTS RESERVED
+#   This entire notice must be reproduced on all copies of this file
+#   and copies of this file may only be made by a person if such person is
+#   permitted to do so under the terms of a subsisting license agreement
+#   from ARM Limited.
+#  
+#-----------------------------------------------------------------------------
+#  Version and Release Control Information
+#  
+#  File Revision        126532
+#  File Date             2012-03-07 12:01:09 +0000 (Wed, 07 Mar 2012)
+#  
+#  Release Information  PL401-r1p2-00rel0
+#  
+#-----------------------------------------------------------------------------
+#  Purpose  Verilog IO defines for asib_ds_1 
+#            
+#==============================================================================#
+<bus>
+<type>NIC400_AXI4</type>
+<name>axi_s_0</name>
+<direction>slave</direction>
+<channel>false</channel>
+<group>
+<description>AW Channel</description>
+<signal>
+<busname>AWID</busname>
+<name>awid</name>
+<width>8</width>
+<description>write id of AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWVALID</busname>
+<name>awvalid</name>
+<width>1</width>
+<description>write valid of AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWREADY</busname>
+<name>awready</name>
+<description>write ready of AXI bus AW channel</description>
+</signal>
+</group>
+<group>
+<description>W Channel</description>
+<signal>
+<busname>WLAST</busname>
+<name>wlast</name>
+<description>write last of AXI bus W Channel</description>
+</signal>
+<signal>
+<busname>WVALID</busname>
+<name>wvalid</name>
+<description>write valid of AXI bus W Channel</description>
+</signal>
+<signal>
+<busname>WREADY</busname>
+<name>wready</name>
+<description>write ready of AXI bus W Channel</description>
+</signal>
+</group>
+<group>
+<description>B Channel</description>
+<signal>
+<busname>BID</busname>
+<name>bid</name>
+<width>8</width>
+<description>b response id of AXI bus B Channel</description>
+</signal>
+<signal>
+<busname>BRESP</busname>
+<name>bresp</name>
+<description>b response status of AXI bus B Channel</description>
+</signal>
+<signal>
+<busname>BVALID</busname>
+<name>bvalid</name>
+<description>b response valid of AXI bus B Channel</description>
+</signal>
+<signal>
+<busname>BREADY</busname>
+<name>bready</name>
+<description>b response ready of AXI bus B Channel</description>
+</signal>
+</group>
+<group>
+<description>AR Channel</description>
+<signal>
+<busname>ARID</busname>
+<name>arid</name>
+<width>8</width>
+<description>read id of AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARLEN</busname>
+<name>arlen</name>
+<width>8</width>
+<description>read length of AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARVALID</busname>
+<name>arvalid</name>
+<width>1</width>
+<description>read valid of AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARREADY</busname>
+<name>arready</name>
+<description>read ready of AXI bus AR Channel</description>
+</signal>
+</group>
+<group>
+<description>R Channel</description>
+<signal>
+<busname>RID</busname>
+<name>rid</name>
+<width>8</width>
+<description>read id of AXI bus R Channel</description>
+</signal>
+<signal>
+<busname>RRESP</busname>
+<name>rresp</name>
+<description>read response status of AXI bus R Channel</description>
+</signal>
+<signal>
+<busname>RLAST</busname>
+<name>rlast</name>
+<description>read last of AXI bus R Channel</description>
+</signal>
+<signal>
+<busname>RVALID</busname>
+<name>rvalid</name>
+<description>read valid of AXI bus R Channel</description>
+</signal>
+<signal>
+<busname>RREADY</busname>
+<name>rready</name>
+<description>read ready of AXI bus R Channel</description>
+</signal>
+</group>
+</bus>
+<group>
+<description>Clock and reset signals</description>
+<wire>
+<clock/>
+<name>aclk</name>
+<direction>in</direction>
+<description>main clock</description>
+<width>1</width>
+</wire>
+<wire>
+<reset/>
+<name>aresetn</name>
+<direction>in</direction>
+<width>1</width>
+<description>main reset</description>
+</wire>
+</group>

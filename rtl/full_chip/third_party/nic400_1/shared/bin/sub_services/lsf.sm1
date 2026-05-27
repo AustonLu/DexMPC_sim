@@ -1,0 +1,303 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2014 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2014-09-18 18:25:40 +0100 (Thu, 18 Sep 2014)
+#-     Revision            : 180960
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import the Base Class
+from os import path, popen2, close
+from sm_base import sm_base
+from ipfs_std_lib import *
+from optparse import SUPPRESS_HELP
+from subprocess import call, Popen, PIPE
+import sys
+
+class lsf (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise -
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, 0, 0)
+
+        #Set the name
+        self.name = 'lsf'
+        #Obviously this routine does not use the build in LSF!!
+        self.use_lsf = 0
+        self.change_dir = False
+
+        #Try to read in the configuration file
+        cfgfile = self.get_path('/setup/lsf.cfg')
+        self.cfgopts = {}
+
+        #Set defaults for all options expected in the cfg file
+        self.cfgopts['os']           	 = {'default': 'rhe5 && os64'}
+        self.cfgopts['license']      	 = {}
+        self.cfgopts['memory']       	 = 2000
+        self.cfgopts['job_name']     	 = ''
+        self.cfgopts['job_description']  = ''
+        self.cfgopts['sub_cmd']      	 = 'bsub'
+        self.cfgopts['cjm_cmd']      	 = 'cjm_bsub'
+        self.cfgopts['gui_args']     	 = '-q inter -Is'
+        self.cfgopts['batch_args']   	 = 'PD'
+        self.cfgopts['output_file']  	 = 'bsub.log'
+        self.cfgopts['maxlen']       	 = '3:0'
+        self.cfgopts['maxfile']      	 = 1000000
+        self.cfgopts['memlim']       	 = ''
+        self.cfgopts['tmp']          	 = ''
+        self.cfgopts['swp']          	 = ''
+        self.cfgopts['project_code'] 	 = environ.get('PROJECTCODE')
+
+        if path.exists(cfgfile):
+           try:
+               execfile(cfgfile, self.cfgopts)
+           except:
+               message( 'e1.01', 'Could not read the lsf configuration file! %s' % exc_reason() )
+
+   #-------------------------------------------------------------------------------
+   # options - This function registers all valid command line options for this SM
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+
+         group.add_option("--os", choices=self.cfgopts['os'].keys(), type='choice',
+                       default='default', dest="os",
+                       help='OS options in ' + '\n'.join(self.cfgopts['os'].keys()))
+         group.add_option("--prj", type='string',
+                       default=self.cfgopts['project_code'], dest="proj",
+                       help='Set the project code .. use \'\' to disable')
+         group.add_option("--maxlen", action="store",
+                       type='string', default=self.cfgopts['maxlen'], dest="maxlen",
+                       help='Max run time resource request for LSF -  hours:mins' )
+         group.add_option("--maxfile", action="store",
+                       type='int', default=self.cfgopts['maxfile'], dest="maxfile",
+                       help='Max file size on LSF' )
+         group.add_option("--memlim", action="store",
+                       type='string', default=self.cfgopts['memlim'], dest="memlim",
+                       help='Maximum memory limit resource request for LSF - K' )
+         group.add_option("--wait", action="append",
+                       dest="wait", help=SUPPRESS_HELP )
+         group.add_option("--job_name", action="store",
+                       type='string', default=self.cfgopts['job_name'], dest="job_name",
+                       help=SUPPRESS_HELP )
+         group.add_option("--job_description", action="store",
+                       type='string', default=self.cfgopts['job_description'], dest="job_description",
+                       help=SUPPRESS_HELP )
+         group.add_option("--mem", action="store",
+                       type='int', default=self.cfgopts['memory'], dest="memory",
+                       help='Minimum Memory resource requirement for LSF - M' )
+         group.add_option("--tmp", action="store",
+                       type='string', default=self.cfgopts['tmp'], dest="tmp",
+                       help='Minimum temp resource requirement for LSF - K' )
+         group.add_option("--swp", action="store",
+                       type='string', default=self.cfgopts['swp'], dest="swp",
+                       help='Minimum swap resource requirement for LSF - K' )
+         group.add_option("--input", action="store",
+                       type='string', default='', dest="input", help=SUPPRESS_HELP )
+         group.add_option("--log", action="store",
+                       type='string', default=self.cfgopts['output_file'], dest="output_file",
+                       help='Set the name of the log file in batch mode')
+         group.add_option("--lsf_queue", action="store",
+                       type='string', default='PD', dest="batch_args",
+                       help='Set the lsf queue in batch mode')
+         group.add_option("--lsf_group", action="store",
+                       type='string', default='', dest="lsf_group",
+                       help='Set the lsf group in batch mode')
+         group.add_option("--command", action="store",
+                       type='string', dest="command", default='echo "No command"',
+                       help=SUPPRESS_HELP)
+         group.add_option("--done", dest="done", default=False, action="store_true",
+                       help=SUPPRESS_HELP)
+         #Child job monitor switch              
+         group.add_option("--cjm", dest="cjm", default=False, action="store_true",
+                       help='')
+         if len(self.cfgopts['license'].keys()) != 0:
+               group.add_option("--license", action="append",
+                       type='choice', choices=self.cfgopts['license'].keys(),
+                       dest="license", help=SUPPRESS_HELP)
+         #Complete
+         return 0
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # gen_command - generates LSF command based on requirements
+   #-------------------------------------------------------------------------------
+   def gen_command(self, wait_done, full_cmd):
+
+       if wait_done:
+           wait_test = 'done'
+       else:
+           wait_test = 'ended'
+           
+       # Use 'cjm_bsub' if cjm switch is used, else use 'bsub'     
+       if self.options.cjm:
+           command = [self.cfgopts['cjm_cmd']]
+       else:
+           command = [self.cfgopts['sub_cmd']]
+
+       #Set gui/batch queue
+       if self.options.gui:
+           command.extend(self.cfgopts['gui_args'].split())
+       else:
+           command.extend(['-q', self.options.batch_args])
+           if full_cmd:
+               command.extend(['-o', self.options.output_file])
+           else:
+               command.extend(['-o', '/dev/null'])
+           if self.options.lsf_group != '' and self.options.lsf_group != None:
+               command.extend(['-g',self.options.lsf_group])
+
+       #Add project code
+       if (self.options.proj != '' and self.options.proj != None):
+           command.extend(['-P', self.options.proj])
+
+       #Add job name
+       if (self.options.job_name != '' and self.options.job_name != None):
+           command.extend(['-J', self.options.job_name])
+
+       #Add job description
+       if (environ.get('ARM_CLUSTER_MODE') == 'CPM' and self.options.job_description != '' and self.options.job_description != None):
+           command.extend(['-Jd', self.options.job_description])
+
+       #Add the input if necessary
+       if (self.options.input != '' and self.options.input != None):
+           command.extend(['-i', self.options.input])
+
+       #Add the wait time value
+#       command.extend(['-W', str(self.options.maxlen)])
+       command.extend(['-c', str(self.options.maxlen)])
+
+       #Add the max file size limit
+       command.extend(['-F', str(self.options.maxfile)])
+
+       #Add the memory limit value
+       if (self.options.memlim != '' and self.options.memlim != None):
+           if (self.options.memlim > (self.options.memory * 1024)):
+               command.extend(['-M', str(self.options.memlim)])
+           else:
+               command.extend(['-M', str((self.options.memory * 1024))])
+       else:
+            command.extend(['-M', str((self.options.memory * 1024))])
+	       
+
+       #Add wait dependency requirements
+       if self.options.wait != None and len(self.options.wait) > 0:
+           waitstr = ''
+           for wait in range(len(self.options.wait)):
+                waitstr = waitstr + wait_test + '(' + self.options.wait[wait] + ')'
+                #Add && if not the last one
+                if wait < len(self.options.wait) - 1:
+                    waitstr = waitstr + ' && '
+           waitstr = waitstr + ''
+           command.extend(['-w', waitstr])
+
+       #Add os requirments
+       reqstr = 'select[' + self.cfgopts['os'][self.options.os]
+
+       #Add tmp requirements
+       if (self.options.tmp != '' and self.options.tmp != None):
+         reqstr = reqstr + ' && tmp > ' + str(self.options.tmp)
+
+       #Add swp requirements
+       if (self.options.swp != '' and self.options.swp != None):
+         reqstr = reqstr + ' && swp > ' + str(self.options.swp)
+
+       #Add memsml requirements
+       if (self.options.memlim != '' and self.options.memlim != None):
+         if (self.options.memlim > (self.options.memory * 1024)):
+           if (self.options.memlim < 4000):
+             reqstr = reqstr + ' && memsml=1 '
+         else:
+           if ((self.options.memory * 1024) < 4000):
+             reqstr = reqstr + ' && memsml=1 '
+       else:
+         if ((self.options.memory * 1024) < 4000):
+           reqstr = reqstr + ' && memsml=1 '
+
+       #Add mem requirements
+       #(not mem if in CPM style cluster)
+       if environ.get('ARM_CLUSTER_MODE') != 'CPM':
+           reqstr = reqstr + ' && mem > ' + str(self.cfgopts['memory'])
+       reqstr = reqstr + ' && tmp > ' + str(self.cfgopts['memory']) + ']'
+
+       #Add license requirments
+       if self.options.license != None and len(self.options.license) > 0 and full_cmd:
+           reqstr = reqstr + ' rusage['
+           for lic in self.options.license:
+               reqstr = reqstr + self.cfgopts['license'][lic] + ":"
+           if environ.get('ARM_CLUSTER_MODE') != 'CPM':
+               reqstr = reqstr + "mem=" + str(self.cfgopts['memory'])
+           reqstr = reqstr.rstrip(':') + ']'
+
+       #Complete the requirements line
+       command.extend(['-R', reqstr])
+
+       return command
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # run - Executes n-iterations of tool call, with options to call pre-processing
+   #        and post-processing scriptlets that perform specific housekeeping
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+       command = self.gen_command(self.options.done, True)
+
+       #Add the actual command
+       command.extend([self.options.command])
+
+       try:
+           #Finally the system call
+           if self.options.gui == False:
+               p = Popen(command, bufsize=100, shell=False, stdout=PIPE)
+               result = p.communicate()
+               #Try and extract the job number
+               got_job_number = search(r'\<([0-9]+)\>', result[0])
+               if got_job_number:
+                  job_code = got_job_number.group(1)
+                  return_code = p.returncode
+                  print 'Job <' + job_code + '> submitted: ' + " ".join(command)
+
+                  return return_code, {'job_code':[job_code]}
+               else:
+                  print 'Job Submission Error: ' + " ".join(command)
+                  return 1, {}
+           else:
+               print 'command ' + str(command)
+               result = call(command)
+               return result, {}
+       except KeyboardInterrupt:
+           return -1, {}
+       except :
+           #Failed return error code
+           print exc_info()
+           return 1, {}
+
+   #-------------------------------------------------------------------------------

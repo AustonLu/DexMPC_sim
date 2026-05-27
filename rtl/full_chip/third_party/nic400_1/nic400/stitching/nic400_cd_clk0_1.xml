@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+
+
+<!--=========================================================================-->
+<!-- This confidential and proprietary software may be used only as          -->
+<!-- authorised by a licensing agreement from ARM Limited or its affiliates. -->
+<!--    (C) COPYRIGHT 2008-2017 ARM Limited or its affiliates.               -->
+<!--        ALL RIGHTS RESERVED                                              -->
+<!-- The entire notice above must be reproduced on all authorised            -->
+<!-- copies and copies may only be made to the extent permitted              -->
+<!-- by a licensing agreement from ARM Limited or its affiliates.            -->
+<!--                                                                         -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!--  Version and Release Control Information:                               -->
+<!--                                                                         -->
+<!--  File Revision       : 226344                                    -->
+<!--  File Date           :  2017-11-14 13:48:54 +0000 (Tue, 14 Nov 2017)    -->
+<!--                                                                         -->
+<!--  Release Information : PL401-r1p2-00rel0                         -->
+<!--                                                                         -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<!-- Purpose              : Design description of the clk0          -->
+<!--                        clock domain                                     -->
+<!--                                                                         -->
+<!--=========================================================================-->
+
+<spirit:design xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.4/design.xsd">
+  <spirit:vendor>arm.com</spirit:vendor>
+  <spirit:library>CoreLink</spirit:library>
+  <spirit:name>nic400_1</spirit:name>
+  <spirit:version>r1p2</spirit:version>
+  <spirit:componentInstances>
+
+      
+      
+    <spirit:componentInstance> 
+       <spirit:instanceName>u_amib_mGauxCore</spirit:instanceName>
+       <spirit:componentRef spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="nic400_amib_mGauxCore_1" spirit:version="r1p2"/>
+    </spirit:componentInstance>
+    
+    <spirit:componentInstance> 
+       <spirit:instanceName>u_amib_mDexmpcCore</spirit:instanceName>
+       <spirit:componentRef spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="nic400_amib_mDexmpcCore_1" spirit:version="r1p2"/>
+    </spirit:componentInstance>
+    
+    <spirit:componentInstance> 
+       <spirit:instanceName>u_asib_sSpi</spirit:instanceName>
+       <spirit:componentRef spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="nic400_asib_sSpi_1" spirit:version="r1p2"/>
+    </spirit:componentInstance>
+    
+    <spirit:componentInstance> 
+       <spirit:instanceName>u_asib_sD2dData</spirit:instanceName>
+       <spirit:componentRef spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="nic400_asib_sD2dData_1" spirit:version="r1p2"/>
+    </spirit:componentInstance>
+    
+    <spirit:componentInstance> 
+       <spirit:instanceName>u_asib_sIrisBridge</spirit:instanceName>
+       <spirit:componentRef spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="nic400_asib_sIrisBridge_1" spirit:version="r1p2"/>
+    </spirit:componentInstance>
+    
+    <spirit:componentInstance> 
+       <spirit:instanceName>u_busmatrix_bm0</spirit:instanceName>
+       <spirit:componentRef spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="nic400_bm0_1" spirit:version="r1p2"/>
+    </spirit:componentInstance>
+    
+    <spirit:componentInstance> 
+       <spirit:instanceName>u_default_slave_ds_1</spirit:instanceName>
+       <spirit:componentRef spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="nic400_default_slave_ds_1_1" spirit:version="r1p2"/>
+    </spirit:componentInstance>
+    
+    <spirit:componentInstance> 
+       <spirit:instanceName>u_ib_sSpi_ib_s</spirit:instanceName>
+       <spirit:componentRef spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="nic400_ib_sSpi_ib_slave_domain_1" spirit:version="r1p2"/>
+    </spirit:componentInstance>
+    
+    <spirit:componentInstance> 
+       <spirit:instanceName>u_ib_sSpi_ib_m</spirit:instanceName>
+       <spirit:componentRef spirit:vendor="arm.com" spirit:library="CoreLink" spirit:name="nic400_ib_sSpi_ib_master_domain_1" spirit:version="r1p2"/>
+    </spirit:componentInstance>
+    
+
+  </spirit:componentInstances>
+
+  <spirit:interconnections>
+
+    
+    
+
+     <spirit:interconnection>
+         <spirit:name>sSpi_sSpi_ib_axi4_s</spirit:name>
+         <spirit:activeInterface spirit:componentRef="u_ib_sSpi_ib_s" spirit:busRef="axi4_s"/>
+         <spirit:activeInterface spirit:componentRef="u_asib_sSpi" spirit:busRef="sSpi_m"/>
+     </spirit:interconnection>
+
+            
+
+     <spirit:interconnection>
+         <spirit:name>sD2dData_bm0_axi_s_2</spirit:name>
+         <spirit:activeInterface spirit:componentRef="u_busmatrix_bm0" spirit:busRef="axi_s_2"/>
+         <spirit:activeInterface spirit:componentRef="u_asib_sD2dData" spirit:busRef="sD2dData_m"/>
+     </spirit:interconnection>
+
+            
+
+     <spirit:interconnection>
+         <spirit:name>sIrisBridge_bm0_axi_s_1</spirit:name>
+         <spirit:activeInterface spirit:componentRef="u_busmatrix_bm0" spirit:busRef="axi_s_1"/>
+         <spirit:activeInterface spirit:componentRef="u_asib_sIrisBridge" spirit:busRef="sIrisBridge_m"/>
+     </spirit:interconnection>
+
+            
+
+     <spirit:interconnection>
+         <spirit:name>bm0_mGauxCore_mGauxCore_s</spirit:name>
+         <spirit:activeInterface spirit:componentRef="u_amib_mGauxCore" spirit:busRef="mGauxCore_s"/>
+         <spirit:activeInterface spirit:componentRef="u_busmatrix_bm0" spirit:busRef="axi_m_0"/>
+     </spirit:interconnection>
+
+            
+
+     <spirit:interconnection>
+         <spirit:name>bm0_mDexmpcCore_mDexmpcCore_s</spirit:name>
+         <spirit:activeInterface spirit:componentRef="u_amib_mDexmpcCore" spirit:busRef="mDexmpcCore_s"/>
+         <spirit:activeInterface spirit:componentRef="u_busmatrix_bm0" spirit:busRef="axi_m_1"/>
+     </spirit:interconnection>
+
+            
+
+     <spirit:interconnection>
+         <spirit:name>bm0_ds_1_axi_s_0</spirit:name>
+         <spirit:activeInterface spirit:componentRef="u_default_slave_ds_1" spirit:busRef="axi_s_0"/>
+         <spirit:activeInterface spirit:componentRef="u_busmatrix_bm0" spirit:busRef="axi_m_2"/>
+     </spirit:interconnection>
+
+            
+
+     <spirit:interconnection>
+         <spirit:name>sSpi_ib_bm0_axi_s_0</spirit:name>
+         <spirit:activeInterface spirit:componentRef="u_busmatrix_bm0" spirit:busRef="axi_s_0"/>
+         <spirit:activeInterface spirit:componentRef="u_ib_sSpi_ib_m" spirit:busRef="axi4_m"/>
+     </spirit:interconnection>
+
+            
+
+   <spirit:interconnection>
+        <spirit:name>sSpi_ib_int</spirit:name>
+        <spirit:activeInterface spirit:componentRef="u_ib_sSpi_ib_m"  spirit:busRef="sSpi_ib_s"/>
+        <spirit:activeInterface spirit:componentRef="u_ib_sSpi_ib_s"  spirit:busRef="sSpi_ib_m"/>
+   </spirit:interconnection>
+   
+            
+
+  </spirit:interconnections>
+
+  
+  <spirit:adHocConnections>
+
+     
+     
+
+     <spirit:adHocConnection>
+        <spirit:name>clk0clk</spirit:name>
+        <spirit:externalPortReference spirit:portRef="clk0clk"/>
+
+        
+        
+
+        <spirit:internalPortReference spirit:portRef="aclk" spirit:componentRef="u_amib_mGauxCore"/>
+                
+
+        <spirit:internalPortReference spirit:portRef="aclk" spirit:componentRef="u_amib_mDexmpcCore"/>
+                
+
+        <spirit:internalPortReference spirit:portRef="aclk" spirit:componentRef="u_asib_sSpi"/>
+                
+
+        <spirit:internalPortReference spirit:portRef="aclk" spirit:componentRef="u_asib_sD2dData"/>
+                
+
+        <spirit:internalPortReference spirit:portRef="aclk" spirit:componentRef="u_asib_sIrisBridge"/>
+                
+
+        <spirit:internalPortReference spirit:portRef="aclk" spirit:componentRef="u_busmatrix_bm0"/>
+                
+
+        <spirit:internalPortReference spirit:portRef="aclk" spirit:componentRef="u_default_slave_ds_1"/>
+                
+
+        <spirit:internalPortReference spirit:portRef="aclk" spirit:componentRef="u_ib_sSpi_ib_s"/>
+                
+
+        <spirit:internalPortReference spirit:portRef="aclk" spirit:componentRef="u_ib_sSpi_ib_m"/>
+                 
+
+     </spirit:adHocConnection>
+
+     <spirit:adHocConnection>
+        <spirit:name>clk0resetn</spirit:name>
+        <spirit:externalPortReference spirit:portRef="clk0resetn"/>
+
+        
+        
+
+            <spirit:internalPortReference spirit:portRef="aresetn" spirit:componentRef="u_amib_mGauxCore"/>
+          
+                 
+
+            <spirit:internalPortReference spirit:portRef="aresetn" spirit:componentRef="u_amib_mDexmpcCore"/>
+          
+                 
+
+            <spirit:internalPortReference spirit:portRef="aresetn" spirit:componentRef="u_asib_sSpi"/>
+          
+                 
+
+            <spirit:internalPortReference spirit:portRef="aresetn" spirit:componentRef="u_asib_sD2dData"/>
+          
+                 
+
+            <spirit:internalPortReference spirit:portRef="aresetn" spirit:componentRef="u_asib_sIrisBridge"/>
+          
+                 
+
+            <spirit:internalPortReference spirit:portRef="aresetn" spirit:componentRef="u_busmatrix_bm0"/>
+          
+                 
+
+            <spirit:internalPortReference spirit:portRef="aresetn" spirit:componentRef="u_default_slave_ds_1"/>
+          
+                 
+
+            <spirit:internalPortReference spirit:portRef="aresetn" spirit:componentRef="u_ib_sSpi_ib_s"/>
+          
+                 
+
+            <spirit:internalPortReference spirit:portRef="aresetn" spirit:componentRef="u_ib_sSpi_ib_m"/>
+          
+                  
+
+     </spirit:adHocConnection>
+
+     
+      
+
+  </spirit:adHocConnections>
+
+  
+  
+
+  <spirit:hierConnections>
+
+     
+     
+
+    <spirit:hierConnection spirit:interfaceRef="sSpi">
+       <spirit:activeInterface spirit:componentRef="u_asib_sSpi" spirit:busRef="sSpi_s"/>
+    </spirit:hierConnection>
+
+                
+
+    <spirit:hierConnection spirit:interfaceRef="sD2dData">
+       <spirit:activeInterface spirit:componentRef="u_asib_sD2dData" spirit:busRef="sD2dData_s"/>
+    </spirit:hierConnection>
+
+                
+
+    <spirit:hierConnection spirit:interfaceRef="sIrisBridge">
+       <spirit:activeInterface spirit:componentRef="u_asib_sIrisBridge" spirit:busRef="sIrisBridge_s"/>
+    </spirit:hierConnection>
+
+                
+
+    <spirit:hierConnection spirit:interfaceRef="mGauxCore">
+        <spirit:activeInterface spirit:componentRef="u_amib_mGauxCore" spirit:busRef="mGauxCore_m"/>
+    </spirit:hierConnection>
+
+              
+
+    <spirit:hierConnection spirit:interfaceRef="mDexmpcCore">
+        <spirit:activeInterface spirit:componentRef="u_amib_mDexmpcCore" spirit:busRef="mDexmpcCore_m"/>
+    </spirit:hierConnection>
+
+               
+    
+    <!-- END -->
+     
+    
+     
+
+  </spirit:hierConnections>
+  <spirit:vendorExtensions>
+  </spirit:vendorExtensions>
+</spirit:design>
+

@@ -1,0 +1,109 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2009-2013 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2009-11-05 21:17:37 +0000 (Thu, 05 Nov 2009)
+#-     Revision            : 84668
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import the Base Class
+from os import path
+from sm_base import sm_base
+from ipfs_std_lib import *
+from glob import glob
+
+class conformal_lec (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise -
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Set the name
+        self.name = 'conformal_lec'
+
+        #Add Lincense Requirement
+        self.licenses.append('conformal')
+        
+        # Tools Needed
+        self.tools.append('conformal')
+
+   #-------------------------------------------------------------------------------
+   # options - This function registers all valid command line options for this SM
+   #-------------------------------------------------------------------------------
+   def add_options(self, args, group):
+        group.add_option("--golden", dest="GOLDEN",default='default_slave_ds_0',
+                         help = "Set the name of the golden design. Example: default_slave_ds_0")
+        #Clear options
+        return 0
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # run - Executes n-iterations of tool call, with options to call pre-processing
+   #        and post-processing scriptlets that perform specific housekeeping
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+        print "runnning conformal logical equivalance check now"
+
+        #Determine PERIPH_LOGICAL
+        periph_logical = sub(r'/implementation/(\S+)/synopsys$', r'/logical/\1', directory)
+
+        #Create a run script
+        run_script = [ 'setenv GOLDEN_DESIGN ' + self.options.GOLDEN,
+                       'setenv REVISED_DESIGN ' + self.options.block,
+                       'lec -nogui -dofile ' + directory + '/' + self.options.block + '/validation/conformal_lec/conformal_lec.dofile'
+                       ];
+        #Write out script and run it
+        self.write_run_script(run_script, 'run_conformal_lec', args)
+        return self.run_command(args, './run_conformal_lec')
+
+        return 0
+
+   #-------------------------------------------------------------------------------
+
+   def clean_sm(self, args,directory):
+
+        #disable lsf for clean
+        self.use_lsf = 0
+        self.delete_files.append('run*')
+        self.delete_files.append('bsub.log')
+
+        return 0;
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # help -
+   #-------------------------------------------------------------------------------
+   def help_sm(self, args):
+
+     #set the usage term
+     self.parser.usage = "ae conformal_lec [options] \nNote: Target block (--block) must be the REVISED design.\nSet the GOLDEN design using option --golden."
+     return 0;

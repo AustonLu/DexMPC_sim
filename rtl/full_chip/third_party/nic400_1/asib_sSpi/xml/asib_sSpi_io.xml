@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+#==============================================================================#
+#   The confidential and proprietary information contained in this file may
+#   only be used by a person authorised under and to the extent permitted
+#   by a subsisting licensing agreement from ARM Limited.
+#   (C) COPYRIGHT 2003-2015 ARM Limited.
+#        ALL RIGHTS RESERVED
+#   This entire notice must be reproduced on all copies of this file
+#   and copies of this file may only be made by a person if such person is
+#   permitted to do so under the terms of a subsisting license agreement
+#   from ARM Limited.
+#
+#-----------------------------------------------------------------------------
+#  Version and Release Control Information
+#
+#  File Revision        $Revision 17028 $
+#  File Date            $Date 2006-06-30 165409 +0100 (Fri, 30 Jun 2006) $
+#
+#  Release Information  PL401-r1p2-00rel0
+#
+#-----------------------------------------------------------------------------
+#  Purpose  Verilog IO defines for asib_sSpi
+#
+#==============================================================================#
+
+<bus>
+<type>AXI4</type>
+<name>sSpi_s</name>
+<description>sSpi_s AXI bus</description>
+<direction>slave</direction>
+<channel>false</channel>
+<group>
+<description>AW Channel</description>
+<signal>
+<busname>AWID</busname>
+<name>awid_sSpi_s</name>
+<width>2</width>
+<description>write id of sSpi_s AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWADDR</busname>
+<name>awaddr_sSpi_s</name>
+<width>32</width>
+<description>write address of sSpi_s AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWLEN</busname>
+<name>awlen_sSpi_s</name>
+<description>write length field of sSpi_s AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWSIZE</busname>
+<name>awsize_sSpi_s</name>
+<description>write size of sSpi_s AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWBURST</busname>
+<name>awburst_sSpi_s</name>
+<description>write burst length of sSpi_s AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWLOCK</busname>
+<name>awlock_sSpi_s</name>
+<description>write lock of sSpi_s AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWCACHE</busname>
+<name>awcache_sSpi_s</name>
+<description>write cache field of sSpi_s AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWPROT</busname>
+<name>awprot_sSpi_s</name>
+<description>write prot field of sSpi_s AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWVALID</busname>
+<name>awvalid_sSpi_s</name>
+<description>write valid of sSpi_s AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWREADY</busname>
+<name>awready_sSpi_s</name>
+<description>write ready of sSpi_s AXI bus AW channel</description>
+</signal>
+</group>
+<group>
+<description>W Channel</description>
+<signal>
+<busname>WDATA</busname>
+<name>wdata_sSpi_s</name>
+<width>32</width>
+<description>write data of sSpi_s AXI bus W Channel</description>
+</signal>
+<signal>
+<busname>WSTRB</busname>
+<name>wstrb_sSpi_s</name>
+<width>4</width>
+<description>write strobes of sSpi_s AXI bus W Channel</description>
+</signal>
+<signal>
+<busname>WLAST</busname>
+<name>wlast_sSpi_s</name>
+<description>write last of sSpi_s AXI bus W Channel</description>
+</signal>
+<signal>
+<busname>WVALID</busname>
+<name>wvalid_sSpi_s</name>
+<description>write valid of sSpi_s AXI bus W Channel</description>
+</signal>
+<signal>
+<busname>WREADY</busname>
+<name>wready_sSpi_s</name>
+<description>write ready of sSpi_s AXI bus W Channel</description>
+</signal>
+</group>
+<group>
+<description>B Channel</description>
+<signal>
+<busname>BID</busname>
+<name>bid_sSpi_s</name>
+<width>2</width>
+<description>b response id of sSpi_s AXI bus B Channel</description>
+</signal>
+<signal>
+<busname>BRESP</busname>
+<name>bresp_sSpi_s</name>
+<description>b response status of sSpi_s AXI bus B Channel</description>
+</signal>
+<signal>
+<busname>BVALID</busname>
+<name>bvalid_sSpi_s</name>
+<description>b response valid of sSpi_s AXI bus B Channel</description>
+</signal>
+<signal>
+<busname>BREADY</busname>
+<name>bready_sSpi_s</name>
+<description>b response ready of sSpi_s AXI bus B Channel</description>
+</signal>
+</group>
+<group>
+<description>AR Channel</description>
+<signal>
+<busname>ARID</busname>
+<name>arid_sSpi_s</name>
+<width>2</width>
+<description>read id of sSpi_s AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARADDR</busname>
+<name>araddr_sSpi_s</name>
+<width>32</width>
+<description>read address of sSpi_s AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARLEN</busname>
+<name>arlen_sSpi_s</name>
+<description>read length of sSpi_s AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARSIZE</busname>
+<name>arsize_sSpi_s</name>
+<description>read size of sSpi_s AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARBURST</busname>
+<name>arburst_sSpi_s</name>
+<description>read burst length of sSpi_s AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARLOCK</busname>
+<name>arlock_sSpi_s</name>
+<description>read lock of sSpi_s AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARCACHE</busname>
+<name>arcache_sSpi_s</name>
+<description>read cache field of sSpi_s AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARPROT</busname>
+<name>arprot_sSpi_s</name>
+<description>read prot field of sSpi_s AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARVALID</busname>
+<name>arvalid_sSpi_s</name>
+<description>read valid of sSpi_s AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARREADY</busname>
+<name>arready_sSpi_s</name>
+<description>read ready of sSpi_s AXI bus AR Channel</description>
+</signal>
+</group>
+<group>
+<description>R Channel</description>
+<signal>
+<busname>RID</busname>
+<name>rid_sSpi_s</name>
+<width>2</width>
+<description>read id of sSpi_s AXI bus R Channel</description>
+</signal>
+<signal>
+<busname>RDATA</busname>
+<name>rdata_sSpi_s</name>
+<width>32</width>
+<description>read data of sSpi_s AXI bus R Channel</description>
+</signal>
+<signal>
+<busname>RRESP</busname>
+<name>rresp_sSpi_s</name>
+<description>read response status of sSpi_s AXI bus R Channel</description>
+</signal>
+<signal>
+<busname>RLAST</busname>
+<name>rlast_sSpi_s</name>
+<description>read last of sSpi_s AXI bus R Channel</description>
+</signal>
+<signal>
+<busname>RVALID</busname>
+<name>rvalid_sSpi_s</name>
+<description>read valid of sSpi_s AXI bus R Channel</description>
+</signal>
+<signal>
+<busname>RREADY</busname>
+<name>rready_sSpi_s</name>
+<description>read ready of sSpi_s AXI bus R Channel</description>
+</signal>
+</group>
+</bus>
+<bus>
+<type>NIC400_AXI4</type>
+<name>sSpi_m</name>
+<description>sSpi_m AXI bus</description>
+<direction>master</direction>
+<channel>false</channel>
+<group>
+<description>AW Channel</description>
+<signal>
+<busname>AWID</busname>
+<name>awid_sSpi_m</name>
+<width>2</width>
+<description>write id of sSpi_m AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWADDR</busname>
+<name>awaddr_sSpi_m</name>
+<width>32</width>
+<description>write address of sSpi_m AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWLEN</busname>
+<name>awlen_sSpi_m</name>
+<description>write length field of sSpi_m AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWSIZE</busname>
+<name>awsize_sSpi_m</name>
+<description>write size of sSpi_m AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWBURST</busname>
+<name>awburst_sSpi_m</name>
+<description>write burst length of sSpi_m AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWLOCK</busname>
+<name>awlock_sSpi_m</name>
+<description>write lock of sSpi_m AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWCACHE</busname>
+<name>awcache_sSpi_m</name>
+<description>write cache field of sSpi_m AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWPROT</busname>
+<name>awprot_sSpi_m</name>
+<description>write prot field of sSpi_m AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWVALID</busname>
+<name>awvalid_sSpi_m</name>
+<description>write valid of sSpi_m AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWVALID_VECT</busname>
+<name>awvalid_vect_sSpi_m</name>
+<width>3</width>
+<description>write valid vector of sSpi_m AXI bus AW channel</description>
+</signal>
+<signal>
+<busname>AWREADY</busname>
+<name>awready_sSpi_m</name>
+<description>write ready of sSpi_m AXI bus AW channel</description>
+</signal>
+</group>
+<group>
+<description>W Channel</description>
+<signal>
+<busname>WDATA</busname>
+<name>wdata_sSpi_m</name>
+<width>32</width>
+<description>write data of sSpi_m AXI bus W Channel</description>
+</signal>
+<signal>
+<busname>WSTRB</busname>
+<name>wstrb_sSpi_m</name>
+<width>4</width>
+<description>write strobes of sSpi_m AXI bus W Channel</description>
+</signal>
+<signal>
+<busname>WLAST</busname>
+<name>wlast_sSpi_m</name>
+<description>write last of sSpi_m AXI bus W Channel</description>
+</signal>
+<signal>
+<busname>WVALID</busname>
+<name>wvalid_sSpi_m</name>
+<description>write valid of sSpi_m AXI bus W Channel</description>
+</signal>
+<signal>
+<busname>WREADY</busname>
+<name>wready_sSpi_m</name>
+<description>write ready of sSpi_m AXI bus W Channel</description>
+</signal>
+</group>
+<group>
+<description>B Channel</description>
+<signal>
+<busname>BID</busname>
+<name>bid_sSpi_m</name>
+<width>2</width>
+<description>b response id of sSpi_m AXI bus B Channel</description>
+</signal>
+<signal>
+<busname>BRESP</busname>
+<name>bresp_sSpi_m</name>
+<description>b response status of sSpi_m AXI bus B Channel</description>
+</signal>
+<signal>
+<busname>BVALID</busname>
+<name>bvalid_sSpi_m</name>
+<description>b response valid of sSpi_m AXI bus B Channel</description>
+</signal>
+<signal>
+<busname>BREADY</busname>
+<name>bready_sSpi_m</name>
+<description>b response ready of sSpi_m AXI bus B Channel</description>
+</signal>
+</group>
+<group>
+<description>AR Channel</description>
+<signal>
+<busname>ARID</busname>
+<name>arid_sSpi_m</name>
+<width>2</width>
+<description>read id of sSpi_m AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARADDR</busname>
+<name>araddr_sSpi_m</name>
+<width>32</width>
+<description>read address of sSpi_m AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARLEN</busname>
+<name>arlen_sSpi_m</name>
+<description>read length of sSpi_m AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARSIZE</busname>
+<name>arsize_sSpi_m</name>
+<description>read size of sSpi_m AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARBURST</busname>
+<name>arburst_sSpi_m</name>
+<description>read burst length of sSpi_m AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARLOCK</busname>
+<name>arlock_sSpi_m</name>
+<description>read lock of sSpi_m AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARCACHE</busname>
+<name>arcache_sSpi_m</name>
+<description>read cache field of sSpi_m AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARPROT</busname>
+<name>arprot_sSpi_m</name>
+<description>read prot field of sSpi_m AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARVALID</busname>
+<name>arvalid_sSpi_m</name>
+<description>read valid of sSpi_m AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARVALID_VECT</busname>
+<name>arvalid_vect_sSpi_m</name>
+<width>3</width>
+<description>read valid vector of sSpi_m AXI bus AR Channel</description>
+</signal>
+<signal>
+<busname>ARREADY</busname>
+<name>arready_sSpi_m</name>
+<description>read ready of sSpi_m AXI bus AR Channel</description>
+</signal>
+</group>
+<group>
+<description>R Channel</description>
+<signal>
+<busname>RID</busname>
+<name>rid_sSpi_m</name>
+<width>2</width>
+<description>read id of sSpi_m AXI bus R Channel</description>
+</signal>
+<signal>
+<busname>RDATA</busname>
+<name>rdata_sSpi_m</name>
+<width>32</width>
+<description>read data of sSpi_m AXI bus R Channel</description>
+</signal>
+<signal>
+<busname>RRESP</busname>
+<name>rresp_sSpi_m</name>
+<description>read response status of sSpi_m AXI bus R Channel</description>
+</signal>
+<signal>
+<busname>RLAST</busname>
+<name>rlast_sSpi_m</name>
+<description>read last of sSpi_m AXI bus R Channel</description>
+</signal>
+<signal>
+<busname>RVALID</busname>
+<name>rvalid_sSpi_m</name>
+<description>read valid of sSpi_m AXI bus R Channel</description>
+</signal>
+<signal>
+<busname>RREADY</busname>
+<name>rready_sSpi_m</name>
+<description>read ready of sSpi_m AXI bus R Channel</description>
+</signal>
+</group>
+</bus>
+<group>
+<description>Clock, reset and tie-off signals</description>
+<wire>
+<clock/>
+<name>aclk</name>
+<direction>in</direction>
+<description>main clock</description>
+<width>1</width>
+</wire>
+<wire>
+<reset/>
+<name>aresetn</name>
+<direction>in</direction>
+<width>1</width>
+<description>main reset</description>
+</wire>
+</group>

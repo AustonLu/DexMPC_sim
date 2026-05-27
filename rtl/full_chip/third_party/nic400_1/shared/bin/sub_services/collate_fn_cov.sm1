@@ -1,0 +1,218 @@
+#-------------------------------------------------------------------------------
+#- The confidential and proprietary information contained in this file may
+#- only be used by a person authorised under and to the extent permitted
+#- by a subsisting licensing agreement from ARM Limited.
+#-
+#-            (C) COPYRIGHT 2008-2013 ARM Limited.
+#-                    ALL RIGHTS RESERVED
+#-
+#- This entire notice must be reproduced on all copies of this file
+#- and copies of this file may only be made by a person if such person is
+#- permitted to do so under the terms of a subsisting license agreement
+#- from ARM Limited.
+#-------------------------------------------------------------------------------
+#-
+#- Version and Release Control Information:
+#-
+#-     Checked In          :  2013-05-09 15:18:04 +0100 (Thu, 09 May 2013)
+#-     Revision            : 149977
+#-
+#-     Release Information : PL401-r1p2-00rel0
+#-
+#-------------------------------------------------------------------------------
+#-
+#- Purpose : This file is a service module to support the IP Flow Solution.
+#-
+#-           It's purpose is bo build the random environment shared object
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Module imports
+#-------------------------------------------------------------------------------
+
+# Import standard modules
+from sm_base import sm_base
+from os import path, mkdir
+from ipfs_std_lib import *
+from glob import glob
+from shutil import copy as filecopy
+from string import replace
+
+class collate_fn_cov (sm_base):
+
+   #-------------------------------------------------------------------------------
+   # initialise - 
+   #-------------------------------------------------------------------------------
+   def __init__(self, launch_dir, bin_paths, use_lsf, use_tool):
+
+        #Pass on the __init__ call
+        sm_base.__init__(self, launch_dir, bin_paths, use_lsf, use_tool)
+
+        #Set the name
+        self.name = 'collate_fn_cov'
+
+        #Register workflow
+        self.lsf_workflow = 'arm_engine-1.0-covmrg_spec'
+
+        #Register license requirements
+        self.licenses.append('specman')
+
+        #Set the search_file .. used to identify coveage targets
+        self.search_file = 'report.opts'
+
+        #Register report function
+        self.self_report = True
+
+        #Register license requirements
+        self.tools.append('specman')
+        self.tools.append('xalan')
+        self.tools.append('perl')
+
+   #-------------------------------------------------------------------------------
+
+   #-------------------------------------------------------------------------------
+   # run - Run the sub_module 
+   #-------------------------------------------------------------------------------
+   def run_sm(self, args, directory):
+
+        #Scan the search file to get coverage targets
+        terms = {}
+        terms['fn_structs'] = {}
+        execfile(directory + '/' + self.search_file, terms)
+
+        if not path.exists("fn_cov"):
+            mkdir("fn_cov")
+
+        self.cchdir("collate_fn_cov");
+
+        # If any run areas for this block - need to work on this some more
+        #matches = glob.glob("..\/..\/random\/run_\*")
+
+        if path.exists("../../random/random_env"): # Tests were attempted at this level
+
+          #Find all *.ecov files and copy them to the ../fn_mod directory
+          ecovfile = glob('../../random/*/*.ecov')
+          ecovfile += glob('../../directed/*/*.ecov')
+          ecovfile += glob('../../random/*/*/*.ecov')
+          for ecov in ecovfile:
+              tname = replace(ecov,"../../random/","")    
+              tname = replace(tname,"../../directed/","")    
+              tname = replace(tname,"/","_")    
+              tname = replace(tname,"seed_","")    
+              print "copy " + ecov + " to " +  tname   
+              filecopy(ecov, "../fn_cov/" + tname)
+  
+          run_script = []
+          
+          #Non GUI mode
+          if self.options.gui == False:
+              run_script = ['specman -c "#define ARM_COVERAGE_IGNORES; set_config(memory, max_size, 2000M, absolute_max_size, 3000M); load ../../random/e/top;" \\']
+              run_script.append('-c "read coverage ../fn_cov/*.ecov;" \\')
+  
+              #Output all the necessary coverage reports.
+              for struct in range(len(terms['fn_structs'].keys())):
+                  if struct%20 == 0 and struct != 0:
+                      run_script.append('specman -c "#define ARM_COVERAGE_IGNORES; set_config(memory, max_size, 2000M, absolute_max_size, 3000M); load ../../random/e/top;" \\')
+                      run_script.append('-c "read coverage ../fn_cov/*.ecov;" \\')
+                      run_script.append('-c "show cover -kind=full -f=' + terms['fn_structs'].keys()[struct] + ' ' + terms['fn_structs'][terms['fn_structs'].keys()[struct]] + ';" \\')
+                  else:
+                      run_script.append('-c "show cover -kind=full -f=' + terms['fn_structs'].keys()[struct] + ' ' + terms['fn_structs'][terms['fn_structs'].keys()[struct]] + ';" \\')
+  
+                  if struct%19 == 0 and struct != 0:
+                      run_script.append('-c "write coverage -merge ' + terms['fn_structs'].keys()[struct] + ';"')
+                      run_script.append('-c "quit"')
+                  else:
+                      run_script.append('-c "write coverage -merge ' + terms['fn_structs'].keys()[struct] + ';" \\')
+    
+              #Quit specman 
+              run_script.append('-c "quit"')
+  
+              #Process all the structs
+              for struct in terms['fn_structs'].keys():
+                    run_script.append('$ASSESSMENT_HOME/scripts/specman_fcov_results.pl ' + struct + '.erep ' + struct + '_results.xml collate_fn_cov/' + struct + '_results.html')
+                    run_script.append('fn_cov_filter.pl ' + struct + '_results.xml ../fn_coverage_filter.xml ' + struct + '_f_results.xml ' + struct + '_ratified_results_top.xml collate_fn_cov/' + struct + '_results.html')
+                    run_script.append('Xalan -o ' + struct + '_results.html ' + struct + '_f_results.xml $ASSESSMENT_HOME/scripts/results.xsl')
+  
+              #Produce the top level Report
+              run_script.append('cd ../')
+              run_script.append("echo '<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>' > collate_fn_cov/top_results.xml")
+              run_script.append('echo "<Results>" >> collate_fn_cov/top_results.xml')
+              run_script.append('cat collate_fn_cov/*ratified_results_top.xml | grep -v "<?" | grep -v "<Results>" | grep -v "</Results>" >> collate_fn_cov/top_results.xml')
+              run_script.append('echo "</Results>" >> collate_fn_cov/top_results.xml')
+              run_script.append('Xalan -o fn_cov_results.html collate_fn_cov/top_results.xml $ASSESSMENT_HOME/scripts/results.xsl')
+              run_script.append('find collate_fn_cov -name "*_f_results.xml" | grep -v "top_results.xml" | xargs cat | grep -v "<?" | grep -v "<Results>" | grep -v "</Results>" > collate_fn_cov/fn_cov_merged.xml')
+  
+          else:
+              run_script = ['specview -p "#define ARM_COVERAGE_IGNORES; set_config(memory, max_size, 2000M, absolute_max_size, 3000M); load ../../random/e/top; read coverage ../fn_cov/*.ecov"']
+  
+          #Write and execute run_script
+          self.write_run_script(run_script, 'compile_cov', args)
+          return self.run_command(args, './compile_cov')
+
+        else: # No tests were attempted at this level - so set result as intentional no-run
+          not_run = open('fn_cov_merged.xml', 'w')
+          not_run.write('<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?> \n')
+          not_run.write('<Results> \n')
+          not_run.write('<Result> \n')
+          not_run.write('    <Type         >Func Coverage</Type> \n')
+          not_run.write('    <LogFile      >None Found</LogFile> \n')
+          not_run.write('    <Description  >No tests run on this block </Description> \n')
+          not_run.write('   <Pass         >4</Pass> \n')
+          not_run.write('  </Result> \n')
+          not_run.write('</Results> \n\n')
+          not_run.close()
+
+          run_script = []
+          run_script.append('# Empty script to keep route happy')
+          run_script.append('echo \"No tests run - so no functional coverage to generate\"')
+
+          self.write_run_script(run_script, 'compile_cov', args)
+          return self.run_command(args, './compile_cov')
+
+   #-------------------------------------------------------------------------------
+   # report - Sumarises the log files 
+   #-------------------------------------------------------------------------------
+   def report_sm(self, args, directory):
+
+       #Scan the search file to get coverage targets
+       terms = {}
+       terms['fn_structs'] = {}
+       execfile(directory + '/' + self.search_file, terms)
+
+       #Remove uneeded license request 
+       if self.licenses.count('specman') > 0:
+            self.licenses.remove('specman')
+
+       self.cchdir("collate_fn_cov");
+
+       if path.exists("../../random/random_env"): # Tests were attempted at this level
+
+        run_script = ['rm *.xml']
+  
+        #Process all the structs
+        for struct in terms['fn_structs'].keys():
+              run_script.append('$ASSESSMENT_HOME/scripts/specman_fcov_results.pl ' + struct + '.erep ' + struct + '_results.xml collate_fn_cov/' + struct + '_results.html')
+              run_script.append('fn_cov_filter.pl ' + struct + '_results.xml ../fn_coverage_filter.xml ' + struct + '_f_results.xml ' + struct + '_ratified_results_top.xml collate_fn_cov/' + struct + '_results.html')
+              run_script.append('Xalan -o ' + struct + '_results.html ' + struct + '_f_results.xml $ASSESSMENT_HOME/scripts/results.xsl')
+  
+        #Produce the top level Report
+        run_script.append('cd ../')
+        run_script.append("echo '<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>' > collate_fn_cov/top_results.xml")
+        run_script.append('echo "<Results>" >> collate_fn_cov/top_results.xml')
+        run_script.append('cat collate_fn_cov/*ratified_results_top.xml | grep -v "<?" | grep -v "<Results>" | grep -v "</Results>" >> collate_fn_cov/top_results.xml')
+        run_script.append('echo "</Results>" >> collate_fn_cov/top_results.xml')
+        run_script.append('Xalan -o fn_cov_results.html collate_fn_cov/top_results.xml $ASSESSMENT_HOME/scripts/results.xsl')
+        run_script.append('find collate_fn_cov -name "*_f_results.xml" | grep -v "top_results.xml" | xargs cat | grep -v "<?" | grep -v "<Results>" | grep -v "</Results>" > collate_fn_cov/fn_cov_merged.xml')
+  
+        #Write and execute run_script
+        self.write_run_script(run_script, 'compile_cov', args)
+        return self.run_command(args, './compile_cov')
+
+   #-------------------------------------------------------------------------------
+   # clean - clean the output of the sub_module 
+   #-------------------------------------------------------------------------------
+   def clean_sm(self, args, directory):
+
+         self.delete_files.append('collate_fn_cov')
+         self.delete_files.append('fn_cov_report.html')
+   #-------------------------------------------------------------------------------

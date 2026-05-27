@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+<!--  This confidential and proprietary software may be used only as        -->
+<!--  authorised by a licensing agreement from ARM Limited                  -->
+<!--   (C) COPYRIGHT 2009-2013 ARM Limited or its affiliates.               -->
+<!--        ALL RIGHTS RESERVED                                             -->
+<!--  The entire notice above must be reproduced on all authorised          -->
+<!--  copies and copies may only be made to the extent permitted            -->
+<!--  by a licensing agreement from ARM Limited or its affiliates.          -->
+<!--                                                                        -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+<!--  Version and Release Control Information:                              -->
+<!--                                                                        -->
+<!--   File Revision       : 150027                                         -->
+<!--                                                                        -->
+<!--   Release Information : PL401-r1p2-00rel0                              -->
+<!--                                                                        -->
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+<!DOCTYPE periph [
+<!ENTITY system SYSTEM "nic400_internal.xml"> ]>
+
+<periph>
+<parcfg>nic400</parcfg>
+
+&system;
+
+</periph>
