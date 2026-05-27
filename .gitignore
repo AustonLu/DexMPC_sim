@@ -1,0 +1,28 @@
+# Local Codex/session metadata
+.codex
+
+# Build and generated simulation outputs
+build/
+obj_dir*/
+
+# Verilator/compiler intermediates
+*.o
+*.a
+*.d
+*.so
+*.gcda
+*.gcno
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Simulation waves and logs
+*.vcd
+*.fst
+*.fsdb
+*.log
+
+# Generated verification result data
+verification/results/**/*.csv
+verification/results/**/*.txt
