@@ -1,8 +1,20 @@
+#ifdef DEXMPC_USE_TOPCHIP_SIM
+#include "../common/topchip_sim.hpp"
+#else
 #include "../common/dexmpc_sim.hpp"
+#endif
 
 #include <array>
 
 using namespace dexsim;
+#ifdef DEXMPC_USE_TOPCHIP_SIM
+using Sim = dexsim::topchip::Sim;
+using TestBase = dexsim::topchip::TestBase;
+#endif
+
+#ifndef DEXMPC_RESULT_DIR
+#define DEXMPC_RESULT_DIR "verification/results/core_top/macarray"
+#endif
 
 namespace {
 
@@ -33,6 +45,9 @@ public:
 
 protected:
     void monitor_done() override {
+#ifdef DEXMPC_USE_TOPCHIP_SIM
+        return;
+#else
         auto* d = sim_.dut();
         if (d->reset) return;
         if ((d->io_cmdStatus_0 & (1u << 5)) != 0) {
@@ -64,6 +79,7 @@ protected:
         ++done_count_;
         ++expected_done_;
         last_done_count_ = d->io_doneCount_0;
+#endif
     }
 
 private:
@@ -110,6 +126,12 @@ private:
     }
 
     void wait_for_done_count(int target) {
+#ifdef DEXMPC_USE_TOPCHIP_SIM
+        topchip_wait_for_done_count(target, kTimeoutCycles);
+        done_count_ = target;
+        expected_done_ = target;
+        last_done_count_ = sim_.dut()->io_doneCount_0;
+#else
         int cycles = 0;
         while (done_count_ < target) {
             tick();
@@ -117,6 +139,7 @@ private:
                 throw std::runtime_error("macarray timeout waiting for done_count");
             }
         }
+#endif
     }
 
     void issue_gemm_cmd(int n_rows, int m_cols, int k_dim,
@@ -523,7 +546,7 @@ private:
 int main(int argc, char** argv) {
     try {
         Sim sim(argc, argv);
-        MacArrayTest test(sim, "verification/results/core_top/macarray");
+        MacArrayTest test(sim, DEXMPC_RESULT_DIR);
         test.run();
         return 0;
     } catch (const std::exception& e) {

@@ -1,6 +1,8 @@
 #pragma once
 
+#ifndef DEXMPC_SIM_COMMON_ONLY
 #include "VDexMPCCoreTop.h"
+#endif
 #include "verilated.h"
 
 #include <array>
@@ -304,6 +306,8 @@ inline Matrix words_to_matrix(const std::vector<Word128>& words, int rows, int c
     return matrix;
 }
 
+#ifndef DEXMPC_SIM_COMMON_ONLY
+
 class Sim {
 public:
     Sim(int argc, char** argv) : context_(new VerilatedContext), dut_(nullptr) {
@@ -493,5 +497,7 @@ protected:
 
     Sim& sim_;
 };
+
+#endif // DEXMPC_SIM_COMMON_ONLY
 
 } // namespace dexsim

@@ -1,8 +1,20 @@
+#ifdef DEXMPC_USE_TOPCHIP_SIM
+#include "../common/topchip_sim.hpp"
+#else
 #include "../common/dexmpc_sim.hpp"
+#endif
 
 #include <array>
 
 using namespace dexsim;
+#ifdef DEXMPC_USE_TOPCHIP_SIM
+using Sim = dexsim::topchip::Sim;
+using TestBase = dexsim::topchip::TestBase;
+#endif
+
+#ifndef DEXMPC_RESULT_DIR
+#define DEXMPC_RESULT_DIR "verification/results/core_top/lut"
+#endif
 
 namespace {
 
@@ -46,6 +58,13 @@ public:
             push_cmd(c.cmd);
         }
 
+#ifdef DEXMPC_USE_TOPCHIP_SIM
+        topchip_wait_for_done_count(static_cast<int>(cases_.size()), kTimeoutCycles);
+        done_count_ = static_cast<int>(cases_.size());
+        expected_done_ = done_count_;
+        last_done_count_ = sim_.dut()->io_doneCount_0;
+        for (auto& c : cases_) c.done_seen = true;
+#else
         int cycles = 0;
         while (done_count_ < static_cast<int>(cases_.size()) && cycles < kTimeoutCycles) {
             tick();
@@ -54,6 +73,7 @@ public:
         if (done_count_ < static_cast<int>(cases_.size())) {
             throw std::runtime_error("lut timeout waiting for done_count");
         }
+#endif
 
         for (int i = 0; i < 4; ++i) tick();
         capture_post_words();
@@ -309,7 +329,7 @@ private:
 int main(int argc, char** argv) {
     try {
         Sim sim(argc, argv);
-        LutTest test(sim, "verification/results/core_top/lut");
+        LutTest test(sim, DEXMPC_RESULT_DIR);
         test.run();
         return 0;
     } catch (const std::exception& e) {

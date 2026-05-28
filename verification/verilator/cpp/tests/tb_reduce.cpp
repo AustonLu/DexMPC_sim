@@ -1,8 +1,20 @@
+#ifdef DEXMPC_USE_TOPCHIP_SIM
+#include "../common/topchip_sim.hpp"
+#else
 #include "../common/dexmpc_sim.hpp"
+#endif
 
 #include <array>
 
 using namespace dexsim;
+#ifdef DEXMPC_USE_TOPCHIP_SIM
+using Sim = dexsim::topchip::Sim;
+using TestBase = dexsim::topchip::TestBase;
+#endif
+
+#ifndef DEXMPC_RESULT_DIR
+#define DEXMPC_RESULT_DIR "verification/results/core_top/reduce"
+#endif
 
 namespace {
 
@@ -37,10 +49,16 @@ public:
         preload_cases();
         release_reset();
 
+#ifdef DEXMPC_USE_TOPCHIP_SIM
+        for (const auto& c : cases_) {
+            push_cmd(c.cmd);
+            topchip_wait_for_next_done(kTimeoutCycles);
+            monitor_done();
+        }
+#else
         for (const auto& c : cases_) {
             push_cmd(c.cmd);
         }
-
         int cycles = 0;
         while (done_count_ < static_cast<int>(cases_.size()) && cycles < kTimeoutCycles) {
             tick();
@@ -49,6 +67,7 @@ public:
         if (done_count_ < static_cast<int>(cases_.size())) {
             throw std::runtime_error("reduce timeout waiting for done_count");
         }
+#endif
 
         write_output_csv();
         std::cout << "Reduce C++ test passed at cycle " << sim_.cycle()
@@ -266,7 +285,7 @@ private:
 int main(int argc, char** argv) {
     try {
         Sim sim(argc, argv);
-        ReduceTest test(sim, "verification/results/core_top/reduce");
+        ReduceTest test(sim, DEXMPC_RESULT_DIR);
         test.run();
         return 0;
     } catch (const std::exception& e) {

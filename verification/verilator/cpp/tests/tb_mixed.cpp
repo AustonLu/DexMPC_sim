@@ -1,8 +1,20 @@
+#ifdef DEXMPC_USE_TOPCHIP_SIM
+#include "../common/topchip_sim.hpp"
+#else
 #include "../common/dexmpc_sim.hpp"
+#endif
 
 #include <array>
 
 using namespace dexsim;
+#ifdef DEXMPC_USE_TOPCHIP_SIM
+using Sim = dexsim::topchip::Sim;
+using TestBase = dexsim::topchip::TestBase;
+#endif
+
+#ifndef DEXMPC_RESULT_DIR
+#define DEXMPC_RESULT_DIR "verification/results/core_top/mixed"
+#endif
 
 namespace {
 
@@ -72,6 +84,13 @@ public:
             log_case_input(cid);
         }
 
+#ifdef DEXMPC_USE_TOPCHIP_SIM
+        reset_sequence(4);
+        for (int i = 0; i < 4; ++i) tick_raw();
+        preload_cases_to_sram();
+        for (int i = 0; i < 4; ++i) tick_raw();
+        run_topchip_issue_order();
+#else
         for (int i = 0; i < 4; ++i) tick_raw();
         preload_cases_to_sram();
 
@@ -114,6 +133,7 @@ public:
         if ((d->io_engineStatus & 0xfu) != 0) {
             throw std::runtime_error("mixed engineStatus still busy");
         }
+#endif
 
         for (int cid = 0; cid < num_cases_; ++cid) {
             capture_case_output(cid);
@@ -127,6 +147,9 @@ public:
 
 protected:
     void monitor_done() override {
+#ifdef DEXMPC_USE_TOPCHIP_SIM
+        return;
+#else
         auto* d = sim_.dut();
         if (d->reset) return;
 
@@ -191,6 +214,7 @@ protected:
         ++done_count_;
         ++expected_done_;
         last_done_count_ = d->io_doneCount_0;
+#endif
     }
 
 private:
@@ -614,6 +638,82 @@ private:
         }
     }
 
+#ifdef DEXMPC_USE_TOPCHIP_SIM
+    void capture_topchip_reduce_result(MixedCase& c) {
+        auto* d = sim_.dut();
+        if (c.kind == kKindReduceAdd) {
+            const uint32_t reg = d->io_addReduceReg_0;
+            const uint16_t val = static_cast<uint16_t>(reg & 0xffffu);
+            const uint32_t cmd = (reg >> 16) & 0xfffu;
+            const bool valid = ((reg >> 28) & 1u) != 0;
+            if (!valid) throw std::runtime_error("mixed addReduce valid not set");
+            if (cmd != c.cmd_id) throw std::runtime_error("mixed addReduce cmd id mismatch");
+            c.reduce_value = val;
+            c.reduce_index = 0;
+            c.reduce_seen = true;
+        } else if (c.kind == kKindReduceCmp) {
+            const uint32_t reg0 = d->io_cmpReduceReg0_0;
+            const uint32_t reg1 = d->io_cmpReduceReg1_0;
+            const uint16_t val = static_cast<uint16_t>(reg0 & 0xffffu);
+            const uint32_t cmd = (reg0 >> 16) & 0xfffu;
+            const bool valid = ((reg0 >> 28) & 1u) != 0;
+            const uint16_t idx = static_cast<uint16_t>(reg1 & 0xfffu);
+            if (!valid) throw std::runtime_error("mixed cmpReduce valid not set");
+            if (cmd != c.cmd_id) throw std::runtime_error("mixed cmpReduce cmd id mismatch");
+            c.reduce_value = val;
+            c.reduce_index = idx;
+            c.reduce_seen = true;
+        }
+        c.done_seen = true;
+    }
+
+    void run_topchip_issue_order() {
+        std::vector<int> reduce_ids;
+        std::vector<int> non_reduce_ids;
+        for (int cid = 0; cid < num_cases_; ++cid) {
+            const auto& c = cases_[static_cast<size_t>(cid)];
+            if (c.kind == kKindReduceAdd || c.kind == kKindReduceCmp) {
+                reduce_ids.push_back(cid);
+            } else {
+                non_reduce_ids.push_back(cid);
+            }
+        }
+
+        int issue_idx = 0;
+        for (int cid : reduce_ids) {
+            auto& c = cases_[static_cast<size_t>(cid)];
+            const bool group_end = (issue_idx == num_cases_ - 1);
+            push_cmd(topchip::cmd_with_group_end(c.cmd, group_end));
+            topchip_wait_for_next_done(kTimeoutCycles);
+            capture_topchip_reduce_result(c);
+            ++done_count_;
+            ++issue_idx;
+        }
+
+        for (std::size_t i = 0; i < non_reduce_ids.size(); ++i) {
+            const int cid = non_reduce_ids[i];
+            const bool group_end = (issue_idx == num_cases_ - 1);
+            push_cmd(topchip::cmd_with_group_end(cases_[static_cast<size_t>(cid)].cmd, group_end));
+            ++issue_idx;
+        }
+
+        topchip_wait_for_done_count(num_cases_, kTimeoutCycles);
+        for (int cid : non_reduce_ids) {
+            cases_[static_cast<size_t>(cid)].done_seen = true;
+        }
+        done_count_ = num_cases_;
+        last_done_count_ = sim_.dut()->io_doneCount_0;
+
+        auto* d = sim_.dut();
+        if ((d->io_cmdStatus_0 & (1u << 5)) != 0) {
+            throw std::runtime_error("mixed cmdStatus overflow set unexpectedly");
+        }
+        if ((d->io_engineStatus & 0xfu) != 0) {
+            throw std::runtime_error("mixed engineStatus still busy");
+        }
+    }
+#endif
+
     void capture_case_output(int cid) {
         auto& c = cases_[static_cast<size_t>(cid)];
         if (!c.done_seen) throw std::runtime_error("mixed missing done");
@@ -920,7 +1020,7 @@ private:
 int main(int argc, char** argv) {
     try {
         Sim sim(argc, argv);
-        MixedTest test(sim, "verification/results/core_top/mixed");
+        MixedTest test(sim, DEXMPC_RESULT_DIR);
         test.run();
         return 0;
     } catch (const std::exception& e) {

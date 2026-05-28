@@ -52,3 +52,79 @@ python3 verification/results/core_top/reduce/analyze_tb_core_top_reduce.py
 python3 verification/results/core_top/lut/postprocess_tb_core_top_lut.py
 python3 verification/results/core_top/mixed/analyze_tb_core_top_mixed.py
 ```
+
+## TopChip Verilator Model
+
+The full-chip C++ driver is implemented in `verification/verilator/cpp/common/topchip_sim.hpp`.
+It wraps the Verilated TopChip model behind a small register/SRAM/instruction API:
+
+- Define `DEX_TOPCHIP_TRANSPORT_D2D` to use `VTopChipTopD2dHarness`.
+- Define `DEX_TOPCHIP_TRANSPORT_SPI` to use pad-level `VTopChipTop`.
+- Use `Sim::reset()`, `write_reg()`, `read_reg()`, `write_mem_word()`, `read_mem_word()`, `write_mem_words()`, and `read_mem_words()` for external access.
+- Use `TestBase::push_cmd()`, `topchip_wait_for_next_done()`, and `topchip_wait_for_done_count()` for command delivery and completion polling.
+
+Address mapping follows the tapeout full-chip testbench:
+
+- Config register address: `BASE + (reg_idx << 3)`.
+- SRAM word address: `BASE + ((0x8000 + (mpc_mem_id << 11) + word_addr) << 3)`.
+- Core memory ID mapping: global `0 -> 0`, local0 `1 -> 1`, temp0 `2 -> 5`, LUT banks `9..14 -> 9..14`.
+- D2D low/high-half IDs: write `0x0c/0x0d`, read `0x2a/0x2b`.
+- D2D SRAM word access is split into one AXI beat per 64-bit half-word, matching the existing SV `d2d_write_128`/`d2d_read_128` behavior.
+
+## Full-Chip D2D Mixed Test
+
+Generate, build, and run the D2D harness model:
+
+```sh
+env CCACHE_DISABLE=1 verilator -sv --cc --top-module TopChipTopD2dHarness \
+  -f verification/verilator/filelists/topchip_top_d2d_harness.f \
+  --exe verification/verilator/cpp/tests/full_chip/tb_topchip_d2d_mixed.cpp \
+  --Mdir build/verilator/full_chip/topchip_d2d_mixed_tb \
+  --output-groups 0
+
+make -C build/verilator/full_chip/topchip_d2d_mixed_tb \
+  -f VTopChipTopD2dHarness.mk -j 8 OBJCACHE=
+
+./build/verilator/full_chip/topchip_d2d_mixed_tb/VTopChipTopD2dHarness
+```
+
+Post-process the generated CSVs:
+
+```sh
+python3 verification/results/core_top/mixed/analyze_tb_core_top_mixed.py \
+  --result-root verification/results/full_chip/d2d/mixed \
+  --out-dir verification/results/full_chip/d2d/mixed
+```
+
+The same D2D flow can be reused for the standalone wrappers under
+`verification/verilator/cpp/tests/full_chip/` by changing `--exe` and `--Mdir`.
+
+## Full-Chip SPI Mixed Test
+
+Generate, build, and run the pad-level SPI model:
+
+```sh
+env CCACHE_DISABLE=1 verilator -sv --cc --top-module TopChipTop \
+  -f verification/verilator/filelists/topchip_top.f \
+  --exe verification/verilator/cpp/tests/full_chip/tb_topchip_spi_mixed.cpp \
+  --Mdir build/verilator/full_chip/topchip_spi_mixed_tb \
+  --output-groups 0
+
+make -C build/verilator/full_chip/topchip_spi_mixed_tb \
+  -f VTopChipTop.mk -j 8 OBJCACHE=
+
+./build/verilator/full_chip/topchip_spi_mixed_tb/VTopChipTop
+```
+
+Post-process the SPI mixed results:
+
+```sh
+python3 verification/results/core_top/mixed/analyze_tb_core_top_mixed.py \
+  --result-root verification/results/full_chip/spi/mixed \
+  --out-dir verification/results/full_chip/spi/mixed
+```
+
+Current full-chip mixed regression status:
+
+- D2D mixed: `34/34` cases passed, `641/641` exact elements.
+- SPI mixed: `34/34` cases passed, `641/641` exact elements.

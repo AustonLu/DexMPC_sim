@@ -29,7 +29,10 @@ module TopChipTopD2dHarness (
     input  logic        d2dm_b_ready,
     output logic        d2dm_b_valid,
     output logic [6:0]  d2dm_b_id,
-    output logic [1:0]  d2dm_b_resp
+    output logic [1:0]  d2dm_b_resp,
+
+    output logic        gaux_complete,
+    output logic        dexmpc_complete
 );
 
     tri           pad_clock;
@@ -61,6 +64,8 @@ module TopChipTopD2dHarness (
     assign pad_spi_ssn = 1'b1;
     assign pad_spi_mosi = 1'b0;
     assign pad_d2d_mux = 1'b0;
+    assign gaux_complete = pad_gaux_complete;
+    assign dexmpc_complete = pad_dexmpc_complete;
 
     TopChipTop u_dut (
         .pad_clock              (pad_clock),
