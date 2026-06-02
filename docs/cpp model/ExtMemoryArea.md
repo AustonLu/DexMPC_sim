@@ -1,6 +1,6 @@
 # DexMPC 外部访问地址说明
 
-本文档基于 `address_area.md`，说明从外界访问 DexMPC 时应使用的地址。
+本文档基于 `docs/cpp model/address_area.md`，说明从外界访问 DexMPC 时应使用的地址。
 
 ## 当前总原则
 

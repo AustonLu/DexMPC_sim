@@ -42,6 +42,9 @@
 -y rtl/full_chip/third_party/nic400_1/ib_sSpi_ib/verilog
 -y rtl/full_chip/third_party/nic400_1/reg_slice/verilog
 
+# Keep this before TopChip.sv. TopChip.sv contains an embedded generated
+# SramWrapperSp fallback whose simulation mask connection uses scalar
+# logical negation; this standalone wrapper uses the required bitwise mask.
 rtl/sim_models/SramWrapperSP.sv
 
 rtl/full_chip/src/top/TopChip.sv

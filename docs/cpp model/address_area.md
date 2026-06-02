@@ -44,7 +44,7 @@
 - `56` : `spareOut0`
 - `57` : `spareOut1`
 
-> 以上 reg 的字段含义详见 `docs/config_reg.md`
+> 以上 reg 的字段含义详见 `docs/cpp model/config_reg.md`
 
 ---
 
