@@ -2,8 +2,8 @@
 
 #ifndef DEXMPC_SIM_COMMON_ONLY
 #include "VDexMPCCoreTop.h"
-#endif
 #include "verilated.h"
+#endif
 
 #include <array>
 #include <cstdint>
