@@ -52,6 +52,15 @@ int main(int argc, char** argv) {
         runtime.write_variable_words(ref.name, std::vector<Word128>{word});
         expect_word_eq(runtime.read_variable_words(ref.name).at(0), word, "global");
 
+        runtime.release_variable(ref.name);
+        const auto reused_ref = runtime.allocate_words("spi_global_reused_word", dexsim::kMemGlobal, 1);
+        if (reused_ref.word_addr != ref.word_addr) {
+            throw std::runtime_error("released SPI global variable address was not reused");
+        }
+        const Word128 reused_word{0xaaaa5555u, 0xbbbb6666u, 0xcccc7777u, 0xdddd8888u};
+        runtime.write_variable_words(reused_ref.name, std::vector<Word128>{reused_word});
+        expect_word_eq(runtime.read_variable_words(reused_ref.name).at(0), reused_word, "global reused");
+
         const auto status = runtime.read_status();
         std::cout << "InstructionRuntime SPI smoke passed at cycle " << device.cycle()
                   << ", done_count=" << status.done_count << "\n";

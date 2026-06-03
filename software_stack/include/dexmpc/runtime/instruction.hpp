@@ -114,6 +114,7 @@ public:
     void reset() {
         variables_.clear();
         next_word_.clear();
+        free_ranges_.clear();
     }
 
     bool contains(std::string_view name) const {
@@ -168,6 +169,7 @@ public:
         const int words = dexsim::ceil_div(elem_count, dexsim::kFp16PerWord);
         check_range(mem_id, word_addr, words);
         check_no_overlap(mem_id, word_addr, words, name);
+        reserve_free_range(mem_id, word_addr, words);
         VariableRef ref{std::move(name), mem_id, word_addr, elem_count, words, rows, cols};
         insert(ref);
         bump_next_word(ref);
@@ -182,6 +184,7 @@ public:
         if (word_count <= 0) throw std::runtime_error("bind_existing_words word_count must be positive");
         check_range(mem_id, word_addr, word_count);
         check_no_overlap(mem_id, word_addr, word_count, name);
+        reserve_free_range(mem_id, word_addr, word_count);
         VariableRef ref{std::move(name), mem_id, word_addr,
                         word_count * dexsim::kFp16PerWord, word_count, 0, 0};
         insert(ref);
@@ -189,7 +192,22 @@ public:
         return ref;
     }
 
+    void release(std::string_view name) {
+        const auto it = variables_.find(std::string(name));
+        if (it == variables_.end()) {
+            throw std::runtime_error("cannot release unknown DexMPC variable: " + std::string(name));
+        }
+        const auto ref = it->second;
+        variables_.erase(it);
+        add_free_range(ref.mem_id, ref.word_addr, ref.word_count);
+    }
+
 private:
+    struct FreeRange {
+        int word_addr = 0;
+        int word_count = 0;
+    };
+
     VariableRef allocate_elements(std::string name, int mem_id, int elem_count, int rows, int cols) {
         const int words = dexsim::ceil_div(elem_count, dexsim::kFp16PerWord);
         return allocate(std::move(name), mem_id, words, elem_count, rows, cols);
@@ -203,10 +221,14 @@ private:
         }
         if (word_count <= 0) throw std::runtime_error("variable word_count must be positive");
 
-        const int base = next_word_[mem_id];
+        int base = take_free_range(mem_id, word_count);
+        if (base < 0) {
+            base = next_word_[mem_id];
+            check_range(mem_id, base, word_count);
+            next_word_[mem_id] = base + word_count + 1;
+        }
         check_range(mem_id, base, word_count);
         check_no_overlap(mem_id, base, word_count, name);
-        next_word_[mem_id] = base + word_count + 1;
 
         VariableRef ref{std::move(name), mem_id, base, elem_count, word_count, rows, cols};
         insert(ref);
@@ -246,6 +268,82 @@ private:
         }
     }
 
+    int take_free_range(int mem_id, int word_count) {
+        auto it = free_ranges_.find(mem_id);
+        if (it == free_ranges_.end()) return -1;
+
+        auto& ranges = it->second;
+        for (auto range_it = ranges.begin(); range_it != ranges.end(); ++range_it) {
+            if (range_it->word_count < word_count) continue;
+
+            const int base = range_it->word_addr;
+            if (range_it->word_count == word_count) {
+                ranges.erase(range_it);
+            } else {
+                range_it->word_addr += word_count;
+                range_it->word_count -= word_count;
+            }
+            return base;
+        }
+
+        return -1;
+    }
+
+    void add_free_range(int mem_id, int word_addr, int word_count) {
+        check_range(mem_id, word_addr, word_count);
+
+        FreeRange pending{word_addr, word_count};
+        auto& ranges = free_ranges_[mem_id];
+        std::vector<FreeRange> merged;
+        bool inserted = false;
+
+        for (const auto& range : ranges) {
+            const int range_end = range.word_addr + range.word_count;
+            const int pending_end = pending.word_addr + pending.word_count;
+
+            if (range_end < pending.word_addr) {
+                merged.push_back(range);
+            } else if (pending_end < range.word_addr) {
+                if (!inserted) {
+                    merged.push_back(pending);
+                    inserted = true;
+                }
+                merged.push_back(range);
+            } else {
+                const int start = range.word_addr < pending.word_addr ? range.word_addr : pending.word_addr;
+                const int end = range_end > pending_end ? range_end : pending_end;
+                pending.word_addr = start;
+                pending.word_count = end - start;
+            }
+        }
+
+        if (!inserted) merged.push_back(pending);
+        ranges = std::move(merged);
+    }
+
+    void reserve_free_range(int mem_id, int word_addr, int word_count) {
+        auto it = free_ranges_.find(mem_id);
+        if (it == free_ranges_.end()) return;
+
+        const int reserve_end = word_addr + word_count;
+        std::vector<FreeRange> kept;
+        for (const auto& range : it->second) {
+            const int range_end = range.word_addr + range.word_count;
+            if (range_end <= word_addr || reserve_end <= range.word_addr) {
+                kept.push_back(range);
+                continue;
+            }
+
+            if (range.word_addr < word_addr) {
+                kept.push_back(FreeRange{range.word_addr, word_addr - range.word_addr});
+            }
+            if (reserve_end < range_end) {
+                kept.push_back(FreeRange{reserve_end, range_end - reserve_end});
+            }
+        }
+        it->second = std::move(kept);
+    }
+
     void bump_next_word(const VariableRef& ref) {
         const int after = ref.word_addr + ref.word_count + 1;
         auto& next = next_word_[ref.mem_id];
@@ -254,6 +352,7 @@ private:
 
     std::unordered_map<std::string, VariableRef> variables_;
     std::unordered_map<int, int> next_word_;
+    std::unordered_map<int, std::vector<FreeRange>> free_ranges_;
 };
 
 class InstructionBuilder {
@@ -473,6 +572,14 @@ public:
 
     VariableRef bind_existing_words(std::string name, int mem_id, int word_addr, int word_count) {
         return allocator_.bind_existing_words(std::move(name), mem_id, word_addr, word_count);
+    }
+
+    void release_variable(std::string_view name) {
+        allocator_.release(name);
+    }
+
+    void release(std::string_view name) {
+        release_variable(name);
     }
 
     const VariableRef& variable(std::string_view name) const { return allocator_.get(name); }

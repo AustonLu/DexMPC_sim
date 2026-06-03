@@ -64,6 +64,71 @@ int main() {
         }
         expect(overlap_rejected, "overlapping variable address range was not rejected");
 
+        VariableAllocator lifecycle_allocator;
+        const auto live0 = lifecycle_allocator.allocate_words("live0", dexsim::kMemGlobal, 2);
+        const auto live1 = lifecycle_allocator.allocate_words("live1", dexsim::kMemGlobal, 3);
+        expect_eq_u32(static_cast<std::uint32_t>(live0.word_addr), 0, "live0 base");
+        expect_eq_u32(static_cast<std::uint32_t>(live1.word_addr), 3, "live1 base");
+
+        lifecycle_allocator.release("live0");
+        expect(!lifecycle_allocator.contains("live0"), "released variable is still live");
+        bool released_lookup_rejected = false;
+        try {
+            (void)lifecycle_allocator.get("live0");
+        } catch (const std::runtime_error&) {
+            released_lookup_rejected = true;
+        }
+        expect(released_lookup_rejected, "released variable lookup was not rejected");
+
+        const auto reuse0 = lifecycle_allocator.allocate_words("reuse0", dexsim::kMemGlobal, 1);
+        const auto reuse1 = lifecycle_allocator.allocate_words("reuse1", dexsim::kMemGlobal, 1);
+        expect_eq_u32(static_cast<std::uint32_t>(reuse0.word_addr), 0, "first free-list reuse base");
+        expect_eq_u32(static_cast<std::uint32_t>(reuse1.word_addr), 1, "free-list remainder reuse base");
+
+        bool double_release_rejected = false;
+        try {
+            lifecycle_allocator.release("live0");
+        } catch (const std::runtime_error&) {
+            double_release_rejected = true;
+        }
+        expect(double_release_rejected, "double release was not rejected");
+
+        lifecycle_allocator.release("reuse0");
+        lifecycle_allocator.release("reuse1");
+        const auto merged_reuse = lifecycle_allocator.allocate_words("merged_reuse", dexsim::kMemGlobal, 2);
+        expect_eq_u32(static_cast<std::uint32_t>(merged_reuse.word_addr), 0,
+                      "adjacent free ranges were not coalesced");
+
+        bool unknown_release_rejected = false;
+        try {
+            lifecycle_allocator.release("missing");
+        } catch (const std::runtime_error&) {
+            unknown_release_rejected = true;
+        }
+        expect(unknown_release_rejected, "unknown variable release was not rejected");
+
+        VariableAllocator bind_after_free_allocator;
+        const auto free_target = bind_after_free_allocator.allocate_words("free_target", dexsim::kMemGlobal, 2);
+        bind_after_free_allocator.release(free_target.name);
+        const auto rebound = bind_after_free_allocator.bind_existing_words(
+            "rebound", dexsim::kMemGlobal, free_target.word_addr, 1);
+        expect_eq_u32(static_cast<std::uint32_t>(rebound.word_addr), 0, "rebound base");
+        const auto free_tail = bind_after_free_allocator.allocate_words("free_tail", dexsim::kMemGlobal, 1);
+        expect_eq_u32(static_cast<std::uint32_t>(free_tail.word_addr), 1,
+                      "bind_existing_words did not reserve the rebound free range");
+
+        VariableAllocator bind_matrix_after_free_allocator;
+        const auto free_matrix = bind_matrix_after_free_allocator.allocate_matrix(
+            "free_matrix", dexsim::kMemGlobal, 1, 16);
+        bind_matrix_after_free_allocator.release(free_matrix.name);
+        const auto rebound_matrix = bind_matrix_after_free_allocator.bind_existing(
+            "rebound_matrix", dexsim::kMemGlobal, free_matrix.word_addr, 8, 1, 8);
+        expect_eq_u32(static_cast<std::uint32_t>(rebound_matrix.word_addr), 0, "rebound matrix base");
+        const auto matrix_tail = bind_matrix_after_free_allocator.allocate_words(
+            "matrix_tail", dexsim::kMemGlobal, 1);
+        expect_eq_u32(static_cast<std::uint32_t>(matrix_tail.word_addr), 1,
+                      "bind_existing did not reserve the rebound free range");
+
         const auto wrong_c = allocator.allocate_matrix("wrong_C", dexsim::kMemLocal0, 3, 4);
         bool shape_rejected = false;
         try {

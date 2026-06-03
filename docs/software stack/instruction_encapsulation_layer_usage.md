@@ -74,9 +74,11 @@ auto tmp = allocator.allocate_vector("tmp", dexsim::kMemTemp0, 32);
 
 当前策略：
 
-- 每个 `mem_id` 单独从 word address 0 开始单调分配。
+- 每个 `mem_id` 单独维护 high-water allocation cursor 和 free-list。
 - 每次分配按 `ceil(elem_count / 8)` 计算 128-bit word 数。
-- 两个自动分配变量之间保留 1 个 128-bit word 的 guard gap，便于调试地址重叠。
+- 优先从对应 `mem_id` 的 free-list first-fit 复用已释放区间。
+- free-list 无可用区间时，从 high-water cursor 分配新地址。
+- high-water 新分配变量之间保留 1 个 128-bit word 的 guard gap，便于调试地址重叠；free-list 复用时按释放区间紧凑复用。
 - 分配前检查 SRAM depth，超过硬件 SRAM 范围会抛出异常。
 - 分配前检查与已有变量是否重叠，重叠会抛出异常。
 - 变量名必须唯一，重复名称会抛出异常。
@@ -91,6 +93,26 @@ allocator.bind_existing_words("scratch", dexsim::kMemTemp0, 128, 8);
 `bind_existing()` 用于带 element 数量和矩阵形状的变量。
 `bind_existing_words()` 用于按 128-bit word 直接绑定一段 SRAM 区间。
 绑定成功后，allocator 会推进对应 SRAM 的分配游标，避免后续自动分配覆盖已绑定区域。
+如果绑定区域与 free-list 中的已释放区间重叠，allocator 会从 free-list 中扣除对应区间，
+避免后续自动分配再次复用同一地址。
+
+变量用完后应显式释放：
+
+```cpp
+allocator.release("tmp");
+```
+
+释放行为：
+
+- 变量会从 live variable table 中移除。
+- 被释放的 `[word_addr, word_addr + word_count)` 区间会进入对应 `mem_id` 的 free-list。
+- 相邻或重叠的 free-list 区间会自动合并。
+- 释放后的变量名可重新分配。
+- 重复释放或释放未知变量会抛出异常。
+
+注意：`VariableRef` 是一个普通值对象。如果上层在释放变量后仍保存旧的 `VariableRef`，
+C++ 类型系统不会自动阻止使用这个旧对象。推荐上层通过 `InstructionRuntime` 的变量名接口
+构造指令，这样释放后的变量名查找会立即失败，避免 stale address 被继续使用。
 
 ### 1.3 InstructionBuilder
 
@@ -173,6 +195,15 @@ auto inst = runtime.gemm("A", "B", "C", true);
 runtime.send_and_wait_next(inst, 400000);
 ```
 
+`InstructionRuntime` 暴露的生命周期接口：
+
+```cpp
+runtime.release_variable("tmp");
+runtime.release("tmp2");
+```
+
+两者等价，都会调用内部 allocator 释放变量并回收 SRAM word 区间。
+
 ## 2. 变量访问方法
 
 上层计算不直接传 SRAM 地址，而是传变量名：
@@ -232,13 +263,17 @@ int main(int argc, char** argv) {
     auto b = runtime.allocate_matrix("B", dexsim::kMemLocal0, 16, 16);
     auto c = runtime.allocate_matrix("C", dexsim::kMemTemp0, 16, 16);
 
-    runtime.write_variable_words(a.name, a_words);
-    runtime.write_variable_words(b.name, b_words);
+runtime.write_variable_words(a.name, a_words);
+runtime.write_variable_words(b.name, b_words);
 
-    auto gemm = runtime.gemm("A", "B", "C", true);
-    runtime.send_and_wait_next(gemm, 400000);
+auto gemm = runtime.gemm("A", "B", "C", true);
+runtime.send_and_wait_next(gemm, 400000);
 
-    auto c_words = runtime.read_variable_words(c.name);
+auto c_words = runtime.read_variable_words(c.name);
+
+runtime.release_variable("A");
+runtime.release_variable("B");
+runtime.release_variable("C");
     return 0;
 }
 ```
