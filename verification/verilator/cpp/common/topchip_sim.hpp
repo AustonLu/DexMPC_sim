@@ -171,6 +171,13 @@ public:
     CoreDutView* dut() { return &view_; }
     std::uint64_t cycle() const { return cycle_; }
     std::uint64_t done_pulses() const { return done_pulses_; }
+    std::uint64_t transport_read_bytes() const { return transport_read_bytes_; }
+    std::uint64_t transport_write_bytes() const { return transport_write_bytes_; }
+
+    void clear_transport_counters() {
+        transport_read_bytes_ = 0;
+        transport_write_bytes_ = 0;
+    }
 
     void reset() {
         view_ = CoreDutView{};
@@ -214,11 +221,13 @@ public:
 
     void write_reg(int reg_idx, std::uint32_t value) {
         bus_write32(mpc_cfg_addr(reg_idx), value);
+        transport_write_bytes_ += sizeof(value);
         update_cached_reg(reg_idx, value);
     }
 
     std::uint32_t read_reg(int reg_idx) {
         const auto value = bus_read32(mpc_cfg_addr(reg_idx));
+        transport_read_bytes_ += sizeof(value);
         update_cached_reg(reg_idx, value);
         return value;
     }
@@ -247,11 +256,14 @@ public:
     void write_mpc_mem_word(int mpc_mem_id, int word_addr, const Word128& data) {
         check_mpc_mem_addr(mpc_mem_id, word_addr);
         bus_write128_sameaddr(mpc_sram_addr(mpc_mem_id, word_addr), data);
+        transport_write_bytes_ += sizeof(Word128);
     }
 
     Word128 read_mpc_mem_word(int mpc_mem_id, int word_addr) {
         check_mpc_mem_addr(mpc_mem_id, word_addr);
-        return bus_read128_sameaddr(mpc_sram_addr(mpc_mem_id, word_addr));
+        const auto data = bus_read128_sameaddr(mpc_sram_addr(mpc_mem_id, word_addr));
+        transport_read_bytes_ += sizeof(Word128);
+        return data;
     }
 
     void write_mem_words(int mem_id, int word_addr, const std::vector<Word128>& words) {
@@ -264,6 +276,7 @@ public:
             check_mpc_mem_addr(mpc_mem_id, word_addr + static_cast<int>(words.size()) - 1);
         }
 #if defined(DEX_TOPCHIP_TRANSPORT_D2D)
+        transport_write_bytes_ += sizeof(Word128) * words.size();
         for (std::size_t base = 0; base < words.size(); base += kD2dMaxBurstBeats) {
             const auto beats = std::min<std::size_t>(kD2dMaxBurstBeats, words.size() - base);
             std::vector<std::uint64_t> lo(beats);
@@ -296,6 +309,7 @@ public:
         }
         std::vector<Word128> words(static_cast<std::size_t>(word_count), zero_word());
 #if defined(DEX_TOPCHIP_TRANSPORT_D2D)
+        transport_read_bytes_ += sizeof(Word128) * static_cast<std::size_t>(word_count);
         for (int base = 0; base < word_count; base += static_cast<int>(kD2dMaxBurstBeats)) {
             const auto beats = std::min<int>(static_cast<int>(kD2dMaxBurstBeats), word_count - base);
             const auto addr = mpc_sram_addr(mpc_mem_id, word_addr + base);
@@ -382,6 +396,8 @@ private:
     std::uint64_t time_ = 0;
     std::uint64_t cycle_ = 0;
     std::uint64_t done_pulses_ = 0;
+    std::uint64_t transport_read_bytes_ = 0;
+    std::uint64_t transport_write_bytes_ = 0;
     bool prev_dex_done_ = false;
 
     void update_cached_reg(int reg_idx, std::uint32_t value) {

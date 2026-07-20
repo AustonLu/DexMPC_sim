@@ -3,6 +3,8 @@
 
 # Build and generated simulation outputs
 build/
+dist/
+wheelhouse/
 obj_dir*/
 
 # Verilator/compiler intermediates

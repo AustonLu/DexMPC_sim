@@ -1,0 +1,10 @@
+[build-system]
+requires = []
+build-backend = "dexsim_build_backend"
+backend-path = ["build_backend"]
+
+[project]
+name = "dexmpc-sim"
+version = "0.1.0"
+description = "Cycle-accurate single-core Python SDK for the DexMPC TopChip simulator"
+requires-python = ">=3.9"
