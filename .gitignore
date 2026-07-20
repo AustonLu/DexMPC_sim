@@ -26,3 +26,4 @@ __pycache__/
 # Generated verification result data
 verification/results/**/*.csv
 verification/results/**/*.txt
+verification/results/**/*.json
