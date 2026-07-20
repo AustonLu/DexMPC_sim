@@ -321,12 +321,15 @@ class Session:
         for index, command in enumerate(commands):
             native[index].words[:] = command.words
         stats = _NativeRunStats()
+        timeout = self.timeout_cycles if timeout_cycles is None else int(timeout_cycles)
+        if timeout <= 0:
+            raise ValueError("timeout_cycles must be positive")
         _check(
             _library().dexsim_run(
                 self._handle,
                 native,
                 len(commands),
-                int(timeout_cycles or self.timeout_cycles),
+                timeout,
                 ctypes.byref(stats),
             )
         )

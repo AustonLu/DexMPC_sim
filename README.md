@@ -56,6 +56,16 @@ python3 verification/results/core_top/mixed/analyze_tb_core_top_mixed.py
 ## TopChip Verilator Model
 
 The full-chip C++ driver is implemented in `verification/verilator/cpp/common/topchip_sim.hpp`.
+
+## Installable Python SDK
+
+The M2 single-core SDK packages the D2D TopChip Verilator model behind a persistent Python `dexsim.Session`:
+
+```sh
+python -m pip install --no-deps --no-build-isolation .
+```
+
+It intentionally supports only `transport="d2d"` and `cores=[0]`. See `docs/python_sdk.md` for the API, installation flow, trace semantics and validation commands.
 It wraps the Verilated TopChip model behind a small register/SRAM/instruction API:
 
 - Define `DEX_TOPCHIP_TRANSPORT_D2D` to use `VTopChipTopD2dHarness`.
