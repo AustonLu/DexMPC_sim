@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "audit": {
+    "date": "2026-07-20",
+    "rtl_baseline_commit": "3436115d8d46d4a487890d2c4de7865c4667dfd7",
+    "probe_commit": "3e67226b053c9bbebb94b259fa3742889683ce5d",
+    "verilator_version": "5.048",
+    "repeat_runs": 2
+  },
+  "static_rtl": {
+    "external_device_ports": 1,
+    "command_contexts": 4,
+    "mac_instances": 4,
+    "local_sram_instances": 4,
+    "temp_buffer_instances": 4,
+    "shared_engines": {
+      "lut": 1,
+      "reduce": 1,
+      "abs": 1,
+      "data_layout": 1
+    },
+    "shared_engine_storage_owner": 0
+  },
+  "dynamic_validation": {
+    "d2d": {
+      "local_temp_external_isolation": true,
+      "command_contexts": [0, 1, 2, 3],
+      "gemm_cores": [0, 1, 2, 3],
+      "concurrent_gemm_pairs": [[0, 1]],
+      "shared_reduce_local_owner_from_context_1": 0,
+      "shared_reduce_temp_owner_from_context_1": 0,
+      "shared_lut_local_owner_from_context_1": 0
+    },
+    "spi": {
+      "command_contexts": [0, 1, 2, 3],
+      "gemm_cores": [0, 1, 2, 3]
+    }
+  },
+  "runtime_support": {
+    "low_level_per_core_register_api": true,
+    "low_level_physical_sram_api": true,
+    "legacy_testbase_default_core": 0,
+    "upper_level_python_runtime_available": false
+  },
+  "compiler_safe_policy": {
+    "sequential_gemm_cores": [0, 1, 2, 3],
+    "validated_concurrent_gemm_pairs": [[0, 1]],
+    "shared_engine_command_contexts": [0],
+    "shared_engine_local_owner": 0,
+    "shared_engine_temp_owner": 0,
+    "unvalidated": [
+      "arbitrary concurrent pairs involving cores 2 or 3",
+      "four-way concurrent GEMM",
+      "shared-engine scheduling through command contexts 2 or 3",
+      "concurrent shared-engine and MAC interference policy"
+    ]
+  }
+}
