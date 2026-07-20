@@ -2,7 +2,10 @@
 
 The reduction and LUT models mirror the repository's established CoreTop
 post-processing scripts.  Arithmetic is rounded back to FP16 after every
-hardware FP16 operation.
+hardware FP16 operation.  The DW arithmetic instances use
+``ieee_compliance=0``, so exponent-zero subnormal operands and underflowed
+arithmetic results are flushed to signed zero.  LUT operators retain their
+independently verified bit-level behavior.
 """
 
 import struct
@@ -22,12 +25,26 @@ def value(raw):
     return struct.unpack("<e", struct.pack("<H", raw & 0xFFFF))[0]
 
 
+def flush_subnormal(raw):
+    exponent = (raw >> 10) & 0x1F
+    fraction = raw & 0x3FF
+    return (raw & 0x8000) if exponent == 0 and fraction else raw
+
+
+def arithmetic_bits(result):
+    return flush_subnormal(bits(result))
+
+
 def add_bits(left, right):
-    return bits(value(left) + value(right))
+    left = flush_subnormal(left)
+    right = flush_subnormal(right)
+    return arithmetic_bits(value(left) + value(right))
 
 
 def mul_bits(left, right):
-    return bits(value(left) * value(right))
+    left = flush_subnormal(left)
+    right = flush_subnormal(right)
+    return arithmetic_bits(value(left) * value(right))
 
 
 def add_matrix(left, right):
