@@ -25,6 +25,7 @@
 namespace dexsim::topchip {
 
 constexpr std::uint32_t kBaseDexmpcAddr = 0x00000000u;
+constexpr int kNumCommandContexts = 4;
 
 constexpr int kCfgCmdWord00 = 0;
 constexpr int kCfgCmdWord01 = 1;
@@ -39,6 +40,54 @@ constexpr int kCfgCmpReduceReg10 = 50;
 constexpr int kCfgEngineStatus = 54;
 constexpr int kCfgAllDoneReg = 55;
 constexpr int kCfgIsLoop = 63;
+
+inline int checked_core(int core) {
+    if (core < 0 || core >= kNumCommandContexts) {
+        throw std::runtime_error("invalid TopChip core index " + std::to_string(core));
+    }
+    return core;
+}
+
+inline int cfg_cmd_word(int core, int word) {
+    checked_core(core);
+    if (word < 0 || word >= 3) {
+        throw std::runtime_error("invalid TopChip command word index " + std::to_string(word));
+    }
+    return core * 3 + word;
+}
+
+inline int cfg_cmd_ctrl(int core) { return 12 + checked_core(core); }
+inline int cfg_cmd_status(int core) { return 22 + checked_core(core); }
+inline int cfg_done_count(int core) { return 26 + checked_core(core); }
+inline int cfg_last_done(int core) { return 30 + checked_core(core); }
+inline int cfg_last_done_cycle(int core) { return 34 + checked_core(core); }
+inline int cfg_add_reduce(int core) { return 42 + checked_core(core); }
+inline int cfg_cmp_reduce0(int core) { return 46 + checked_core(core); }
+inline int cfg_cmp_reduce1(int core) { return 50 + checked_core(core); }
+
+inline int mpc_local_mem(int core) { return 1 + checked_core(core); }
+inline int mpc_temp_mem(int core) { return 5 + checked_core(core); }
+
+inline int mpc_mem_depth(int mpc_mem_id) {
+    if (mpc_mem_id == 0) return kGlobalDepth;
+    if (mpc_mem_id >= 1 && mpc_mem_id <= 4) return kLocalDepth;
+    if (mpc_mem_id >= 5 && mpc_mem_id <= 8) return kTempDepth;
+    if (mpc_mem_id >= 9 && mpc_mem_id <= 12) return 128;
+    if (mpc_mem_id >= 13 && mpc_mem_id <= 14) return 256;
+    return 0;
+}
+
+inline void check_mpc_mem_addr(int mpc_mem_id, int word_addr) {
+    const int depth = mpc_mem_depth(mpc_mem_id);
+    if (depth == 0) {
+        throw std::runtime_error("invalid TopChip physical memory id " + std::to_string(mpc_mem_id));
+    }
+    if (word_addr < 0 || word_addr >= depth) {
+        throw std::runtime_error("TopChip physical memory address overflow, mem="
+                                 + std::to_string(mpc_mem_id)
+                                 + " addr=" + std::to_string(word_addr));
+    }
+}
 
 constexpr std::uint8_t kD2dWrIdLo = 0x0c;
 constexpr std::uint8_t kD2dWrIdHi = 0x0d;
@@ -187,19 +236,34 @@ public:
 
     void write_mem_word(int mem_id, int word_addr, const Word128& data) {
         const int mpc_mem = core_mem_to_mpc_mem(mem_id);
-        const auto addr = mpc_sram_addr(mpc_mem, word_addr);
-        bus_write128_sameaddr(addr, data);
+        write_mpc_mem_word(mpc_mem, word_addr, data);
     }
 
     Word128 read_mem_word(int mem_id, int word_addr) {
         const int mpc_mem = core_mem_to_mpc_mem(mem_id);
-        const auto addr = mpc_sram_addr(mpc_mem, word_addr);
-        return bus_read128_sameaddr(addr);
+        return read_mpc_mem_word(mpc_mem, word_addr);
+    }
+
+    void write_mpc_mem_word(int mpc_mem_id, int word_addr, const Word128& data) {
+        check_mpc_mem_addr(mpc_mem_id, word_addr);
+        bus_write128_sameaddr(mpc_sram_addr(mpc_mem_id, word_addr), data);
+    }
+
+    Word128 read_mpc_mem_word(int mpc_mem_id, int word_addr) {
+        check_mpc_mem_addr(mpc_mem_id, word_addr);
+        return bus_read128_sameaddr(mpc_sram_addr(mpc_mem_id, word_addr));
     }
 
     void write_mem_words(int mem_id, int word_addr, const std::vector<Word128>& words) {
+        write_mpc_mem_words(core_mem_to_mpc_mem(mem_id), word_addr, words);
+    }
+
+    void write_mpc_mem_words(int mpc_mem_id, int word_addr, const std::vector<Word128>& words) {
+        if (!words.empty()) {
+            check_mpc_mem_addr(mpc_mem_id, word_addr);
+            check_mpc_mem_addr(mpc_mem_id, word_addr + static_cast<int>(words.size()) - 1);
+        }
 #if defined(DEX_TOPCHIP_TRANSPORT_D2D)
-        const int mpc_mem = core_mem_to_mpc_mem(mem_id);
         for (std::size_t base = 0; base < words.size(); base += kD2dMaxBurstBeats) {
             const auto beats = std::min<std::size_t>(kD2dMaxBurstBeats, words.size() - base);
             std::vector<std::uint64_t> lo(beats);
@@ -209,24 +273,32 @@ public:
                 lo[i] = make64(word[1], word[0]);
                 hi[i] = make64(word[3], word[2]);
             }
-            const auto addr = mpc_sram_addr(mpc_mem, word_addr + static_cast<int>(base));
+            const auto addr = mpc_sram_addr(mpc_mem_id, word_addr + static_cast<int>(base));
             d2d_write(addr, kD2dWrIdLo, static_cast<std::uint8_t>(beats - 1), lo);
             d2d_write(addr, kD2dWrIdHi, static_cast<std::uint8_t>(beats - 1), hi);
         }
 #else
         for (std::size_t i = 0; i < words.size(); ++i) {
-            write_mem_word(mem_id, word_addr + static_cast<int>(i), words[i]);
+            write_mpc_mem_word(mpc_mem_id, word_addr + static_cast<int>(i), words[i]);
         }
 #endif
     }
 
     std::vector<Word128> read_mem_words(int mem_id, int word_addr, int word_count) {
+        return read_mpc_mem_words(core_mem_to_mpc_mem(mem_id), word_addr, word_count);
+    }
+
+    std::vector<Word128> read_mpc_mem_words(int mpc_mem_id, int word_addr, int word_count) {
+        if (word_count < 0) throw std::runtime_error("negative TopChip memory word count");
+        if (word_count > 0) {
+            check_mpc_mem_addr(mpc_mem_id, word_addr);
+            check_mpc_mem_addr(mpc_mem_id, word_addr + word_count - 1);
+        }
         std::vector<Word128> words(static_cast<std::size_t>(word_count), zero_word());
 #if defined(DEX_TOPCHIP_TRANSPORT_D2D)
-        const int mpc_mem = core_mem_to_mpc_mem(mem_id);
         for (int base = 0; base < word_count; base += static_cast<int>(kD2dMaxBurstBeats)) {
             const auto beats = std::min<int>(static_cast<int>(kD2dMaxBurstBeats), word_count - base);
-            const auto addr = mpc_sram_addr(mpc_mem, word_addr + base);
+            const auto addr = mpc_sram_addr(mpc_mem_id, word_addr + base);
             const auto lo = d2d_read(addr, kD2dRdIdLo, static_cast<std::uint8_t>(beats - 1));
             const auto hi = d2d_read(addr, kD2dRdIdHi, static_cast<std::uint8_t>(beats - 1));
             if (lo.size() != static_cast<std::size_t>(beats) ||
@@ -244,10 +316,56 @@ public:
         }
 #else
         for (int i = 0; i < word_count; ++i) {
-            words[static_cast<std::size_t>(i)] = read_mem_word(mem_id, word_addr + i);
+            words[static_cast<std::size_t>(i)] = read_mpc_mem_word(mpc_mem_id, word_addr + i);
         }
 #endif
         return words;
+    }
+
+    std::uint32_t done_count(int core) { return read_reg(cfg_done_count(core)); }
+    std::uint32_t command_status(int core) { return read_reg(cfg_cmd_status(core)); }
+    std::uint32_t last_done(int core) { return read_reg(cfg_last_done(core)); }
+
+    void stage_cmd(int core, Cmd96 cmd) {
+        for (int word = 0; word < 3; ++word) {
+            write_reg(cfg_cmd_word(core, word), cmd_word(cmd, word));
+        }
+    }
+
+    void set_cmd_push(int core, bool value) {
+        write_reg(cfg_cmd_ctrl(core), value ? 1u : 0u);
+    }
+
+    void push_cmd(int core, Cmd96 cmd) {
+        for (int guard = 0; guard < 10000; ++guard) {
+            if ((command_status(core) & 0x1u) == 0) {
+                stage_cmd(core, cmd);
+                set_cmd_push(core, true);
+                set_cmd_push(core, false);
+                return;
+            }
+            run_core_cycles(1);
+        }
+        throw std::runtime_error("timeout waiting for TopChip core command FIFO space");
+    }
+
+    void wait_for_done_count(int core, std::uint32_t target, int timeout_cycles,
+                             int poll_cycles = 32) {
+        for (int cycles = 0; cycles < timeout_cycles; cycles += poll_cycles) {
+            run_core_cycles(poll_cycles);
+            const auto observed = done_count(core);
+            if (observed >= target) {
+                if (observed != target) {
+                    throw std::runtime_error("TopChip doneCount jump on core "
+                                             + std::to_string(core)
+                                             + ": expected=" + std::to_string(target)
+                                             + " got=" + std::to_string(observed));
+                }
+                return;
+            }
+        }
+        throw std::runtime_error("TopChip timeout waiting for core " + std::to_string(core)
+                                 + " doneCount=" + std::to_string(target));
     }
 
 private:
