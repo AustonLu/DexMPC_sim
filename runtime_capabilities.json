@@ -40,7 +40,23 @@
     "low_level_per_core_register_api": true,
     "low_level_physical_sram_api": true,
     "legacy_testbase_default_core": 0,
-    "upper_level_python_runtime_available": false
+    "upper_level_python_runtime_available": true,
+    "python_runtime_version": "0.2.0",
+    "python_runtime_operator_core": 0,
+    "python_runtime_primitive_operators": [
+      "abs",
+      "add_reduce",
+      "compare_reduce",
+      "gemm",
+      "scale",
+      "add",
+      "sin",
+      "cos",
+      "softplus",
+      "assemble",
+      "transpose"
+    ],
+    "python_runtime_derived_operators": ["gemv", "dot", "outer"]
   },
   "compiler_safe_policy": {
     "sequential_gemm_cores": [0, 1, 2, 3],

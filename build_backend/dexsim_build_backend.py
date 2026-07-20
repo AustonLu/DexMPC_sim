@@ -11,7 +11,7 @@ from pathlib import Path
 
 NAME = "dexmpc-sim"
 NORMALIZED_NAME = "dexmpc_sim"
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 DIST_INFO = f"{NORMALIZED_NAME}-{VERSION}.dist-info"
 WHEEL_NAME = f"{NORMALIZED_NAME}-{VERSION}-py3-none-linux_x86_64.whl"
 
@@ -82,6 +82,11 @@ def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):
             source_root / "rtl" / "chisel" / "top_connect" / "src" / "lut" / "tools"
             / "softplus_data.hex",
             data_dir / "softplus_data.hex",
+        )
+        shutil.copy2(
+            source_root / "rtl" / "chisel" / "top_connect" / "src" / "lut" / "tools"
+            / "trig_data.hex",
+            data_dir / "trig_data.hex",
         )
 
         subprocess.run(

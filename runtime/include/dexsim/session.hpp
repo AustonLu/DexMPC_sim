@@ -12,6 +12,17 @@ struct Command {
     std::array<std::uint32_t, 3> words{};
 };
 
+struct CommandResult {
+    std::uint32_t command_id = 0;
+    std::uint32_t opcode = 0;
+    std::uint32_t subop = 0;
+    std::uint32_t group_end = 0;
+    std::uint32_t done_cycle = 0;
+    std::uint32_t reduce_value_bits = 0;
+    std::uint32_t reduce_index = 0;
+    std::uint32_t reduce_valid = 0;
+};
+
 struct RunStats {
     std::uint64_t cycles = 0;
     std::uint64_t read_bytes = 0;
@@ -21,6 +32,7 @@ struct RunStats {
     std::uint32_t done_count_after = 0;
     std::uint32_t last_done = 0;
     std::uint32_t reset_count = 0;
+    std::vector<CommandResult> command_results;
 };
 
 struct Snapshot {
@@ -29,6 +41,12 @@ struct Snapshot {
     std::uint64_t write_bytes = 0;
     std::uint32_t done_count = 0;
     std::uint32_t reset_count = 0;
+};
+
+struct Counters {
+    std::uint64_t cycle = 0;
+    std::uint64_t read_bytes = 0;
+    std::uint64_t write_bytes = 0;
 };
 
 class Session {
@@ -48,6 +66,7 @@ public:
     RunStats run(const std::vector<Command>& commands, int timeout_cycles);
     std::uint32_t read_register(int register_index);
     Snapshot snapshot();
+    Counters counters() const;
 
 private:
     class Impl;
