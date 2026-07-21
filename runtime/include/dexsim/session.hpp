@@ -12,7 +12,13 @@ struct Command {
     std::array<std::uint32_t, 3> words{};
 };
 
+struct ScheduledCommand {
+    std::uint32_t core = 0;
+    Command command{};
+};
+
 struct CommandResult {
+    std::uint32_t core = 0;
     std::uint32_t command_id = 0;
     std::uint32_t opcode = 0;
     std::uint32_t subop = 0;
@@ -64,6 +70,7 @@ public:
     void read_words(int physical_memory_id, int word_offset,
                     std::uint32_t* words, std::size_t word_count);
     RunStats run(const std::vector<Command>& commands, int timeout_cycles);
+    RunStats run_scheduled(const std::vector<ScheduledCommand>& commands, int timeout_cycles);
     std::uint32_t read_register(int register_index);
     Snapshot snapshot();
     Counters counters() const;

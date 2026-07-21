@@ -56,6 +56,27 @@ class _NativeCommandResult(ctypes.Structure):
     ]
 
 
+class _NativeScheduledCommand(ctypes.Structure):
+    _fields_ = [
+        ("core", ctypes.c_uint32),
+        ("words", ctypes.c_uint32 * 3),
+    ]
+
+
+class _NativeScheduledCommandResult(ctypes.Structure):
+    _fields_ = [
+        ("core", ctypes.c_uint32),
+        ("command_id", ctypes.c_uint32),
+        ("opcode", ctypes.c_uint32),
+        ("subop", ctypes.c_uint32),
+        ("group_end", ctypes.c_uint32),
+        ("done_cycle", ctypes.c_uint32),
+        ("reduce_value_bits", ctypes.c_uint32),
+        ("reduce_index", ctypes.c_uint32),
+        ("reduce_valid", ctypes.c_uint32),
+    ]
+
+
 class _NativeSnapshot(ctypes.Structure):
     _fields_ = [
         ("cycle", ctypes.c_uint64),
@@ -122,6 +143,68 @@ class RunResult:
 
 
 @dataclass(frozen=True)
+class ScheduledCommand:
+    core: int
+    command: Command
+
+    def __post_init__(self):
+        if not isinstance(self.core, int) or isinstance(self.core, bool):
+            raise TypeError("scheduled command core must be an integer")
+        if self.core < 0 or self.core > 3:
+            raise ValueError("scheduled command core must be in [0, 3]")
+        if not isinstance(self.command, Command):
+            raise TypeError("scheduled command must contain a dexsim.Command")
+
+
+@dataclass(frozen=True)
+class ScheduledCommandResult:
+    core: int
+    command_id: int
+    opcode: int
+    subop: int
+    group_end: bool
+    done_cycle: int
+    reduce_value: Optional[float]
+    reduce_value_bits: Optional[int]
+    reduce_index: Optional[int]
+    reduce_valid: bool
+
+    def to_dict(self):
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class ScheduledRunResult:
+    cycles: int
+    read_bytes: int
+    write_bytes: int
+    command_count: int
+    done_count_before: int
+    done_count_after: int
+    last_done: int
+    reset_count: int
+    command_results: tuple[ScheduledCommandResult, ...] = ()
+    setup_cycles: int = 0
+    setup_read_bytes: int = 0
+    setup_write_bytes: int = 0
+
+    @property
+    def total_cycles(self):
+        return self.setup_cycles + self.cycles
+
+    @property
+    def total_read_bytes(self):
+        return self.setup_read_bytes + self.read_bytes
+
+    @property
+    def total_write_bytes(self):
+        return self.setup_write_bytes + self.write_bytes
+
+    def to_dict(self):
+        return asdict(self)
+
+
+@dataclass(frozen=True)
 class SessionSnapshot:
     cycle: int
     read_bytes: int
@@ -163,6 +246,15 @@ def _load_library():
         ctypes.c_int,
         ctypes.POINTER(_NativeRunStats),
         ctypes.POINTER(_NativeCommandResult),
+        ctypes.c_size_t,
+    ]
+    library.dexsim_run_scheduled_detailed.argtypes = [
+        ctypes.c_void_p,
+        ctypes.POINTER(_NativeScheduledCommand),
+        ctypes.c_size_t,
+        ctypes.c_int,
+        ctypes.POINTER(_NativeRunStats),
+        ctypes.POINTER(_NativeScheduledCommandResult),
         ctypes.c_size_t,
     ]
     library.dexsim_read_register.argtypes = [
@@ -293,12 +385,20 @@ class Session:
     def __init__(self, transport="d2d", cores=(0,), timeout_cycles=400_000):
         if transport != "d2d":
             raise ValueError("M2 runtime supports only transport='d2d'")
-        if list(cores) != [0]:
-            raise ValueError("M2 runtime supports only cores=[0]")
+        cores = tuple(cores)
+        if not cores:
+            raise ValueError("cores must contain at least one core")
+        if any(
+            not isinstance(core, int) or isinstance(core, bool) or core < 0 or core > 3
+            for core in cores
+        ):
+            raise ValueError("cores must be a subset of [0, 1, 2, 3]")
+        if len(set(cores)) != len(cores):
+            raise ValueError("cores must not contain duplicates")
         if timeout_cycles <= 0:
             raise ValueError("timeout_cycles must be positive")
         self.transport = transport
-        self.cores = (0,)
+        self.cores = cores
         self.timeout_cycles = int(timeout_cycles)
         self._handle = _library().dexsim_session_create()
         if not self._handle:
@@ -348,11 +448,17 @@ class Session:
         )
         return [tuple(data[index * 4 : index * 4 + 4]) for index in range(word_count)]
 
-    def write_tensor(self, *, memory, core=0, offset=0, value=None):
-        if core != 0:
-            raise ValueError("M2 runtime supports only core=0")
+    def _physical_memory_id(self, memory, core):
         if memory not in _PHYSICAL_MEMORY:
             raise ValueError(f"unsupported tensor memory {memory!r}")
+        if core not in self.cores:
+            raise ValueError(f"core={core} is not enabled for this Session")
+        if memory == "global":
+            return _PHYSICAL_MEMORY[memory]
+        return _PHYSICAL_MEMORY[memory] + core
+
+    def write_tensor(self, *, memory, core=0, offset=0, value=None):
+        memory_id = self._physical_memory_id(memory, core)
         flat, shape = _flatten(value)
         if offset < 0:
             raise ValueError("offset must be non-negative")
@@ -368,21 +474,18 @@ class Session:
             lanes = [0] * (word_count * _FP16_PER_WORD)
         else:
             existing = self._read_physical_words(
-                _PHYSICAL_MEMORY[memory], first_word, word_count
+                memory_id, first_word, word_count
             )
             lanes = _unpack_words(existing)
         for index, item in enumerate(flat):
             lanes[lane_offset + index] = _fp16_bits(item)
         self._write_physical_words(
-            _PHYSICAL_MEMORY[memory], first_word, _pack_lanes(lanes)
+            memory_id, first_word, _pack_lanes(lanes)
         )
         return {"shape": shape, "elements": len(flat), "word_offset": first_word}
 
     def write_tensor_bits(self, *, memory, core=0, offset=0, value=None):
-        if core != 0:
-            raise ValueError("M2 runtime supports only core=0")
-        if memory not in _PHYSICAL_MEMORY:
-            raise ValueError(f"unsupported tensor memory {memory!r}")
+        memory_id = self._physical_memory_id(memory, core)
         flat, shape = _flatten_bits(value)
         if offset < 0:
             raise ValueError("offset must be non-negative")
@@ -398,21 +501,18 @@ class Session:
             lanes = [0] * (word_count * _FP16_PER_WORD)
         else:
             existing = self._read_physical_words(
-                _PHYSICAL_MEMORY[memory], first_word, word_count
+                memory_id, first_word, word_count
             )
             lanes = _unpack_words(existing)
         for index, item in enumerate(flat):
             lanes[lane_offset + index] = item
         self._write_physical_words(
-            _PHYSICAL_MEMORY[memory], first_word, _pack_lanes(lanes)
+            memory_id, first_word, _pack_lanes(lanes)
         )
         return {"shape": shape, "elements": len(flat), "word_offset": first_word}
 
     def read_tensor(self, *, memory, core=0, offset=0, shape=None):
-        if core != 0:
-            raise ValueError("M2 runtime supports only core=0")
-        if memory not in _PHYSICAL_MEMORY:
-            raise ValueError(f"unsupported tensor memory {memory!r}")
+        memory_id = self._physical_memory_id(memory, core)
         if isinstance(shape, int):
             shape = (shape,)
         elif shape is not None:
@@ -426,16 +526,13 @@ class Session:
         lane_offset = offset % 8
         word_count = math.ceil((lane_offset + element_count) / 8)
         words = self._read_physical_words(
-            _PHYSICAL_MEMORY[memory], first_word, word_count
+            memory_id, first_word, word_count
         )
         lanes = _unpack_words(words)[lane_offset : lane_offset + element_count]
         return _reshape([_fp16_value(value) for value in lanes], shape)
 
     def read_tensor_bits(self, *, memory, core=0, offset=0, shape=None):
-        if core != 0:
-            raise ValueError("M2 runtime supports only core=0")
-        if memory not in _PHYSICAL_MEMORY:
-            raise ValueError(f"unsupported tensor memory {memory!r}")
+        memory_id = self._physical_memory_id(memory, core)
         if isinstance(shape, int):
             shape = (shape,)
         elif shape is not None:
@@ -449,7 +546,7 @@ class Session:
         lane_offset = offset % 8
         word_count = math.ceil((lane_offset + element_count) / 8)
         words = self._read_physical_words(
-            _PHYSICAL_MEMORY[memory], first_word, word_count
+            memory_id, first_word, word_count
         )
         lanes = _unpack_words(words)[lane_offset : lane_offset + element_count]
         return _reshape(lanes, shape)
@@ -553,6 +650,92 @@ class Session:
             setup_write_bytes=setup_after.write_bytes - setup_before.write_bytes,
         )
 
+    def run_scheduled(self, commands, timeout_cycles=None):
+        """Run one concurrent wave containing at most one command per core.
+
+        This is the low-level primitive used by the address-free operator
+        planner.  Shared engines are still restricted to core0 by the native
+        runtime; core1--3 are additional linear-algebra MAC lanes.
+        """
+        self._require_open()
+        commands = list(commands)
+        if not all(isinstance(value, ScheduledCommand) for value in commands):
+            raise TypeError("commands must contain dexsim.ScheduledCommand values")
+        if len(commands) > 4:
+            raise ValueError("a scheduled wave supports at most four commands")
+        scheduled_cores = [value.core for value in commands]
+        if len(set(scheduled_cores)) != len(scheduled_cores):
+            raise ValueError("a scheduled wave supports at most one command per core")
+        disabled = [core for core in scheduled_cores if core not in self.cores]
+        if disabled:
+            raise ValueError(f"scheduled cores are not enabled for this Session: {disabled}")
+
+        setup_before = self._counters()
+        ordinary_commands = [value.command for value in commands]
+        if any(
+            command.opcode == OP_LUT and command.subop in (SUB_SIN, SUB_COS)
+            for command in ordinary_commands
+        ):
+            self._ensure_trig_lut()
+        if any(
+            command.opcode == OP_LUT and command.subop == SUB_SOFTPLUS
+            for command in ordinary_commands
+        ):
+            self._ensure_softplus_lut()
+        setup_after = self._counters()
+
+        native = (_NativeScheduledCommand * len(commands))()
+        native_results = (_NativeScheduledCommandResult * len(commands))()
+        for index, value in enumerate(commands):
+            native[index].core = value.core
+            native[index].words[:] = value.command.words
+        stats = _NativeRunStats()
+        timeout = self.timeout_cycles if timeout_cycles is None else int(timeout_cycles)
+        if timeout <= 0:
+            raise ValueError("timeout_cycles must be positive")
+        _check(
+            _library().dexsim_run_scheduled_detailed(
+                self._handle,
+                native,
+                len(commands),
+                timeout,
+                ctypes.byref(stats),
+                native_results,
+                len(commands),
+            )
+        )
+
+        command_results = []
+        for native_result in native_results:
+            reduce_valid = bool(native_result.reduce_valid)
+            reduce_bits = int(native_result.reduce_value_bits) if reduce_valid else None
+            is_compare = (
+                int(native_result.opcode) == OP_REDUCE
+                and int(native_result.subop) == SUB_COMPARE_REDUCE
+            )
+            command_results.append(
+                ScheduledCommandResult(
+                    core=int(native_result.core),
+                    command_id=int(native_result.command_id),
+                    opcode=int(native_result.opcode),
+                    subop=int(native_result.subop),
+                    group_end=bool(native_result.group_end),
+                    done_cycle=int(native_result.done_cycle),
+                    reduce_value=_fp16_value(reduce_bits) if reduce_bits is not None else None,
+                    reduce_value_bits=reduce_bits,
+                    reduce_index=int(native_result.reduce_index) if is_compare else None,
+                    reduce_valid=reduce_valid,
+                )
+            )
+        stats_values = {name: int(getattr(stats, name)) for name, _ in stats._fields_}
+        return ScheduledRunResult(
+            **stats_values,
+            command_results=tuple(command_results),
+            setup_cycles=setup_after.cycle - setup_before.cycle,
+            setup_read_bytes=setup_after.read_bytes - setup_before.read_bytes,
+            setup_write_bytes=setup_after.write_bytes - setup_before.write_bytes,
+        )
+
     def read_add_reduce(self):
         raw = ctypes.c_uint32()
         _check(_library().dexsim_read_register(self._handle, 42, ctypes.byref(raw)))
@@ -600,7 +783,7 @@ class Session:
     def capabilities():
         return {
             "transport": "d2d",
-            "runtime_enabled_cores": [0],
+            "runtime_enabled_cores": [0, 1, 2, 3],
             "tensor_memories": ["global", "local", "temp"],
             "persistent_session": True,
             "fp16": True,
@@ -620,6 +803,14 @@ class Session:
             "derived_operators": ["gemv", "dot", "outer"],
             "shared_engine_command_contexts": [0],
             "operator_core": 0,
+            "default_operator_core": 0,
+            "scheduled_wave_api": True,
+            "validated_concurrent_linear_pairs": [
+                [0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3]
+            ],
+            "validated_concurrent_linear_quad": [0, 1, 2, 3],
+            "global_concurrent_linear_access": False,
+            "multicore_input_staging": ["local", "temp"],
             "bit_exact_tensor_io": True,
             "per_command_results": True,
         }

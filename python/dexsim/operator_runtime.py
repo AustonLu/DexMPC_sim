@@ -31,6 +31,7 @@ from .commands import (
     transpose as build_transpose,
 )
 from .session import DexSimError, RunResult, Session, fp16_bits, fp16_value
+from .parallel import execute_linear
 
 
 FP16_PER_WORD = 8
@@ -421,9 +422,24 @@ class Tensor:
 class Device:
     """Address-free high-level interface backed by one persistent Session."""
 
-    def __init__(self, session: Optional[Session] = None, *, timeout_cycles=400_000):
-        self._session = session if session is not None else Session(timeout_cycles=timeout_cycles)
+    def __init__(
+        self,
+        session: Optional[Session] = None,
+        *,
+        timeout_cycles=400_000,
+        execution_policy="auto",
+    ):
+        if execution_policy not in ("single", "auto", "dual", "quad"):
+            raise ValueError(
+                "execution_policy must be 'single', 'auto', 'dual', or 'quad'"
+            )
+        self._session = session if session is not None else Session(
+            cores=(0, 1, 2, 3), timeout_cycles=timeout_cycles
+        )
+        if 0 not in self._session.cores:
+            raise ValueError("Device Session must enable core0")
         self._owns_session = session is None
+        self._execution_policy = execution_policy
         self._allocator = VariableAllocator()
         self._closed = False
         self._next_tensor_id = 0
@@ -554,7 +570,9 @@ class Device:
             high_level_operator_api=True,
             automatic_sram=True,
             public_memory_arguments=False,
-            high_level_version="0.3.0",
+            high_level_version="0.4.0",
+            operator_execution_policies=["single", "auto", "dual", "quad"],
+            production_parallel_policy="measured-benefit-gated",
         )
         return value
 
@@ -578,18 +596,12 @@ class Device:
         source_ref = self._ref(source)
         output = self.empty(source.shape, name=self._name("scale"))
         out_ref = output._internal_ref()
-        rows, cols = _storage_shape(source.shape)
-        command = build_scale(
-            self._command_id(),
-            src_memory=source_ref.memory,
-            src_word_offset=source_ref.word_offset,
-            out_memory=out_ref.memory,
-            out_word_offset=out_ref.word_offset,
-            rows=rows,
-            cols=cols,
-            alpha_bits=fp16_bits(alpha),
+        self._run_linear(
+            "scale",
+            [source_ref],
+            out_ref,
+            attrs={"alpha": float(alpha), "alpha_bits": fp16_bits(alpha)},
         )
-        self._run("scale", command, [source_ref], out_ref, attrs={"alpha": float(alpha)})
         return output
 
     mul = scale
@@ -601,19 +613,7 @@ class Device:
             raise ValueError(f"ADD shape mismatch: {left.shape} vs {right.shape}")
         output = self.empty(left.shape, name=self._name("add"))
         out_ref = output._internal_ref()
-        rows, cols = _storage_shape(left.shape)
-        command = build_add(
-            self._command_id(),
-            a_memory=left_ref.memory,
-            a_word_offset=left_ref.word_offset,
-            b_memory=right_ref.memory,
-            b_word_offset=right_ref.word_offset,
-            out_memory=out_ref.memory,
-            out_word_offset=out_ref.word_offset,
-            rows=rows,
-            cols=cols,
-        )
-        self._run("add", command, [left_ref, right_ref], out_ref)
+        self._run_linear("add", [left_ref, right_ref], out_ref)
         return output
 
     def gemm(self, left: Tensor, right: Tensor):
@@ -627,19 +627,7 @@ class Device:
             raise ValueError(f"GEMM shape mismatch: {left.shape} @ {right.shape}")
         output = self.empty((n_rows, m_cols), name=self._name("gemm"))
         out_ref = output._internal_ref()
-        command = build_gemm(
-            self._command_id(),
-            a_memory=left_ref.memory,
-            a_word_offset=left_ref.word_offset,
-            b_memory=right_ref.memory,
-            b_word_offset=right_ref.word_offset,
-            out_memory=out_ref.memory,
-            out_word_offset=out_ref.word_offset,
-            n_rows=n_rows,
-            m_cols=m_cols,
-            k_dim=k_dim,
-        )
-        self._run("gemm", command, [left_ref, right_ref], out_ref)
+        self._run_linear("gemm", [left_ref, right_ref], out_ref)
         return output
 
     def gemv(self, matrix: Tensor, vector: Tensor):
@@ -655,18 +643,7 @@ class Device:
             raise ValueError(f"GEMV shape mismatch: {matrix.shape} @ {vector.shape}")
         output = self.empty((n_rows,), name=self._name("gemv"))
         out_ref = output._internal_ref()
-        command = build_gemv(
-            self._command_id(),
-            a_memory=matrix_ref.memory,
-            a_word_offset=matrix_ref.word_offset,
-            x_memory=vector_ref.memory,
-            x_word_offset=vector_ref.word_offset,
-            out_memory=out_ref.memory,
-            out_word_offset=out_ref.word_offset,
-            n_rows=n_rows,
-            k_dim=k_dim,
-        )
-        self._run("gemv", command, [matrix_ref, vector_ref], out_ref)
+        self._run_linear("gemv", [matrix_ref, vector_ref], out_ref)
         return output
 
     def dot(self, left: Tensor, right: Tensor):
@@ -696,18 +673,7 @@ class Device:
             raise ValueError("OUTER requires two rank-1 Tensors")
         output = self.empty((left.size, right.size), name=self._name("outer"))
         out_ref = output._internal_ref()
-        command = build_outer(
-            self._command_id(),
-            a_memory=left_ref.memory,
-            a_word_offset=left_ref.word_offset,
-            b_memory=right_ref.memory,
-            b_word_offset=right_ref.word_offset,
-            out_memory=out_ref.memory,
-            out_word_offset=out_ref.word_offset,
-            n_rows=left.size,
-            m_cols=right.size,
-        )
-        self._run("outer", command, [left_ref, right_ref], out_ref)
+        self._run_linear("outer", [left_ref, right_ref], out_ref)
         return output
 
     def sin(self, source: Tensor):
@@ -851,8 +817,8 @@ class Device:
             )
         except AllocationError as error:
             raise UnsupportedShapeError(
-                f"automatic single-core placement failed for shape={tuple(shape)}; "
-                "a validated tiling path is not available in v0.3.0"
+                f"automatic placement failed for shape={tuple(shape)}; "
+                "a validated storage tiling path is not available in v0.4.0"
             ) from error
 
     def _run(self, operation, command, inputs, output, attrs=None):
@@ -870,6 +836,32 @@ class Device:
                 "words": list(command.words),
             },
             "run": run.to_dict(),
+        }
+        self._trace.append(entry)
+        return run, entry
+
+    def _run_linear(self, operation, inputs, output, attrs=None):
+        run, parallel = execute_linear(
+            self._session,
+            operation,
+            tuple(inputs),
+            output,
+            command_id=self._command_id(),
+            policy=self._execution_policy,
+            attrs=attrs,
+        )
+        first_command = parallel["commands"][0]
+        entry = {
+            "operation": operation,
+            "inputs": [value.to_dict() for value in inputs],
+            "output": output.to_dict(),
+            "attrs": {
+                key: value for key, value in dict(attrs or {}).items()
+                if key != "alpha_bits"
+            },
+            "command": {key: value for key, value in first_command.items() if key != "core"},
+            "run": run.to_dict(),
+            "parallel": parallel,
         }
         self._trace.append(entry)
         return run, entry

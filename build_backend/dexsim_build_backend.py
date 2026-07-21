@@ -11,7 +11,7 @@ from pathlib import Path
 
 NAME = "dexmpc-sim"
 NORMALIZED_NAME = "dexmpc_sim"
-VERSION = "0.3.0"
+VERSION = "0.4.0"
 DIST_INFO = f"{NORMALIZED_NAME}-{VERSION}.dist-info"
 WHEEL_NAME = f"{NORMALIZED_NAME}-{VERSION}-py3-none-linux_x86_64.whl"
 

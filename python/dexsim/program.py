@@ -1,4 +1,4 @@
-"""Static fixed-operator Program capture and scheduling for dexmpc-sim v0.3."""
+"""Static fixed-operator Program capture and scheduling for dexmpc-sim."""
 
 from __future__ import annotations
 
@@ -33,6 +33,7 @@ from .operator_runtime import (
     _storage_shape,
 )
 from .session import DexSimError, Session, fp16_bits, fp16_value
+from .parallel import LINEAR_OPERATORS, execute_linear, plan_linear
 
 
 @dataclass(frozen=True)
@@ -282,10 +283,15 @@ class Program:
 
     reduce_cmp = compare_reduce
 
-    def compile(self, *, session=None, timeout_cycles=400_000):
+    def compile(self, *, session=None, timeout_cycles=400_000, execution_policy="auto"):
         if not self._outputs:
             raise ValueError("Program.output(...) must select at least one result before compile")
-        return CompiledProgram(self, session=session, timeout_cycles=timeout_cycles)
+        return CompiledProgram(
+            self,
+            session=session,
+            timeout_cycles=timeout_cycles,
+            execution_policy=execution_policy,
+        )
 
     def to_dict(self):
         return {
@@ -338,11 +344,27 @@ class Program:
 class CompiledProgram:
     """Deterministically allocated command program for repeated execution."""
 
-    def __init__(self, program: Program, *, session=None, timeout_cycles=400_000):
+    def __init__(
+        self,
+        program: Program,
+        *,
+        session=None,
+        timeout_cycles=400_000,
+        execution_policy="auto",
+    ):
+        if execution_policy not in ("single", "auto", "dual", "quad"):
+            raise ValueError(
+                "execution_policy must be 'single', 'auto', 'dual', or 'quad'"
+            )
         self.name = program.name
         self._program = program
-        self._session = session if session is not None else Session(timeout_cycles=timeout_cycles)
+        self._session = session if session is not None else Session(
+            cores=(0, 1, 2, 3), timeout_cycles=timeout_cycles
+        )
+        if 0 not in self._session.cores:
+            raise ValueError("CompiledProgram Session must enable core0")
         self._owns_session = session is None
+        self._execution_policy = execution_policy
         self._closed = False
         self._buffers: dict[str, BufferRef] = {}
         self._commands = []
@@ -408,19 +430,15 @@ class CompiledProgram:
             )
             transfer_write_elements += ref.element_count
 
-        # ASSEMBLE has destination-preservation semantics. Run command segments so
-        # zeroing occurs immediately before the relevant instruction and cannot
-        # clobber an earlier live value that shares the statically reused address.
+        # Execute at operator boundaries so output-space tiles form one scheduled
+        # wave.  ASSEMBLE is zeroed immediately before its command because its
+        # destination-preservation semantics can share a statically reused range.
         run_results = []
-        command_results = []
-        segment = []
+        operation_results = []
+        parallel_records = []
+        operation_metrics = []
         for op, command in zip(self._command_ops, self._commands):
             if op.kind == "assemble":
-                if segment:
-                    run = self._session.run(segment)
-                    run_results.append(run)
-                    command_results.extend(run.command_results)
-                    segment = []
                 ref = self._buffers[op.output]
                 self._session.write_tensor_bits(
                     memory=ref.memory,
@@ -428,15 +446,32 @@ class CompiledProgram:
                     value=_reshape([0] * ref.element_count, ref.shape),
                 )
                 transfer_write_elements += ref.element_count
-                run = self._session.run([command])
-                run_results.append(run)
-                command_results.extend(run.command_results)
+            if op.kind in LINEAR_OPERATORS:
+                attrs = dict(op.attrs)
+                if op.kind == "scale":
+                    attrs["alpha_bits"] = fp16_bits(op.attrs["alpha"])
+                run, parallel = execute_linear(
+                    self._session,
+                    op.kind,
+                    tuple(self._buffers[name] for name in op.inputs),
+                    self._buffers[op.output],
+                    command_id=command.command_id,
+                    policy=self._execution_policy,
+                    attrs=attrs,
+                    group_end=command.group_end,
+                )
+                parallel_records.append(parallel)
+                operation_metrics.append(parallel["metrics"])
             else:
-                segment.append(command)
-        if segment:
-            run = self._session.run(segment)
+                run = self._session.run([command])
+                parallel_records.append(None)
+                operation_metrics.append({
+                    "total_cycles": run.total_cycles,
+                    "total_read_bytes": run.total_read_bytes,
+                    "total_write_bytes": run.total_write_bytes,
+                })
             run_results.append(run)
-            command_results.extend(run.command_results)
+            operation_results.append(tuple(run.command_results))
 
         outputs = {}
         output_bits = {}
@@ -445,7 +480,7 @@ class CompiledProgram:
         command_index = {op.output: index for index, op in enumerate(self._command_ops)}
         for name in self._output_names:
             if name in self._scalar_names:
-                result = command_results[command_index[name]]
+                result = operation_results[command_index[name]][0]
                 if not result.reduce_valid or result.reduce_value_bits is None:
                     raise DexSimError(f"Program scalar output {name!r} is not valid")
                 scalars[name] = {
@@ -469,28 +504,37 @@ class CompiledProgram:
             transfer_read_elements += ref.element_count
 
         command_trace = []
-        for op, command, result in zip(self._command_ops, self._commands, command_results):
-            command_trace.append(
-                {
+        for op, command, results, parallel in zip(
+            self._command_ops,
+            self._commands,
+            operation_results,
+            parallel_records,
+        ):
+            commands = parallel["commands"] if parallel is not None else ({
+                "core": 0,
+                "id": command.command_id,
+                "opcode": command.opcode,
+                "subop": command.subop,
+                "group_end": command.group_end,
+                "words": list(command.words),
+            },)
+            for lowered, result in zip(commands, results):
+                command_trace.append({
                     "operation": op.kind,
                     "inputs": list(op.inputs),
                     "output": op.output,
                     "attrs": dict(op.attrs),
-                    "id": command.command_id,
-                    "opcode": command.opcode,
-                    "subop": command.subop,
-                    "group_end": command.group_end,
-                    "words": list(command.words),
+                    **dict(lowered),
                     "result": result.to_dict(),
-                }
-            )
+                    "parallel_plan": parallel["plan"] if parallel is not None else None,
+                })
         trace = ExecutionTrace(
             commands=tuple(command_trace),
             buffers=self.address_plan,
             runs=tuple(run.to_dict() for run in run_results),
-            cycles=sum(run.total_cycles for run in run_results),
-            read_bytes=sum(run.total_read_bytes for run in run_results),
-            write_bytes=sum(run.total_write_bytes for run in run_results),
+            cycles=sum(value["total_cycles"] for value in operation_metrics),
+            read_bytes=sum(value["total_read_bytes"] for value in operation_metrics),
+            write_bytes=sum(value["total_write_bytes"] for value in operation_metrics),
             transfers={
                 "input_write_elements": transfer_write_elements,
                 "output_read_elements": transfer_read_elements,
@@ -559,8 +603,8 @@ class CompiledProgram:
             raise
         except Exception as error:
             raise UnsupportedShapeError(
-                "fixed Program cannot be placed in validated single-core SRAM; "
-                "an automatic tiling path is not available in v0.3.0"
+                "fixed Program cannot be placed in validated SRAM; "
+                "an automatic storage tiling path is not available in v0.4.0"
             ) from error
 
     def _build_command(self, op, command_id, group_end):

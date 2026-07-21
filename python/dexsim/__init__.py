@@ -28,6 +28,9 @@ from .session import (
     CommandResult,
     DexSimError,
     RunResult,
+    ScheduledCommand,
+    ScheduledCommandResult,
+    ScheduledRunResult,
     Session,
     SessionSnapshot,
     fp16_bits,
@@ -67,6 +70,9 @@ __all__ = [
     "ProgramTensor",
     "ReleasedTensorError",
     "RunResult",
+    "ScheduledCommand",
+    "ScheduledCommandResult",
+    "ScheduledRunResult",
     "ScalarResult",
     "Session",
     "SessionSnapshot",
@@ -100,4 +106,4 @@ __all__ = [
     "transpose",
 ]
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"

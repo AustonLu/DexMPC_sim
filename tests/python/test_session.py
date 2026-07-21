@@ -5,10 +5,14 @@ import dexsim
 
 
 class SessionTest(unittest.TestCase):
-    def test_single_core_contract(self):
-        self.assertEqual(dexsim.Session.capabilities()["runtime_enabled_cores"], [0])
-        with self.assertRaisesRegex(ValueError, "cores=\\[0\\]"):
-            dexsim.Session(cores=[1])
+    def test_default_single_core_and_multicore_contract(self):
+        self.assertEqual(
+            dexsim.Session.capabilities()["runtime_enabled_cores"], [0, 1, 2, 3]
+        )
+        with dexsim.Session() as session:
+            self.assertEqual(session.cores, (0,))
+        with dexsim.Session(cores=[1]) as session:
+            self.assertEqual(session.cores, (1,))
         with self.assertRaisesRegex(ValueError, "transport='d2d'"):
             dexsim.Session(transport="spi")
 

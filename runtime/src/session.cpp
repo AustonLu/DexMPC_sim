@@ -2,6 +2,7 @@
 
 #include "dexsim/session.hpp"
 
+#include <array>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -186,6 +187,128 @@ Snapshot Session::snapshot() {
     value.write_bytes = impl_->sim->transport_write_bytes();
     value.reset_count = impl_->reset_count;
     return value;
+}
+
+RunStats Session::run_scheduled(
+    const std::vector<ScheduledCommand>& commands, int timeout_cycles) {
+    if (timeout_cycles <= 0) {
+        throw std::runtime_error("timeout_cycles must be positive");
+    }
+    if (commands.size() > static_cast<std::size_t>(topchip::kNumCommandContexts)) {
+        throw std::runtime_error("scheduled wave supports at most one command per core");
+    }
+
+    std::array<bool, topchip::kNumCommandContexts> seen{};
+    std::array<std::uint32_t, topchip::kNumCommandContexts> expected_done{};
+    for (const auto& scheduled : commands) {
+        const auto core = topchip::checked_core(static_cast<int>(scheduled.core));
+        if (seen[static_cast<std::size_t>(core)]) {
+            throw std::runtime_error(
+                "scheduled wave contains more than one command for core "
+                + std::to_string(core));
+        }
+        seen[static_cast<std::size_t>(core)] = true;
+        constexpr std::uint32_t kOpLinearAlgebra = 0b011u;
+        if (core != 0 && command_opcode(scheduled.command) != kOpLinearAlgebra) {
+            throw std::runtime_error(
+                "shared-engine commands are restricted to context0");
+        }
+    }
+
+    RunStats stats{};
+    const auto cycle_before = impl_->sim->cycle();
+    const auto read_before = impl_->sim->transport_read_bytes();
+    const auto write_before = impl_->sim->transport_write_bytes();
+    stats.command_results.reserve(commands.size());
+
+    for (const auto& scheduled : commands) {
+        const auto core = static_cast<int>(scheduled.core);
+        const auto before = impl_->sim->done_count(core);
+        stats.done_count_before += before;
+        expected_done[static_cast<std::size_t>(core)] = before + 1;
+    }
+    for (const auto& scheduled : commands) {
+        impl_->sim->push_cmd(
+            static_cast<int>(scheduled.core), command_value(scheduled.command));
+    }
+
+    for (const auto& scheduled : commands) {
+        const auto core = static_cast<int>(scheduled.core);
+        impl_->sim->wait_for_done_count(
+            core, expected_done[static_cast<std::size_t>(core)], timeout_cycles);
+
+        const auto last_done = impl_->sim->last_done(core);
+        const auto observed_id = last_done & 0xfffu;
+        if (observed_id != command_id(scheduled.command)) {
+            throw std::runtime_error(
+                "TopChip lastDone command ID mismatch on core "
+                + std::to_string(core) + ": expected="
+                + std::to_string(command_id(scheduled.command))
+                + " got=" + std::to_string(observed_id));
+        }
+        if (((last_done >> 20) & 1u) != 0) {
+            throw std::runtime_error(
+                "TopChip reported illegal command on core " + std::to_string(core)
+                + " id=" + std::to_string(observed_id));
+        }
+
+        CommandResult result{};
+        result.core = scheduled.core;
+        result.command_id = observed_id;
+        result.opcode = (last_done >> 12) & 0x7u;
+        result.subop = (last_done >> 15) & 0xfu;
+        result.group_end = (last_done >> 19) & 0x1u;
+        result.done_cycle = impl_->sim->read_reg(topchip::cfg_last_done_cycle(core));
+        if (result.opcode != command_opcode(scheduled.command)
+            || result.subop != command_subop(scheduled.command)
+            || result.group_end != command_group_end(scheduled.command)) {
+            throw std::runtime_error(
+                "TopChip lastDone metadata mismatch on core "
+                + std::to_string(core) + " for command id="
+                + std::to_string(observed_id));
+        }
+
+        constexpr std::uint32_t kOpReduce = 0b010u;
+        constexpr std::uint32_t kSubCompareReduce = 0u;
+        constexpr std::uint32_t kSubAddReduce = 1u;
+        if (result.opcode == kOpReduce && result.subop == kSubAddReduce) {
+            const auto reg = impl_->sim->read_reg(topchip::cfg_add_reduce(core));
+            result.reduce_value_bits = reg & 0xffffu;
+            result.reduce_valid = (reg >> 28) & 0x1u;
+            const auto result_id = (reg >> 16) & 0xfffu;
+            if (!result.reduce_valid || result_id != observed_id) {
+                throw std::runtime_error(
+                    "TopChip add-reduce result mismatch for command id="
+                    + std::to_string(observed_id));
+            }
+        } else if (result.opcode == kOpReduce
+                   && result.subop == kSubCompareReduce) {
+            const auto reg0 = impl_->sim->read_reg(topchip::cfg_cmp_reduce0(core));
+            const auto reg1 = impl_->sim->read_reg(topchip::cfg_cmp_reduce1(core));
+            result.reduce_value_bits = reg0 & 0xffffu;
+            result.reduce_index = reg1 & 0xfffu;
+            result.reduce_valid = (reg0 >> 28) & 0x1u;
+            const auto result_id = (reg0 >> 16) & 0xfffu;
+            if (!result.reduce_valid || result_id != observed_id) {
+                throw std::runtime_error(
+                    "TopChip compare-reduce result mismatch for command id="
+                    + std::to_string(observed_id));
+            }
+        }
+        stats.last_done = last_done;
+        stats.command_results.push_back(result);
+    }
+
+    for (const auto& scheduled : commands) {
+        stats.done_count_after +=
+            expected_done[static_cast<std::size_t>(scheduled.core)];
+    }
+    stats.cycles = impl_->sim->cycle() - cycle_before;
+    stats.read_bytes = impl_->sim->transport_read_bytes() - read_before;
+    stats.write_bytes = impl_->sim->transport_write_bytes() - write_before;
+    stats.command_count = static_cast<std::uint32_t>(commands.size());
+    stats.reset_count = impl_->reset_count;
+    return stats;
 }
 
 Counters Session::counters() const {

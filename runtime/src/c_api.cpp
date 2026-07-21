@@ -147,6 +147,61 @@ int dexsim_run_detailed(void* handle, const dexsim_command* commands, size_t com
     });
 }
 
+int dexsim_run_scheduled_detailed(
+    void* handle, const dexsim_scheduled_command* commands, size_t command_count,
+    int timeout_cycles, dexsim_run_stats* stats,
+    dexsim_scheduled_command_result* results, size_t result_count) {
+    return guard([&] {
+        if (command_count != 0 && commands == nullptr) {
+            throw std::runtime_error(
+                "dexsim_run_scheduled_detailed received a null command pointer");
+        }
+        if (stats == nullptr) {
+            throw std::runtime_error(
+                "dexsim_run_scheduled_detailed received a null stats pointer");
+        }
+        if (result_count < command_count || (command_count != 0 && results == nullptr)) {
+            throw std::runtime_error(
+                "dexsim_run_scheduled_detailed result buffer is too small");
+        }
+        std::vector<dexsim::runtime::ScheduledCommand> batch(command_count);
+        for (size_t index = 0; index < command_count; ++index) {
+            batch[index].core = commands[index].core;
+            for (int word = 0; word < 3; ++word) {
+                batch[index].command.words[static_cast<std::size_t>(word)] =
+                    commands[index].words[word];
+            }
+        }
+        const auto value = session(handle).run_scheduled(batch, timeout_cycles);
+        stats->cycles = value.cycles;
+        stats->read_bytes = value.read_bytes;
+        stats->write_bytes = value.write_bytes;
+        stats->command_count = value.command_count;
+        stats->done_count_before = value.done_count_before;
+        stats->done_count_after = value.done_count_after;
+        stats->last_done = value.last_done;
+        stats->reset_count = value.reset_count;
+
+        if (value.command_results.size() != command_count) {
+            throw std::runtime_error(
+                "dexsim_run_scheduled_detailed command result count mismatch");
+        }
+        for (size_t index = 0; index < command_count; ++index) {
+            const auto& source = value.command_results[index];
+            auto& destination = results[index];
+            destination.core = source.core;
+            destination.command_id = source.command_id;
+            destination.opcode = source.opcode;
+            destination.subop = source.subop;
+            destination.group_end = source.group_end;
+            destination.done_cycle = source.done_cycle;
+            destination.reduce_value_bits = source.reduce_value_bits;
+            destination.reduce_index = source.reduce_index;
+            destination.reduce_valid = source.reduce_valid;
+        }
+    });
+}
+
 int dexsim_read_register(void* handle, int register_index, uint32_t* value) {
     return guard([&] {
         if (value == nullptr) {

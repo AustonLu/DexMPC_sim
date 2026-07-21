@@ -22,6 +22,23 @@ typedef struct dexsim_command_result {
     uint32_t reduce_valid;
 } dexsim_command_result;
 
+typedef struct dexsim_scheduled_command {
+    uint32_t core;
+    uint32_t words[3];
+} dexsim_scheduled_command;
+
+typedef struct dexsim_scheduled_command_result {
+    uint32_t core;
+    uint32_t command_id;
+    uint32_t opcode;
+    uint32_t subop;
+    uint32_t group_end;
+    uint32_t done_cycle;
+    uint32_t reduce_value_bits;
+    uint32_t reduce_index;
+    uint32_t reduce_valid;
+} dexsim_scheduled_command_result;
+
 typedef struct dexsim_run_stats {
     uint64_t cycles;
     uint64_t read_bytes;
@@ -60,6 +77,10 @@ int dexsim_run(void* handle, const dexsim_command* commands, size_t command_coun
 int dexsim_run_detailed(void* handle, const dexsim_command* commands, size_t command_count,
                         int timeout_cycles, dexsim_run_stats* stats,
                         dexsim_command_result* results, size_t result_count);
+int dexsim_run_scheduled_detailed(
+    void* handle, const dexsim_scheduled_command* commands, size_t command_count,
+    int timeout_cycles, dexsim_run_stats* stats,
+    dexsim_scheduled_command_result* results, size_t result_count);
 int dexsim_read_register(void* handle, int register_index, uint32_t* value);
 int dexsim_get_snapshot(void* handle, dexsim_snapshot* snapshot);
 int dexsim_get_counters(void* handle, dexsim_counters* counters);

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "hardware": "TopChip D2D Verilator",
+  "command_contexts": [0, 1, 2, 3],
+  "linear_mac_contexts": [0, 1, 2, 3],
+  "shared_engine_contexts": [0],
+  "linear_operators": {
+    "gemm": "verified",
+    "gemv": "verified",
+    "outer": "verified",
+    "scale": "verified",
+    "add": "verified"
+  },
+  "verified_sequential_cores": [0, 1, 2, 3],
+  "verified_concurrent_pairs": [[0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3]],
+  "verified_concurrent_quad": [0, 1, 2, 3],
+  "storage": {
+    "local_per_core": "verified",
+    "temp_per_core": "verified",
+    "global_single_reader": "verified",
+    "global_concurrent_linear_access": "unsupported_rtl_assertion"
+  },
+  "production_constraints": [
+    "At most one command per core in one scheduled wave.",
+    "Core1-3 accept linear-algebra commands only.",
+    "Concurrent commands use per-core Local/Temp inputs and outputs.",
+    "Global inputs are staged before a concurrent wave.",
+    "Global multicore output is not scheduled."
+  ]
+}
