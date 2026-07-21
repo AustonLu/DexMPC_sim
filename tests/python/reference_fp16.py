@@ -48,7 +48,10 @@ def mul_bits(left, right):
 
 
 def add_matrix(left, right):
-    return [add_bits(a, b) for a, b in zip(left, right)]
+    # ADD streams A and B through a cleared MAC accumulator and drains it with
+    # +0.  The final round-to-nearest add canonicalizes a signed-zero result.
+    result = [add_bits(a, b) for a, b in zip(left, right)]
+    return [0 if (item & 0x7FFF) == 0 else item for item in result]
 
 
 def scale_matrix(source, alpha):

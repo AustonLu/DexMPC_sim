@@ -1,9 +1,12 @@
 import unittest
 
-from dexsim.kernels.forward import build_forward_sram_layout, reference_forward_stage
+from dexsim.kernels.forward import _add_vectors, build_forward_sram_layout, reference_forward_stage
 
 
 class ForwardKernelTest(unittest.TestCase):
+    def test_add_command_reference_canonicalizes_negative_zero(self):
+        self.assertEqual(_add_vectors([0x8000], [0x8000]), [0x0000])
+
     def test_airplane_layout_fits_single_core_sram(self):
         layout = build_forward_sram_layout(n_qvel=22, n_cmd=16, contact_rows=60)
         global_end = max(

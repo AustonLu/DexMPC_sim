@@ -45,8 +45,8 @@ class AllOperatorTest(unittest.TestCase):
                 ref.scale_matrix(scale_source, alpha),
             )
 
-            add_left = [ref.bits(value) for value in (1.0, -2.0, 100.0, 0.25, -0.0, 4.0)]
-            add_right = [ref.bits(value) for value in (2.0, 2.0, -100.0, 0.5, 0.0, -1.0)]
+            add_left = [ref.bits(value) for value in (1.0, -2.0, 100.0, 0.25, -0.0, -0.0)]
+            add_right = [ref.bits(value) for value in (2.0, 2.0, -100.0, 0.5, 0.0, -0.0)]
             session.write_tensor_bits(memory="global", offset=32, value=add_left)
             session.write_tensor_bits(memory="local", offset=32, value=add_right)
             session.run([
@@ -55,6 +55,10 @@ class AllOperatorTest(unittest.TestCase):
             self.assertEqual(
                 session.read_tensor_bits(memory="temp", offset=32, shape=(6,)),
                 ref.add_matrix(add_left, add_right),
+            )
+            self.assertEqual(
+                session.read_tensor_bits(memory="temp", offset=37, shape=(1,)),
+                [0x0000],
             )
 
             a = [ref.bits(value) for value in (1.0, 2.0, 3.0, 4.0)]

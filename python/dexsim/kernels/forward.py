@@ -206,7 +206,12 @@ def _mul_bits(left: int, right: int) -> int:
 def _add_vectors(left: Sequence[int], right: Sequence[int]) -> List[int]:
     if len(left) != len(right):
         raise ValueError("FP16 add operands have different lengths")
-    return [_add_bits(a, b) for a, b in zip(left, right)]
+    # The elementwise ADD command is implemented by MacArrayADDCtrl in ACC
+    # mode: clear(+0), accumulate A, accumulate B, then drain with +0.  With
+    # round-to-nearest the final drain canonicalizes every signed zero to +0.
+    # A direct DW_fp_add(a, b) reference is therefore wrong for -0 + -0.
+    result = [_add_bits(a, b) for a, b in zip(left, right)]
+    return [0 if (item & 0x7FFF) == 0 else item for item in result]
 
 
 def _scale_vector(source: Sequence[int], alpha: int) -> List[int]:

@@ -76,6 +76,13 @@ operands and underflowed arithmetic results are flushed to signed zero.  The
 M3 reference model reproduces this behavior after every add, multiply and MAC.
 Softplus is reproduced from the exact packaged LUT data.
 
+The elementwise ADD command has one additional observable detail. Its
+`MacArrayADDCtrl` streams both operands through a cleared accumulator and then
+drains the pipeline with positive zero. Under round-to-nearest this
+canonicalizes a zero result to `+0`, including `-0 + -0`. The command-level
+reference therefore models the complete accumulator pipeline rather than one
+standalone `DW_fp_add` call.
+
 This FTZ rule is important for the airplane fixture because several command
 components are around `1e-6` to `1e-5`.  A normal host FP16 reference that
 preserves subnormal arithmetic is not bit-accurate for this RTL.
