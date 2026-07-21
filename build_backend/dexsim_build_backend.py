@@ -11,7 +11,7 @@ from pathlib import Path
 
 NAME = "dexmpc-sim"
 NORMALIZED_NAME = "dexmpc_sim"
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 DIST_INFO = f"{NORMALIZED_NAME}-{VERSION}.dist-info"
 WHEEL_NAME = f"{NORMALIZED_NAME}-{VERSION}-py3-none-linux_x86_64.whl"
 
@@ -25,7 +25,7 @@ def _metadata_text():
         "Metadata-Version: 2.3\n"
         f"Name: {NAME}\n"
         f"Version: {VERSION}\n"
-        "Summary: Cycle-accurate single-core Python SDK for DexMPC TopChip\n"
+        "Summary: Address-free FP16 Operator SDK and cycle-accurate runtime for DexMPC TopChip\n"
         "Requires-Python: >=3.9\n"
     )
 

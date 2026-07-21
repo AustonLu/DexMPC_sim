@@ -33,14 +33,46 @@ from .session import (
     fp16_bits,
     fp16_value,
 )
+from .operator_runtime import (
+    AllocationError,
+    Device,
+    ReleasedTensorError,
+    ScalarResult,
+    Tensor,
+    UnsupportedShapeError,
+)
+from .program import (
+    CompiledProgram,
+    ExecutionTrace,
+    Op,
+    Program,
+    ProgramResult,
+    ProgramScalar,
+    ProgramTensor,
+    TensorSpec,
+)
 
 __all__ = [
     "Command",
     "CommandResult",
+    "CompiledProgram",
+    "Device",
     "DexSimError",
+    "ExecutionTrace",
+    "AllocationError",
+    "Op",
+    "Program",
+    "ProgramResult",
+    "ProgramScalar",
+    "ProgramTensor",
+    "ReleasedTensorError",
     "RunResult",
+    "ScalarResult",
     "Session",
     "SessionSnapshot",
+    "Tensor",
+    "TensorSpec",
+    "UnsupportedShapeError",
     "abs",
     "add",
     "add_reduce",
@@ -68,4 +100,4 @@ __all__ = [
     "transpose",
 ]
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"

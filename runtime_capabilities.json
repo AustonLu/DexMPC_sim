@@ -41,7 +41,11 @@
     "low_level_physical_sram_api": true,
     "legacy_testbase_default_core": 0,
     "upper_level_python_runtime_available": true,
-    "python_runtime_version": "0.2.0",
+    "python_runtime_version": "0.3.0",
+    "high_level_operator_api": true,
+    "automatic_sram": true,
+    "public_memory_arguments": false,
+    "fixed_operator_program": true,
     "python_runtime_operator_core": 0,
     "python_runtime_primitive_operators": [
       "abs",

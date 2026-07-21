@@ -59,13 +59,27 @@ The full-chip C++ driver is implemented in `verification/verilator/cpp/common/to
 
 ## Installable Python SDK
 
-The M2 single-core SDK packages the D2D TopChip Verilator model behind a persistent Python `dexsim.Session`:
+`dexmpc-sim v0.3.0` packages the D2D TopChip Verilator model behind a persistent runtime and an address-free high-level Operator API:
 
 ```sh
 python -m pip install --no-deps --no-build-isolation .
 ```
 
-It intentionally supports only `transport="d2d"` and `cores=[0]`. See `docs/python_sdk.md` for the API, installation flow, trace semantics and validation commands.
+```python
+import dexsim
+
+with dexsim.Device() as dev:
+    a = dev.tensor([[1.0, 2.0], [3.0, 4.0]])
+    b = dev.tensor([[5.0, 6.0], [7.0, 8.0]])
+    c = dev.gemm(a, b)
+    print(c.tolist())
+```
+
+The public `Device` API automatically manages FP16 packing, Tensor lifetime, Global/Local/Temp SRAM placement, 96-bit commands, LUT setup and simulator execution. It intentionally supports only D2D/core0 in the production Python runtime.
+
+- `docs/v0.3_high_level_operator_sdk.md`: v0.3 design, installation, all high-level operators, Program API and kernel-development workflow.
+- `docs/python_sdk.md`: retained v0.2 low-level `Session`/command reference for hardware verification and compatibility.
+
 It wraps the Verilated TopChip model behind a small register/SRAM/instruction API:
 
 - Define `DEX_TOPCHIP_TRANSPORT_D2D` to use `VTopChipTopD2dHarness`.
