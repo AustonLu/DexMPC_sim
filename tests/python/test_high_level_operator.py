@@ -25,6 +25,12 @@ def load_hex(name):
 
 
 class HighLevelOperatorTest(unittest.TestCase):
+    def test_gemm_hardware_canonicalizes_negative_zero_on_drain(self):
+        with dexsim.Device() as device:
+            left = device.tensor_bits([[0x0400, 0x8401]])
+            right = device.tensor_bits([[0x3C00], [0x3C00]])
+            self.assertEqual(flatten(device.gemm(left, right).bits()), [0x0000])
+
     def test_public_operator_signatures_hide_hardware_placement(self):
         forbidden = {
             "memory", "mem_id", "word_offset", "command_id", "opcode", "subop",

@@ -741,7 +741,7 @@ class CompiledProgram:
         except Exception as error:
             raise UnsupportedShapeError(
                 "fixed Program cannot be placed in validated SRAM; "
-                "an automatic storage tiling path is not available in v0.4.2"
+                "an automatic storage tiling path is not available in v0.4.3"
             ) from error
 
     def _build_command(self, op, command_id, group_end):

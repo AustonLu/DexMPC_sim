@@ -227,7 +227,8 @@ def _gemv(matrix: Sequence[int], vector: Sequence[int], rows: int, cols: int) ->
         for inner in range(cols):
             product = _mul_bits(matrix[row * cols + inner], vector[inner])
             accumulator = _add_bits(accumulator, product)
-        output.append(accumulator)
+        # GEMM/GEMV uses the same cleared MAC accumulator and +0 drain as ADD.
+        output.append(0 if (accumulator & 0x7FFF) == 0 else accumulator)
     return output
 
 

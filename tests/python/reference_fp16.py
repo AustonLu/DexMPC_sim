@@ -70,7 +70,7 @@ def gemm(a, b, n_rows, m_cols, k_dim):
             for inner in range(k_dim):
                 product = mul_bits(a[row * k_dim + inner], b[inner * m_cols + col])
                 accumulator = add_bits(accumulator, product)
-            output.append(accumulator)
+            output.append(0 if (accumulator & 0x7FFF) == 0 else accumulator)
     return output
 
 

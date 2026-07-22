@@ -5,6 +5,6 @@ backend-path = ["build_backend"]
 
 [project]
 name = "dexmpc-sim"
-version = "0.4.2"
+version = "0.4.3"
 description = "Address-free FP16 Operator SDK and cycle-accurate simulator runtime for DexMPC TopChip"
 requires-python = ">=3.9"

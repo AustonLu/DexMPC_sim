@@ -59,7 +59,7 @@ The full-chip C++ driver is implemented in `verification/verilator/cpp/common/to
 
 ## Installable Python SDK
 
-`dexmpc-sim v0.4.2` packages the D2D TopChip Verilator model behind a persistent runtime and an address-free high-level Operator API:
+`dexmpc-sim v0.4.3` packages the D2D TopChip Verilator model behind a persistent runtime and an address-free high-level Operator API. v0.4.3 retains the v0.4.2 DOT scheduler and corrects MAC-drain signed-zero reference semantics discovered during M7:
 
 ```sh
 python -m pip install --no-deps --no-build-isolation .
@@ -81,6 +81,7 @@ The public `Device` API automatically manages FP16 packing, Tensor lifetime, Glo
 - `docs/v0.4_multicore_operator_sdk.md`: v0.4.0 linear-operator multi-core policies and benchmark boundary.
 - `docs/v0.4.1_resident_kernel_sdk.md`: v0.4.1 resident Program execution and transfer avoidance.
 - `docs/v0.4.2_multicore_dot_sdk.md`: v0.4.2 DOT K-split, deterministic hardware reduction and independent policy switch.
+- `docs/v0.4.3_signed_zero_erratum.md`: GEMM/GEMV MAC-drain signed-zero correction and M7 compatibility note.
 - `docs/python_sdk.md`: retained v0.2 low-level `Session`/command reference for hardware verification and compatibility.
 
 It wraps the Verilated TopChip model behind a small register/SRAM/instruction API:
