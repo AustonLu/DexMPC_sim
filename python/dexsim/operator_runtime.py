@@ -570,7 +570,7 @@ class Device:
             high_level_operator_api=True,
             automatic_sram=True,
             public_memory_arguments=False,
-            high_level_version="0.4.0",
+            high_level_version="0.4.1",
             operator_execution_policies=["single", "auto", "dual", "quad"],
             production_parallel_policy="measured-benefit-gated",
         )
@@ -818,7 +818,7 @@ class Device:
         except AllocationError as error:
             raise UnsupportedShapeError(
                 f"automatic placement failed for shape={tuple(shape)}; "
-                "a validated storage tiling path is not available in v0.4.0"
+                "a validated storage tiling path is not available in v0.4.1"
             ) from error
 
     def _run(self, operation, command, inputs, output, attrs=None):

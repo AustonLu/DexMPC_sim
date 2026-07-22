@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 import math
+import time
 from typing import Mapping
 
 from .commands import (
@@ -34,6 +35,11 @@ from .operator_runtime import (
 )
 from .session import DexSimError, Session, fp16_bits, fp16_value
 from .parallel import LINEAR_OPERATORS, execute_linear, plan_linear
+from .resident import (
+    ResidentKernelExecutor,
+    choose_resident_decision,
+    normalize_residency_policy,
+)
 
 
 @dataclass(frozen=True)
@@ -100,6 +106,8 @@ class ExecutionTrace:
     write_bytes: int
     transfers: Mapping[str, int]
     host_ops: tuple[Mapping[str, object], ...] = ()
+    residency: Mapping[str, object] = field(default_factory=dict)
+    kernel_metrics: Mapping[str, object] = field(default_factory=dict)
 
     def to_dict(self):
         return {
@@ -111,6 +119,8 @@ class ExecutionTrace:
             "write_bytes": self.write_bytes,
             "transfers": dict(self.transfers),
             "host_ops": [dict(value) for value in self.host_ops],
+            "residency": dict(self.residency),
+            "kernel_metrics": dict(self.kernel_metrics),
         }
 
 
@@ -283,7 +293,14 @@ class Program:
 
     reduce_cmp = compare_reduce
 
-    def compile(self, *, session=None, timeout_cycles=400_000, execution_policy="auto"):
+    def compile(
+        self,
+        *,
+        session=None,
+        timeout_cycles=400_000,
+        execution_policy="auto",
+        residency_policy="auto",
+    ):
         if not self._outputs:
             raise ValueError("Program.output(...) must select at least one result before compile")
         return CompiledProgram(
@@ -291,6 +308,7 @@ class Program:
             session=session,
             timeout_cycles=timeout_cycles,
             execution_policy=execution_policy,
+            residency_policy=residency_policy,
         )
 
     def to_dict(self):
@@ -351,11 +369,13 @@ class CompiledProgram:
         session=None,
         timeout_cycles=400_000,
         execution_policy="auto",
+        residency_policy="auto",
     ):
         if execution_policy not in ("single", "auto", "dual", "quad"):
             raise ValueError(
                 "execution_policy must be 'single', 'auto', 'dual', or 'quad'"
             )
+        residency_policy = normalize_residency_policy(residency_policy)
         self.name = program.name
         self._program = program
         self._session = session if session is not None else Session(
@@ -365,6 +385,13 @@ class CompiledProgram:
             raise ValueError("CompiledProgram Session must enable core0")
         self._owns_session = session is None
         self._execution_policy = execution_policy
+        self._residency_policy = residency_policy
+        self._resident_decision = choose_resident_decision(
+            program,
+            execution_policy=execution_policy,
+            residency_policy=self._residency_policy,
+        )
+        self._persistent_constant_coverage = {}
         self._closed = False
         self._buffers: dict[str, BufferRef] = {}
         self._commands = []
@@ -376,6 +403,7 @@ class CompiledProgram:
         self._output_names = program._outputs
         self._scalar_names = set(program._scalars)
         self._assemble_outputs: set[str] = set()
+        self._last_use = {}
         self._compile()
         self._upload_constants()
 
@@ -386,6 +414,14 @@ class CompiledProgram:
     @property
     def command_count(self):
         return len(self._commands)
+
+    @property
+    def execution_config(self):
+        return {
+            "execution_policy": self._execution_policy,
+            "residency_policy": self._residency_policy,
+            "resident_decision": self._resident_decision.to_dict(),
+        }
 
     def close(self):
         if self._closed:
@@ -414,6 +450,8 @@ class CompiledProgram:
             missing = sorted(set(self._input_names) - set(inputs))
             extra = sorted(set(inputs) - set(self._input_names))
             raise ValueError(f"Program inputs mismatch; missing={missing}, extra={extra}")
+        kernel_before = self._session._counters()
+        wall_start = time.perf_counter()
         transfer_write_elements = 0
         for name in self._input_names:
             ref = self._buffers[name]
@@ -429,6 +467,17 @@ class CompiledProgram:
                 value=_reshape(flat, ref.shape),
             )
             transfer_write_elements += ref.element_count
+        after_input_upload = self._session._counters()
+
+        resident = ResidentKernelExecutor(
+            self._session,
+            self._buffers,
+            self._program._specs,
+            self._constant_names,
+            decision=self._resident_decision,
+            persistent_constant_coverage=self._persistent_constant_coverage,
+        )
+        resident.begin_run(self._input_names)
 
         # Execute at operator boundaries so output-space tiles form one scheduled
         # wave.  ASSEMBLE is zeroed immediately before its command because its
@@ -446,7 +495,11 @@ class CompiledProgram:
                     value=_reshape([0] * ref.element_count, ref.shape),
                 )
                 transfer_write_elements += ref.element_count
-            if op.kind in LINEAR_OPERATORS:
+            if self._resident_decision.enabled:
+                run, parallel, metrics = resident.execute(op, command)
+                parallel_records.append(parallel)
+                operation_metrics.append(metrics)
+            elif op.kind in LINEAR_OPERATORS:
                 attrs = dict(op.attrs)
                 if op.kind == "scale":
                     attrs["alpha_bits"] = fp16_bits(op.attrs["alpha"])
@@ -472,12 +525,18 @@ class CompiledProgram:
                 })
             run_results.append(run)
             operation_results.append(tuple(run.command_results))
+        after_operations = self._session._counters()
 
         outputs = {}
         output_bits = {}
         scalars = {}
         transfer_read_elements = 0
         command_index = {op.output: index for index, op in enumerate(self._command_ops)}
+        if self._resident_decision.enabled:
+            for name in self._output_names:
+                if name not in self._scalar_names:
+                    resident.materialize(name, reason="program_output")
+        after_output_materialize = self._session._counters()
         for name in self._output_names:
             if name in self._scalar_names:
                 result = operation_results[command_index[name]][0]
@@ -491,17 +550,16 @@ class CompiledProgram:
                 }
                 continue
             ref = self._buffers[name]
-            output_bits[name] = self._session.read_tensor_bits(
+            bits = self._session.read_tensor_bits(
                 memory=ref.memory,
                 offset=ref.element_offset,
                 shape=ref.shape,
             )
-            outputs[name] = self._session.read_tensor(
-                memory=ref.memory,
-                offset=ref.element_offset,
-                shape=ref.shape,
-            )
+            output_bits[name] = bits
+            flat_bits, _ = _flatten_bits(bits)
+            outputs[name] = _reshape([fp16_value(value) for value in flat_bits], ref.shape)
             transfer_read_elements += ref.element_count
+        after_output_read = self._session._counters()
 
         command_trace = []
         for op, command, results, parallel in zip(
@@ -528,6 +586,34 @@ class CompiledProgram:
                     "result": result.to_dict(),
                     "parallel_plan": parallel["plan"] if parallel is not None else None,
                 })
+        resident_summary = resident.summary()
+        kernel_metrics = {
+            "total_cycles": int(after_output_read.cycle - kernel_before.cycle),
+            "total_read_bytes": int(after_output_read.read_bytes - kernel_before.read_bytes),
+            "total_write_bytes": int(after_output_read.write_bytes - kernel_before.write_bytes),
+            "input_upload_cycles": int(after_input_upload.cycle - kernel_before.cycle),
+            "operator_region_cycles": int(after_operations.cycle - after_input_upload.cycle),
+            "output_materialize_cycles": int(
+                after_output_materialize.cycle - after_operations.cycle
+            ),
+            "output_download_cycles": int(
+                after_output_read.cycle - after_output_materialize.cycle
+            ),
+            "compute_only_cycles": int(resident_summary["metrics"]["compute_cycles"])
+            if self._resident_decision.enabled
+            else int(sum(
+                value.get("run_cycles", value["total_cycles"])
+                for value in operation_metrics
+            )),
+            "internal_transfer_cycles": int(
+                resident_summary["metrics"]["resident_stage_cycles"]
+                + resident_summary["metrics"]["materialize_cycles"]
+            ) if self._resident_decision.enabled else int(sum(
+                value.get("stage_cycles", 0) + value.get("gather_cycles", 0)
+                for value in operation_metrics
+            )),
+            "wall_seconds": time.perf_counter() - wall_start,
+        }
         trace = ExecutionTrace(
             commands=tuple(command_trace),
             buffers=self.address_plan,
@@ -543,6 +629,8 @@ class CompiledProgram:
                 ),
             },
             host_ops=(),
+            residency=resident_summary,
+            kernel_metrics=kernel_metrics,
         )
         return ProgramResult(outputs, output_bits, scalars, trace)
 
@@ -557,12 +645,17 @@ class CompiledProgram:
         final_index = len(self._program._ops)
         for name in self._output_names:
             last_use[name] = final_index
+        self._last_use = dict(last_use)
 
         try:
             for name, spec in self._program._specs.items():
                 if spec.role not in ("input", "constant"):
                     continue
-                preferred = ("global", "local", "temp")
+                preferred = (
+                    ("local", "temp", "global")
+                    if self._resident_decision.enabled
+                    else ("global", "local", "temp")
+                )
                 self._buffers[name] = allocator.allocate(
                     name,
                     spec.shape,
@@ -604,7 +697,7 @@ class CompiledProgram:
         except Exception as error:
             raise UnsupportedShapeError(
                 "fixed Program cannot be placed in validated SRAM; "
-                "an automatic storage tiling path is not available in v0.4.0"
+                "an automatic storage tiling path is not available in v0.4.1"
             ) from error
 
     def _build_command(self, op, command_id, group_end):
