@@ -3,9 +3,10 @@
 The reduction and LUT models mirror the repository's established CoreTop
 post-processing scripts.  Arithmetic is rounded back to FP16 after every
 hardware FP16 operation.  The DW arithmetic instances use
-``ieee_compliance=0``, so exponent-zero subnormal operands and underflowed
-arithmetic results are flushed to signed zero.  LUT operators retain their
-independently verified bit-level behavior.
+``ieee_compliance=0``: exponent-zero subnormal operands and underflowed
+arithmetic results are flushed to signed zero, while NaN encodings are treated
+as positive infinity. LUT operators retain their independently verified
+bit-level behavior.
 """
 
 import struct
@@ -28,6 +29,9 @@ def value(raw):
 def flush_subnormal(raw):
     exponent = (raw >> 10) & 0x1F
     fraction = raw & 0x3FF
+    if exponent == 0x1F and fraction:
+        # The ieee_compliance=0 DesignWare path canonicalizes NaN to +Inf.
+        return 0x7C00
     return (raw & 0x8000) if exponent == 0 and fraction else raw
 
 

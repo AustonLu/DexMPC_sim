@@ -21,7 +21,6 @@ from .commands import (
     assemble as build_assemble,
     compare_reduce as build_compare_reduce,
     cos as build_cos,
-    dot as build_dot,
     gemm as build_gemm,
     gemv as build_gemv,
     outer as build_outer,
@@ -32,6 +31,7 @@ from .commands import (
 )
 from .session import DexSimError, RunResult, Session, fp16_bits, fp16_value
 from .parallel import execute_linear
+from .dot_parallel import execute_dot, normalize_dot_execution_policy
 
 
 FP16_PER_WORD = 8
@@ -428,6 +428,7 @@ class Device:
         *,
         timeout_cycles=400_000,
         execution_policy="auto",
+        dot_execution_policy="auto",
     ):
         if execution_policy not in ("single", "auto", "dual", "quad"):
             raise ValueError(
@@ -440,6 +441,9 @@ class Device:
             raise ValueError("Device Session must enable core0")
         self._owns_session = session is None
         self._execution_policy = execution_policy
+        self._dot_execution_policy = normalize_dot_execution_policy(
+            dot_execution_policy
+        )
         self._allocator = VariableAllocator()
         self._closed = False
         self._next_tensor_id = 0
@@ -570,8 +574,10 @@ class Device:
             high_level_operator_api=True,
             automatic_sram=True,
             public_memory_arguments=False,
-            high_level_version="0.4.1",
+            high_level_version="0.4.2",
             operator_execution_policies=["single", "auto", "dual", "quad"],
+            dot_execution_policies=["single", "auto", "dual", "quad"],
+            dot_merge="core0_add_reduce_fixed_tree",
             production_parallel_policy="measured-benefit-gated",
         )
         return value
@@ -653,17 +659,27 @@ class Device:
             raise ValueError("DOT requires equal rank-1 Tensors")
         output = self.empty((1,), name=self._name("dot"))
         out_ref = output._internal_ref()
-        command = build_dot(
-            self._command_id(),
-            a_memory=left_ref.memory,
-            a_word_offset=left_ref.word_offset,
-            b_memory=right_ref.memory,
-            b_word_offset=right_ref.word_offset,
-            out_memory=out_ref.memory,
-            out_word_offset=out_ref.word_offset,
-            element_count=left.size,
+        run, parallel = execute_dot(
+            self._session,
+            left_ref,
+            right_ref,
+            out_ref,
+            command_id=self._command_id(),
+            policy=self._dot_execution_policy,
         )
-        self._run("dot", command, [left_ref, right_ref], out_ref)
+        first_command = parallel["commands"][0]
+        self._trace.append({
+            "operation": "dot",
+            "inputs": [left_ref.to_dict(), right_ref.to_dict()],
+            "output": out_ref.to_dict(),
+            "attrs": {},
+            "command": {
+                key: value for key, value in first_command.items()
+                if key != "core"
+            },
+            "run": run.to_dict(),
+            "parallel": parallel,
+        })
         return output
 
     def outer(self, left: Tensor, right: Tensor):
@@ -818,7 +834,7 @@ class Device:
         except AllocationError as error:
             raise UnsupportedShapeError(
                 f"automatic placement failed for shape={tuple(shape)}; "
-                "a validated storage tiling path is not available in v0.4.1"
+                "a validated storage tiling path is not available in v0.4.2"
             ) from error
 
     def _run(self, operation, command, inputs, output, attrs=None):

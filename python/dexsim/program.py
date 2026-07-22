@@ -35,6 +35,7 @@ from .operator_runtime import (
 )
 from .session import DexSimError, Session, fp16_bits, fp16_value
 from .parallel import LINEAR_OPERATORS, execute_linear, plan_linear
+from .dot_parallel import execute_dot, normalize_dot_execution_policy
 from .resident import (
     ResidentKernelExecutor,
     choose_resident_decision,
@@ -300,6 +301,7 @@ class Program:
         timeout_cycles=400_000,
         execution_policy="auto",
         residency_policy="auto",
+        dot_execution_policy="auto",
     ):
         if not self._outputs:
             raise ValueError("Program.output(...) must select at least one result before compile")
@@ -309,6 +311,7 @@ class Program:
             timeout_cycles=timeout_cycles,
             execution_policy=execution_policy,
             residency_policy=residency_policy,
+            dot_execution_policy=dot_execution_policy,
         )
 
     def to_dict(self):
@@ -370,6 +373,7 @@ class CompiledProgram:
         timeout_cycles=400_000,
         execution_policy="auto",
         residency_policy="auto",
+        dot_execution_policy="auto",
     ):
         if execution_policy not in ("single", "auto", "dual", "quad"):
             raise ValueError(
@@ -386,6 +390,9 @@ class CompiledProgram:
         self._owns_session = session is None
         self._execution_policy = execution_policy
         self._residency_policy = residency_policy
+        self._dot_execution_policy = normalize_dot_execution_policy(
+            dot_execution_policy
+        )
         self._resident_decision = choose_resident_decision(
             program,
             execution_policy=execution_policy,
@@ -420,6 +427,7 @@ class CompiledProgram:
         return {
             "execution_policy": self._execution_policy,
             "residency_policy": self._residency_policy,
+            "dot_execution_policy": self._dot_execution_policy,
             "resident_decision": self._resident_decision.to_dict(),
         }
 
@@ -495,7 +503,25 @@ class CompiledProgram:
                     value=_reshape([0] * ref.element_count, ref.shape),
                 )
                 transfer_write_elements += ref.element_count
-            if self._resident_decision.enabled:
+            if op.kind == "dot":
+                if self._resident_decision.enabled:
+                    run, parallel, metrics = resident.execute_dot(
+                        op, command, policy=self._dot_execution_policy
+                    )
+                else:
+                    run, parallel = execute_dot(
+                        self._session,
+                        self._buffers[op.inputs[0]],
+                        self._buffers[op.inputs[1]],
+                        self._buffers[op.output],
+                        command_id=command.command_id,
+                        policy=self._dot_execution_policy,
+                        group_end=command.group_end,
+                    )
+                    metrics = parallel["metrics"]
+                parallel_records.append(parallel)
+                operation_metrics.append(metrics)
+            elif self._resident_decision.enabled:
                 run, parallel, metrics = resident.execute(op, command)
                 parallel_records.append(parallel)
                 operation_metrics.append(metrics)
@@ -522,6 +548,12 @@ class CompiledProgram:
                     "total_cycles": run.total_cycles,
                     "total_read_bytes": run.total_read_bytes,
                     "total_write_bytes": run.total_write_bytes,
+                    "run_cycles": run.total_cycles,
+                    "scheduled_run_cycles": run.total_cycles,
+                    "engine_compute_cycles": max(
+                        (value.done_cycle for value in run.command_results),
+                        default=0,
+                    ),
                 })
             run_results.append(run)
             operation_results.append(tuple(run.command_results))
@@ -603,6 +635,18 @@ class CompiledProgram:
             if self._resident_decision.enabled
             else int(sum(
                 value.get("run_cycles", value["total_cycles"])
+                for value in operation_metrics
+            )),
+            "scheduled_run_cycles": int(sum(
+                value.get("scheduled_run_cycles", value.get(
+                    "run_cycles", value["total_cycles"]
+                ))
+                for value in operation_metrics
+            )),
+            "engine_compute_cycles": int(sum(
+                value.get("engine_compute_cycles", value.get(
+                    "run_cycles", value["total_cycles"]
+                ))
                 for value in operation_metrics
             )),
             "internal_transfer_cycles": int(
@@ -697,7 +741,7 @@ class CompiledProgram:
         except Exception as error:
             raise UnsupportedShapeError(
                 "fixed Program cannot be placed in validated SRAM; "
-                "an automatic storage tiling path is not available in v0.4.1"
+                "an automatic storage tiling path is not available in v0.4.2"
             ) from error
 
     def _build_command(self, op, command_id, group_end):

@@ -59,7 +59,7 @@ The full-chip C++ driver is implemented in `verification/verilator/cpp/common/to
 
 ## Installable Python SDK
 
-`dexmpc-sim v0.3.0` packages the D2D TopChip Verilator model behind a persistent runtime and an address-free high-level Operator API:
+`dexmpc-sim v0.4.2` packages the D2D TopChip Verilator model behind a persistent runtime and an address-free high-level Operator API:
 
 ```sh
 python -m pip install --no-deps --no-build-isolation .
@@ -75,9 +75,12 @@ with dexsim.Device() as dev:
     print(c.tolist())
 ```
 
-The public `Device` API automatically manages FP16 packing, Tensor lifetime, Global/Local/Temp SRAM placement, 96-bit commands, LUT setup and simulator execution. It intentionally supports only D2D/core0 in the production Python runtime.
+The public `Device` API automatically manages FP16 packing, Tensor lifetime, Global/Local/Temp SRAM placement, 96-bit commands, LUT setup and simulator execution. Linear operators have explicit 1/2/4-core policies, continuous Programs can reuse resident shards, and DOT has an independent K-split policy. Measured-benefit `auto` policies remain single-core where the complete operator or kernel path has not passed its performance gate.
 
 - `docs/v0.3_high_level_operator_sdk.md`: v0.3 design, installation, all high-level operators, Program API and kernel-development workflow.
+- `docs/v0.4_multicore_operator_sdk.md`: v0.4.0 linear-operator multi-core policies and benchmark boundary.
+- `docs/v0.4.1_resident_kernel_sdk.md`: v0.4.1 resident Program execution and transfer avoidance.
+- `docs/v0.4.2_multicore_dot_sdk.md`: v0.4.2 DOT K-split, deterministic hardware reduction and independent policy switch.
 - `docs/python_sdk.md`: retained v0.2 low-level `Session`/command reference for hardware verification and compatibility.
 
 It wraps the Verilated TopChip model behind a small register/SRAM/instruction API:

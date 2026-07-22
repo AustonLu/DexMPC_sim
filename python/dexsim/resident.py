@@ -12,6 +12,7 @@ from .parallel import (
     plan_linear,
 )
 from .session import ScheduledCommand
+from .dot_parallel import execute_dot as execute_parallel_dot
 
 
 FP16_PER_WORD = 8
@@ -114,6 +115,7 @@ class ResidentKernelExecutor:
         self.transfers = []
         self.events = []
         self.compute_cycles = 0
+        self.engine_compute_cycles = 0
         self.compute_read_bytes = 0
         self.compute_write_bytes = 0
         self.stage_cycles = 0
@@ -206,6 +208,9 @@ class ResidentKernelExecutor:
         ])
         after_run = self.session._counters()
         self.compute_cycles += after_run.cycle - after_stage.cycle
+        self.engine_compute_cycles += max(
+            (value.done_cycle for value in run.command_results), default=0
+        )
         self.compute_read_bytes += after_run.read_bytes - after_stage.read_bytes
         self.compute_write_bytes += after_run.write_bytes - after_stage.write_bytes
 
@@ -230,6 +235,10 @@ class ResidentKernelExecutor:
 
         after = self.session._counters()
         metrics = self._metrics(before, after_stage, after_run, after)
+        metrics["scheduled_run_cycles"] = metrics["run_cycles"]
+        metrics["engine_compute_cycles"] = max(
+            (value.done_cycle for value in run.command_results), default=0
+        )
         record = {
             "plan": {**plan.to_dict(), "reason": reason, "resident": True},
             "commands": [
@@ -258,6 +267,68 @@ class ResidentKernelExecutor:
             "output": op.output,
             "core_count": plan.core_count,
             "reused_input_regions": len(reused),
+        })
+        return run, record, metrics
+
+    def execute_dot(self, op, command, *, policy):
+        """Execute a DOT barrier while reusing compatible resident shards."""
+        before = self.session._counters()
+        run, record = execute_parallel_dot(
+            self.session,
+            self.buffers[op.inputs[0]],
+            self.buffers[op.inputs[1]],
+            self.buffers[op.output],
+            command_id=command.command_id,
+            policy=policy,
+            group_end=command.group_end,
+            coverage_checker=self._covers,
+            materialize_callback=self.materialize,
+        )
+        after = self.session._counters()
+        metrics = record["metrics"]
+        self.compute_cycles += metrics["scheduled_run_cycles"]
+        self.engine_compute_cycles += metrics["engine_compute_cycles"]
+        transfer_cycles = (
+            metrics["stage_cycles"]
+            + metrics["partial_gather_cycles"]
+            + metrics["merge_input_cycles"]
+            + metrics["output_commit_cycles"]
+        )
+        self.stage_cycles += transfer_cycles
+        partial = run.phases.get("partial_run", {}) if hasattr(run, "phases") else {}
+        merge = run.phases.get("merge_run", {}) if hasattr(run, "phases") else {}
+        compute_read_bytes = int(partial.get("read_bytes", 0)) + int(
+            merge.get("read_bytes", 0)
+        )
+        compute_write_bytes = int(partial.get("write_bytes", 0)) + int(
+            merge.get("write_bytes", 0)
+        )
+        self.compute_read_bytes += compute_read_bytes
+        self.compute_write_bytes += compute_write_bytes
+        transfer_read_bytes = max(
+            0,
+            int(after.read_bytes - before.read_bytes)
+            - compute_read_bytes
+            - metrics.get("materialize_read_bytes", 0),
+        )
+        transfer_write_bytes = max(
+            0,
+            int(after.write_bytes - before.write_bytes)
+            - compute_write_bytes
+            - metrics.get("materialize_write_bytes", 0),
+        )
+        self.stage_read_bytes += transfer_read_bytes
+        self.stage_write_bytes += transfer_write_bytes
+        self.transfers.extend(record["transfers"])
+        self.materialized.add(op.output)
+        self.coverage.pop(op.output, None)
+        self.events.append({
+            "kind": "multicore_dot",
+            "operation": op.kind,
+            "output": op.output,
+            "core_count": record["plan"]["core_count"],
+            "resident_reuse_regions": len(record["resident_reuse"]),
+            "merge": record["plan"]["merge"],
         })
         return run, record, metrics
 
@@ -351,6 +422,9 @@ class ResidentKernelExecutor:
                 "materialize_cycles": after_materialize.cycle - before.cycle,
             }
             self.compute_cycles += record["metrics"]["run_cycles"]
+            self.engine_compute_cycles += max(
+                (value.done_cycle for value in run.command_results), default=0
+            )
             self.compute_read_bytes += record["metrics"]["run_read_bytes"]
             self.compute_write_bytes += record["metrics"]["run_write_bytes"]
         else:
@@ -365,8 +439,15 @@ class ResidentKernelExecutor:
                 "gather_cycles": 0,
                 "materialize_cycles": after_materialize.cycle - before.cycle,
                 "wall_seconds": 0.0,
+                "scheduled_run_cycles": after.cycle - after_materialize.cycle,
+                "engine_compute_cycles": max(
+                    (value.done_cycle for value in run.command_results), default=0
+                ),
             }
             self.compute_cycles += after.cycle - after_materialize.cycle
+            self.engine_compute_cycles += max(
+                (value.done_cycle for value in run.command_results), default=0
+            )
             self.compute_read_bytes += after.read_bytes - after_materialize.read_bytes
             self.compute_write_bytes += after.write_bytes - after_materialize.write_bytes
             record = None
@@ -434,6 +515,7 @@ class ResidentKernelExecutor:
             "transfers": list(self.transfers),
             "metrics": {
                 "compute_cycles": int(self.compute_cycles),
+                "engine_compute_cycles": int(self.engine_compute_cycles),
                 "compute_read_bytes": int(self.compute_read_bytes),
                 "compute_write_bytes": int(self.compute_write_bytes),
                 "resident_stage_cycles": int(self.stage_cycles),

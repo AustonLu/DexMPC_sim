@@ -531,6 +531,10 @@ def execute_linear(
             "stage_read_bytes": int(after_stage.read_bytes - before.read_bytes),
             "stage_write_bytes": int(after_stage.write_bytes - before.write_bytes),
             "run_cycles": int(after_run.cycle - after_stage.cycle),
+            "scheduled_run_cycles": int(after_run.cycle - after_stage.cycle),
+            "engine_compute_cycles": int(max(
+                (value.done_cycle for value in run.command_results), default=0
+            )),
             "run_read_bytes": int(after_run.read_bytes - after_stage.read_bytes),
             "run_write_bytes": int(after_run.write_bytes - after_stage.write_bytes),
             "gather_cycles": int(after.cycle - after_run.cycle),

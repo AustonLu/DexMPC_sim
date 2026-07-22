@@ -1,6 +1,6 @@
 # DexSim 低层全算子 Python SDK 安装与使用手册
 
-> 本文是 v0.2 低层 `Session`/command 兼容手册，这些接口在 v0.4.1 继续兼容。普通软件和 M7 kernel 开发应使用免地址的高层 API，见 `docs/v0.4.1_resident_kernel_sdk.md`。
+> 本文是 v0.2 低层 `Session`/command 兼容手册，这些接口在 v0.4.2 继续兼容。普通软件和 M7 kernel 开发应使用免地址的高层 API，见 `docs/v0.4.2_multicore_dot_sdk.md` 和 `docs/v0.4.1_resident_kernel_sdk.md`。
 
 文档对应版本：`dexmpc-sim 0.2.0`
 适用代码分支：`DexMPC_sim/compiler`
