@@ -290,7 +290,7 @@ with dexsim.Session() as session:
 
 | 字段 | 含义 |
 |---|---|
-| `cycles` | 本次命令执行消耗的仿真周期，不含首次 LUT setup |
+| `cycles` | 本次 `Session.run()` 事务的仿真周期，不含首次 LUT setup；包含命令提交和完成轮询，不能当作纯核心计算周期 |
 | `read_bytes` | 本次命令执行产生的 D2D 逻辑读 payload |
 | `write_bytes` | 本次命令执行产生的 D2D 逻辑写 payload |
 | `command_count` | 命令数 |
@@ -310,12 +310,26 @@ with dexsim.Session() as session:
 - `command_id`；
 - `opcode`、`subop`；
 - `group_end`；
-- `done_cycle`，硬件完成该命令时记录的绝对 cycle；
+- `done_cycle`，该 command context 从 `activeValid` 拉起到命令完成的核心活动周期计数；它不是 session 绝对 cycle，也不包含命令外的 D2D 输入输出搬运；
 - `reduce_value` 和 `reduce_value_bits`；
 - Compare-Reduce 的 `reduce_index`；
 - `reduce_valid`。
 
 非 Reduce 命令的 Reduce 相关字段为 `None` 或 `False`。
+
+需要排除 D2D、输入输出、staging、gather 和 materialize 时，不要使用
+`RunResult.total_cycles`。高层 `ProgramResult.trace.kernel_metrics` 提供：
+
+- `engine_compute_cycles`：各顺序算子 RTL `lastDoneCycle` 关键路径之和；
+- `arithmetic_engine_compute_cycles`：在 engine cycles 中进一步扣除显式
+  `TRANSPOSE/ASSEMBLE` data-layout 命令；
+- `data_layout_engine_compute_cycles`：显式 `TRANSPOSE/ASSEMBLE` engine cycles；
+- `linear_engine_compute_cycles`：GEMM/GEMV/OUTER/DOT/SCALE/ADD 的核心活动周期；
+- `shared_engine_compute_cycles`：三角函数、Softplus、Reduce 等共享单元的核心活动周期。
+
+这些字段排除命令外的数据搬运。`arithmetic_engine_compute_cycles` 还排除了
+显式布局命令，但仍包含各计算 engine 活动期间不可分离的片上取数、流水和写回；
+它是最接近“只看实际计算”的可观测物理周期，不是只数乘加次数的理想化算术下界。
 
 ## 9. 多条 Reduce 放在同一个 batch
 

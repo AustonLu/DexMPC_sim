@@ -43,6 +43,74 @@ from .resident import (
 )
 
 
+LINEAR_ENGINE_OPERATORS = frozenset((*LINEAR_OPERATORS, "dot"))
+DATA_LAYOUT_ENGINE_OPERATORS = frozenset(("assemble", "transpose"))
+
+
+def _operation_cycle_metrics(operations, records):
+    """Summarize command-engine cycles without transfer phases.
+
+    Each operation record already collapses a scheduled multi-core wave to its
+    critical-path duration.  Summing those records therefore preserves
+    parallel execution while excluding input upload, staging, gather and
+    output download cycles.
+    """
+    by_kind = {}
+    for operation, record in zip(operations, records):
+        kind = operation.kind
+        summary = by_kind.setdefault(kind, {
+            "calls": 0,
+            "scheduled_run_cycles": 0,
+            "engine_compute_cycles": 0,
+        })
+        summary["calls"] += 1
+        summary["scheduled_run_cycles"] += int(record.get(
+            "scheduled_run_cycles", record.get(
+                "run_cycles", record.get("total_cycles", 0)
+            )
+        ))
+        summary["engine_compute_cycles"] += int(record.get(
+            "engine_compute_cycles", record.get(
+                "run_cycles", record.get("total_cycles", 0)
+            )
+        ))
+
+    engine_compute_cycles = int(sum(
+        value["engine_compute_cycles"] for value in by_kind.values()
+    ))
+    data_layout_engine_compute_cycles = int(sum(
+        value["engine_compute_cycles"]
+        for kind, value in by_kind.items()
+        if kind in DATA_LAYOUT_ENGINE_OPERATORS
+    ))
+    flat = {
+        "arithmetic_engine_compute_cycles": int(
+            engine_compute_cycles - data_layout_engine_compute_cycles
+        ),
+        "data_layout_engine_compute_cycles": data_layout_engine_compute_cycles,
+        "linear_engine_compute_cycles": int(sum(
+            value["engine_compute_cycles"]
+            for kind, value in by_kind.items()
+            if kind in LINEAR_ENGINE_OPERATORS
+        )),
+        "shared_engine_compute_cycles": int(sum(
+            value["engine_compute_cycles"]
+            for kind, value in by_kind.items()
+            if kind not in LINEAR_ENGINE_OPERATORS
+        )),
+    }
+    for kind, value in by_kind.items():
+        prefix = f"operator_{kind}"
+        flat[f"{prefix}_calls"] = int(value["calls"])
+        flat[f"{prefix}_scheduled_run_cycles"] = int(
+            value["scheduled_run_cycles"]
+        )
+        flat[f"{prefix}_engine_compute_cycles"] = int(
+            value["engine_compute_cycles"]
+        )
+    return flat
+
+
 @dataclass(frozen=True)
 class TensorSpec:
     name: str
@@ -619,6 +687,9 @@ class CompiledProgram:
                     "parallel_plan": parallel["plan"] if parallel is not None else None,
                 })
         resident_summary = resident.summary()
+        operation_cycle_metrics = _operation_cycle_metrics(
+            self._command_ops, operation_metrics
+        )
         kernel_metrics = {
             "total_cycles": int(after_output_read.cycle - kernel_before.cycle),
             "total_read_bytes": int(after_output_read.read_bytes - kernel_before.read_bytes),
@@ -656,6 +727,7 @@ class CompiledProgram:
                 value.get("stage_cycles", 0) + value.get("gather_cycles", 0)
                 for value in operation_metrics
             )),
+            **operation_cycle_metrics,
             "wall_seconds": time.perf_counter() - wall_start,
         }
         trace = ExecutionTrace(
